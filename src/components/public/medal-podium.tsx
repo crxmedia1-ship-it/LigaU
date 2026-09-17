@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 import { GlassCard, PageKicker } from "@/components/public/brand";
 import { UniversityCrest } from "@/components/public/university-crest";
+import { cn } from "@/lib/utils";
 import type { MedalTally, UniversityCard } from "@/lib/public/types";
 
 type PodiumSlot = {
@@ -17,6 +18,12 @@ type PodiumSlot = {
 
 const HEIGHTS = { 2: 96, 1: 140, 3: 80 } as const;
 const METAL = { 1: "#F59E0B", 2: "#E2E8F0", 3: "#B45309" } as const;
+
+const PLACE_BLOCK = {
+  1: "border-amber-400/55 bg-gradient-to-b from-amber-500/20 to-transparent shadow-[0_0_36px_rgba(245,158,11,0.28)]",
+  2: "border-zinc-300/40 bg-gradient-to-b from-zinc-400/20 to-transparent shadow-[0_0_24px_rgba(226,232,240,0.16)]",
+  3: "border-amber-800/55 bg-gradient-to-b from-amber-800/20 to-transparent shadow-[0_0_24px_rgba(180,83,9,0.22)]",
+} as const;
 
 function buildSlots(
   tallies: MedalTally[],
@@ -59,7 +66,7 @@ function SlotBody({
   return (
     <>
       <motion.div
-        className="relative z-10 mb-1 overflow-visible will-change-transform"
+        className="relative z-10 mb-3 overflow-visible will-change-transform"
         animate={reduce ? undefined : { y: [0, -10, 0] }}
         transition={{
           duration: 3.2,
@@ -76,7 +83,10 @@ function SlotBody({
         />
       </motion.div>
       <motion.div
-        className="podium-glass relative w-full origin-bottom overflow-visible rounded-t-md will-change-transform"
+        className={cn(
+          "podium-glass relative w-full origin-bottom overflow-visible rounded-t-md border will-change-transform",
+          PLACE_BLOCK[slot.place],
+        )}
         style={{ height: HEIGHTS[slot.place] }}
         initial={reduce ? false : { scaleY: 0, y: 48, opacity: 0 }}
         animate={{ scaleY: 1, y: 0, opacity: 1 }}
@@ -91,9 +101,8 @@ function SlotBody({
           className="absolute inset-x-0 top-0 h-1.5"
           style={{ background: METAL[slot.place], boxShadow: `0 0 16px ${METAL[slot.place]}` }}
         />
-        <div className="absolute inset-0 bg-linear-to-b from-white/50 to-transparent dark:from-white/10 dark:to-transparent" />
         <div
-          className="absolute inset-x-3 top-4 bottom-3 rounded-sm opacity-30"
+          className="absolute inset-x-3 top-4 bottom-3 rounded-sm opacity-35"
           style={{
             background: `linear-gradient(180deg, ${METAL[slot.place]}55, ${slot.color}22)`,
           }}
@@ -123,14 +132,16 @@ export function LivePodium({
   const ranked = [...slots].sort((a, b) => a.place - b.place);
 
   return (
-    <GlassCard className="glass-card-uncut overflow-visible rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-4 md:p-6">
+    <GlassCard className="glass-card-uncut overflow-visible rounded-2xl border border-zinc-800/80 bg-zinc-950/80 p-4 md:p-6">
       <PageKicker>Medallero institucional</PageKicker>
       <h2 className="mt-2 text-2xl font-semibold">Podio general en vivo</h2>
 
       <div className="mt-4 flex flex-col gap-3 md:hidden">
         {ranked.map((slot) => {
-          const className =
-            "flex min-h-11 items-center gap-3 overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-4";
+          const className = cn(
+            "flex min-h-11 items-center gap-3 overflow-visible rounded-2xl border bg-zinc-950/80 p-4",
+            PLACE_BLOCK[slot.place],
+          );
           const body = (
             <>
               <span

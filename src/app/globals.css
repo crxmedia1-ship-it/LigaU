@@ -182,6 +182,7 @@ html:not(.dark) body {
   --sidebar-ring: #ba0c2f;
 }
 
+.ligau-public,
 html.dark .ligau-public {
   --background: #09090b;
   --foreground: #e2e8f0;
@@ -303,6 +304,47 @@ body:has(.ligau-admin) {
     background-color: rgb(255 255 255 / 78%);
     box-shadow: 0 16px 40px rgb(228 228 231 / 50%);
   }
+}
+
+html .ligau-public .glass-card,
+.ligau-public .glass-card {
+  border: 1px solid rgb(39 39 42 / 80%);
+  background-color: rgb(9 9 11 / 78%);
+  box-shadow: inset 0 1px 0 rgb(226 232 240 / 8%);
+}
+
+.ligau-public .chrome-text {
+  background-image: linear-gradient(180deg, #ffffff 0%, #cbd5e1 78%);
+}
+
+.ligau-public .laser-badge {
+  background: rgb(9 9 11 / 70%);
+  color: #e2e8f0;
+}
+
+.ligau-public .titanium-plate,
+.ligau-public .carbon-fiber {
+  background-color: #0a0a0c;
+  background-image:
+    repeating-linear-gradient(45deg, #111113 0 2px, #1c1c20 2px 4px),
+    repeating-linear-gradient(-45deg, #09090b 0 2px, #17171b 2px 4px);
+}
+
+.ligau-public .image-reveal-veil {
+  background-image: linear-gradient(
+    to top,
+    #09090b 0%,
+    rgb(9 9 11 / 96%) 42%,
+    rgb(9 9 11 / 55%) 68%,
+    transparent 100%
+  );
+}
+
+.ligau-public .podium-glass {
+  background-color: rgb(9 9 11 / 62%);
+  box-shadow:
+    inset 0 1px 0 rgb(226 232 240 / 10%),
+    0 16px 40px rgb(0 0 0 / 45%);
 }
 
 .glass-card.glass-card-uncut {
@@ -476,7 +518,7 @@ body:has(.ligau-admin) {
 }
 
 .podium-glass {
-  background: rgb(255 255 255 / 42%);
+  background-color: rgb(255 255 255 / 42%);
   border: 1px solid rgb(255 255 255 / 72%);
   box-shadow:
     0 16px 40px rgb(228 228 231 / 50%),
@@ -484,11 +526,12 @@ body:has(.ligau-admin) {
   backdrop-filter: blur(18px) saturate(160%);
 }
 
-.dark .podium-glass {
-  background: rgb(9 9 11 / 42%);
-  border: 1px solid rgb(226 232 240 / 12%);
+.dark .podium-glass,
+.ligau-public .podium-glass {
+  background-color: rgb(9 9 11 / 62%);
+  border-color: rgb(226 232 240 / 12%);
   box-shadow:
-    inset 0 1px 0 rgb(226 232 240 / 12%),
+    inset 0 1px 0 rgb(226 232 240 / 10%),
     0 16px 40px rgb(0 0 0 / 45%);
 }
 

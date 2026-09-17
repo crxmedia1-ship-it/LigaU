@@ -3,65 +3,71 @@
 import { motion, useReducedMotion } from "motion/react";
 import { TiltCard } from "@/components/magic/tilt-card";
 
+const CLIP =
+  "polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)";
+
 export function MysteryCard3D() {
   const reduce = useReducedMotion();
 
   return (
-    <TiltCard className="h-full">
-      <div
-        className="titanium-plate relative min-h-[22rem] overflow-hidden border border-zinc-300 p-6 shadow-lg shadow-zinc-200/50 dark:border-zinc-500/35 dark:shadow-[0_20px_80px_rgba(139,0,0,0.4)]"
-        style={{
-          clipPath:
-            "polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px)",
-          transform: "translateZ(24px)",
-        }}
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[conic-gradient(from_120deg_at_50%_40%,transparent_0%,#e2e8f033_16%,transparent_32%,#c8102e44_58%,transparent_74%)] opacity-40" />
-        <p className="relative text-xs font-semibold uppercase tracking-[0.22em] text-[#D4AF37]">
-          MVP de la semana
-        </p>
-        <div className="relative mt-6 grid min-h-56 place-items-center overflow-hidden">
-          <svg
-            aria-hidden
-            viewBox="0 0 180 260"
-            className="absolute h-48 w-48 max-w-[200px] opacity-20"
-          >
-            <ellipse cx="90" cy="36" rx="18" ry="20" fill="#111113" />
-            <path
-              fill="#0c0c0f"
-              stroke="#27272a"
-              d="M78 56c-4 24-2 46 4 68 6 28 2 52-10 78l16 6c8-24 14-50 10-76 14 12 32 16 50 8l-6-14c-14 6-26 2-36-10 4-18 6-40 2-60z"
+    <TiltCard className="h-full" tone="gold">
+      <div className="relative h-full min-h-[22rem]" style={{ transform: "translateZ(24px)" }}>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-90"
+          style={{
+            clipPath: CLIP,
+            background:
+              "conic-gradient(from 130deg, #D4AF37, #BA0C2F, #F59E0B, #9E1B28, #D4AF37)",
+          }}
+        />
+        <div
+          className="carbon-fiber relative m-px flex h-[calc(100%-2px)] min-h-[21.8rem] flex-col overflow-hidden p-6 shadow-[0_20px_80px_rgba(139,0,0,0.45)]"
+          style={{ clipPath: CLIP }}
+        >
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(212,175,55,0.22),transparent_42%),radial-gradient(circle_at_80%_90%,rgba(186,12,47,0.28),transparent_46%)]" />
+          <p className="relative text-xs font-semibold tracking-[0.22em] text-[#D4AF37] uppercase">
+            MVP de la semana
+          </p>
+          <div className="relative mt-6 grid min-h-56 flex-1 place-items-center overflow-hidden">
+            <div
+              aria-hidden
+              className="absolute h-40 w-40 rounded-full bg-[#BA0C2F]/35 blur-3xl"
             />
-          </svg>
-          <motion.span
-            aria-hidden
-            className="relative inline-flex h-48 w-48 max-w-[200px] items-center justify-center"
-            animate={
-              reduce
-                ? undefined
-                : {
-                    filter: [
-                      "drop-shadow(0 0 12px rgba(200,16,46,0.4))",
-                      "drop-shadow(0 0 28px rgba(200,16,46,0.85))",
-                      "drop-shadow(0 0 12px rgba(200,16,46,0.4))",
-                    ],
-                  }
-            }
-            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            style={
-              reduce
-                ? { filter: "drop-shadow(0 0 18px rgba(200,16,46,0.55))" }
-                : undefined
-            }
-          >
-            <span className="font-jersey bg-clip-text text-8xl leading-none text-transparent opacity-30 [background-image:linear-gradient(180deg,#F59E0B,#BA0C2F)] [-webkit-background-clip:text] [-webkit-text-stroke:2px_rgba(212,175,55,0.35)]">
-              ?
-            </span>
-          </motion.span>
+            <div
+              aria-hidden
+              className="absolute h-24 w-24 rounded-full bg-amber-400/25 blur-2xl"
+            />
+            <motion.span
+              aria-hidden
+              className="relative inline-flex items-center justify-center"
+              animate={
+                reduce
+                  ? undefined
+                  : {
+                      filter: [
+                        "drop-shadow(0 0 18px rgba(212,175,55,0.45))",
+                        "drop-shadow(0 0 42px rgba(186,12,47,0.8))",
+                        "drop-shadow(0 0 18px rgba(212,175,55,0.45))",
+                      ],
+                    }
+              }
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+              style={
+                reduce
+                  ? { filter: "drop-shadow(0 0 22px rgba(186,12,47,0.6))" }
+                  : undefined
+              }
+            >
+              <span className="font-jersey text-8xl leading-none text-transparent opacity-80 [background-image:linear-gradient(180deg,#F59E0B,#BA0C2F)] bg-clip-text [-webkit-background-clip:text] [-webkit-text-stroke:2px_rgba(212,175,55,0.4)]">
+                ?
+              </span>
+            </motion.span>
+          </div>
+          <p className="relative mt-2 text-center text-sm text-zinc-400">
+            Identidad oculta. Se revela al cerrar la jornada con MVP oficial.
+          </p>
         </div>
-        <p className="relative mt-2 text-center text-sm text-zinc-500 dark:text-zinc-400">
-          Identidad oculta. Se revela al cerrar la jornada con MVP oficial.
-        </p>
       </div>
     </TiltCard>
   );

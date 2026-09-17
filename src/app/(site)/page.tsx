@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { HeroParticles } from "@/components/magic/hero-particles";
 import { HomeBento } from "@/components/public/home-bento";
-import { HeroMediaComponent } from "@/components/public/hero-media";
+import { HeroPlayerHero } from "@/components/public/hero-media";
 import { MvpCard } from "@/components/public/mvp-card";
 import { ScoreTicker } from "@/components/public/score-ticker";
 import { SponsorMarquee } from "@/components/public/sponsor-marquee";
 import { getMvpHighlight, getPublicCatalog } from "@/lib/public/queries";
 import { computeMedalTally } from "@/lib/public/medals";
 import { LivePodium } from "@/components/public/medal-podium";
-import { JerseyMark, LaserBadge, LaserCta, TitleGlow } from "@/components/public/brand";
+import { LaserBadge, LaserCta, TitleGlow } from "@/components/public/brand";
 
 export default async function HomePage() {
   const catalog = await getPublicCatalog();
@@ -29,13 +29,23 @@ export default async function HomePage() {
       <section className="relative overflow-hidden">
         <HeroParticles />
         <TitleGlow />
-        <JerseyMark number="U" />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 py-10 sm:gap-10 sm:py-24 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="flex flex-col gap-6 sm:gap-8">
+        <div className="relative mx-auto max-w-6xl px-4 pt-4 pb-8 sm:pt-10 sm:pb-14 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8 lg:py-16">
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-0 mx-auto h-[320px] max-w-lg lg:pointer-events-auto lg:relative lg:inset-auto lg:top-auto lg:order-2 lg:h-[540px] lg:max-w-none">
+            <HeroPlayerHero />
+          </div>
+          <div className="relative z-10 flex flex-col gap-6 pt-[210px] sm:gap-8 lg:order-1 lg:pt-0">
             <LaserBadge>Caracas · 8 universidades · 9 deportes</LaserBadge>
-            <h1 className="chrome-text max-w-3xl text-3xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
-              El torneo universitario más <span className="accent-red">intenso</span> de
-              la ciudad.
+            <h1 className="font-jersey max-w-3xl text-5xl leading-[0.88] font-black tracking-tight uppercase sm:text-7xl lg:text-8xl">
+              <span className="bg-gradient-to-b from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
+                El torneo universitario más{" "}
+              </span>
+              <span className="text-[#BA0C2F] drop-shadow-[0_0_28px_rgba(186,12,47,0.65)]">
+                intenso
+              </span>
+              <span className="bg-gradient-to-b from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
+                {" "}
+                de la ciudad.
+              </span>
             </h1>
             <p className="max-w-xl text-base text-zinc-400 sm:text-lg">
               Resultados en vivo, fichas de atletas, crónicas y el club de beneficios
@@ -45,13 +55,12 @@ export default async function HomePage() {
               <LaserCta href="/competicion">Ver competición</LaserCta>
               <Link
                 href="/liga-u-pass"
-                className="inline-flex h-11 min-h-11 w-full items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/60 px-5 text-sm font-semibold text-zinc-100 transition-colors duration-150 sm:w-auto"
+                className="inline-flex h-11 min-h-11 w-full items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950/80 px-5 text-sm font-semibold text-zinc-100 transition-colors duration-150 sm:w-auto"
               >
                 Liga U Pass
               </Link>
             </div>
           </div>
-          <HeroMediaComponent />
         </div>
       </section>
 

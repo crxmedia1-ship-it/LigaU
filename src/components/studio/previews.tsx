@@ -24,60 +24,73 @@ export function MvpPreview({
   data: MvpPreviewData;
   className?: string;
 }) {
+  const clip =
+    "polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)";
+
   return (
-    <TiltCard className={className}>
-      <div
-        className="relative overflow-hidden border border-zinc-500/40 p-6 shadow-[0_20px_80px_rgba(139,0,0,0.42)]"
-        style={{
-          background: `linear-gradient(145deg, ${data.accent}33 0%, #e2e8f0 6%, #71717a 22%, #27272a 48%, #08080a 100%)`,
-          clipPath: "polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px)",
-          transform: "translateZ(24px)",
-        }}
-      >
-        <span
+    <TiltCard className={className} tone="gold">
+      <div className="relative h-full min-h-[22rem]" style={{ transform: "translateZ(24px)" }}>
+        <div
           aria-hidden
-          className="pointer-events-none absolute -right-2 -bottom-6 select-none font-jersey text-[9rem] leading-none text-[#27272a]"
+          className="pointer-events-none absolute inset-0 opacity-90"
+          style={{
+            clipPath: clip,
+            background:
+              "conic-gradient(from 130deg, #D4AF37, #BA0C2F, #F59E0B, #9E1B28, #D4AF37)",
+          }}
+        />
+        <div
+          className="carbon-fiber relative m-px overflow-hidden p-6 shadow-[0_20px_80px_rgba(139,0,0,0.45)]"
+          style={{ clipPath: clip }}
         >
-          {data.jerseyNumber ?? "MVP"}
-        </span>
-        <div className="relative flex items-start gap-4">
-          {data.photoUrl ? (
-            <img
-              src={data.photoUrl}
-              alt=""
-              className="size-20 object-cover ring-2 ring-brand-gold/50"
-            />
-          ) : (
-            <div className="grid size-20 place-items-center bg-brand-crimson/40 font-jersey text-3xl">
-              {data.name.slice(0, 1)}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background: `radial-gradient(circle at 20% 0%, ${data.accent}55, transparent 42%), radial-gradient(circle at 80% 100%, rgba(186,12,47,0.28), transparent 46%)`,
+            }}
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -right-2 -bottom-6 select-none font-jersey text-[9rem] leading-none text-white/10"
+          >
+            {data.jerseyNumber ?? "MVP"}
+          </span>
+          <div className="relative flex items-start gap-4">
+            {data.photoUrl ? (
+              <img
+                src={data.photoUrl}
+                alt=""
+                className="size-20 object-cover object-top ring-2 ring-[#D4AF37]/50"
+              />
+            ) : (
+              <div className="grid size-20 place-items-center bg-[#BA0C2F]/40 font-jersey text-3xl">
+                {data.name.slice(0, 1)}
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold tracking-[0.22em] text-[#D4AF37] uppercase">
+                MVP de la semana
+              </p>
+              <h2 className="mt-1 truncate text-2xl font-semibold text-zinc-100">{data.name}</h2>
+              <p className="text-sm text-zinc-400">
+                {data.teamLabel} · {data.sportName}
+              </p>
             </div>
-          )}
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-gold">
-              MVP de la semana
-            </p>
-            <h2 className="mt-1 truncate text-2xl font-semibold">{data.name}</h2>
-            <p className="text-sm text-muted-foreground">
-              {data.teamLabel} · {data.sportName}
-            </p>
+            <Badge className="bg-[#BA0C2F] text-white">
+              <TrophyIcon />
+              {data.mvpAwards}
+            </Badge>
           </div>
-          <Badge>
-            <TrophyIcon />
-            {data.mvpAwards}
-          </Badge>
-        </div>
-        <div className="relative mt-6 grid grid-cols-2 gap-3 text-center">
-          <div className="rounded-md border border-brand-silver/20 bg-black/35 px-2 py-3">
-            <p className="text-2xl font-semibold">{data.goals}</p>
-            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
-              Goles
-            </p>
-          </div>
-          <div className="rounded-md border border-brand-silver/20 bg-black/35 px-2 py-3">
-            <p className="text-2xl font-semibold">{data.points}</p>
-            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
-              Puntos
-            </p>
+          <div className="relative mt-6 grid grid-cols-2 gap-3 text-center">
+            <div className="border border-zinc-700/80 bg-black/45 px-2 py-3">
+              <p className="font-mono text-2xl font-bold text-zinc-100">{data.goals}</p>
+              <p className="text-[11px] tracking-wide text-zinc-400 uppercase">Goles</p>
+            </div>
+            <div className="border border-zinc-700/80 bg-black/45 px-2 py-3">
+              <p className="font-mono text-2xl font-bold text-zinc-100">{data.points}</p>
+              <p className="text-[11px] tracking-wide text-zinc-400 uppercase">Puntos</p>
+            </div>
           </div>
         </div>
       </div>
