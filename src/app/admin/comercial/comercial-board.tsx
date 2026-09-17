@@ -468,7 +468,7 @@ export function ComercialBoard({
             </Field>
             <ImageUploader
               key={sponsorDraft.id ?? "new-sponsor"}
-              folder="sponsors"
+              folder="logo patrocinadores"
               label="Logo"
               initialUrl={sponsorDraft.logoUrl}
               onUploaded={(asset) =>

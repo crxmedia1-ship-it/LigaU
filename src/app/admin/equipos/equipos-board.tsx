@@ -45,6 +45,7 @@ import {
 import { Field, NativeSelect } from "@/components/admin/field";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { GENDER_LABELS } from "@/lib/admin/labels";
+import { athleteUploadPath } from "@/lib/cloudinary-paths";
 import {
   deleteAthlete,
   deleteTeam,
@@ -62,7 +63,7 @@ export type UniversityOption = {
   shortName: string;
   logoUrl: string | null;
 };
-export type SportOption = { id: string; name: string };
+export type SportOption = { id: string; name: string; slug: string };
 export type TeamRow = {
   id: string;
   universityId: string;
@@ -71,6 +72,7 @@ export type TeamRow = {
   coachName: string | null;
   universityShort: string;
   sportName: string;
+  sportSlug: string;
 };
 export type AthleteRow = {
   id: string;
@@ -239,6 +241,9 @@ export function EquiposBoard({
       : (filteredTeams[0]?.id ?? null);
 
   const roster = athletes.filter((athlete) => athlete.teamId === activeTeamId);
+  const athleteTeam = athleteDraft
+    ? teams.find((team) => team.id === athleteDraft.teamId)
+    : null;
 
   function openNewTeam() {
     setEditingTeamId(undefined);
@@ -664,7 +669,8 @@ export function EquiposBoard({
               {athleteDraft?.id ? "Editar atleta" : "Nuevo atleta"}
             </DialogTitle>
             <DialogDescription>
-              Foto firmada a Cloudinary en la carpeta de atletas.
+              La foto se guarda en jugadores / universidad / deporte / género, lista
+              para el MVP y las fichas públicas.
             </DialogDescription>
           </DialogHeader>
           {athleteDraft ? (
@@ -749,7 +755,16 @@ export function EquiposBoard({
               </Field>
               <ImageUploader
                 key={athleteDraft.id ?? "new-athlete"}
-                folder="athletes"
+                folder="jugadores"
+                path={
+                  athleteTeam
+                    ? athleteUploadPath({
+                        universityShort: athleteTeam.universityShort,
+                        sportSlug: athleteTeam.sportSlug,
+                        gender: athleteTeam.gender,
+                      })
+                    : undefined
+                }
                 label="Foto del atleta"
                 initialUrl={athleteDraft.photoUrl}
                 onUploaded={(asset) =>

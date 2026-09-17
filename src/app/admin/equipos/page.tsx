@@ -13,10 +13,10 @@ export default async function AdminEquiposPage() {
         .from("universities")
         .select("id, name, short_name, logo_url")
         .order("short_name"),
-      supabase.from("sports").select("id, name").order("name"),
+      supabase.from("sports").select("id, name, slug").order("name"),
       supabase
         .from("teams")
-        .select("id, university_id, sport_id, gender, coach_name, universities(short_name), sports(name)")
+        .select("id, university_id, sport_id, gender, coach_name, universities(short_name), sports(name, slug)")
         .order("created_at"),
       supabase
         .from("athletes")
@@ -37,6 +37,7 @@ export default async function AdminEquiposPage() {
       coachName: team.coach_name,
       universityShort: university?.short_name ?? "UNI",
       sportName: sport?.name ?? "Deporte",
+      sportSlug: sport?.slug ?? "general",
     };
   });
 

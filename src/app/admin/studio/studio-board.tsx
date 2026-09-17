@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Field, NativeSelect } from "@/components/admin/field";
 import { ImageUploader } from "@/components/admin/image-uploader";
+import { athleteUploadPath } from "@/lib/cloudinary-paths";
 import {
   CarnetXPreview,
   CouponPreview,
@@ -134,7 +135,16 @@ export function StudioBoard({
             </Field>
           </div>
           <ImageUploader
-            folder="athletes"
+            folder="jugadores"
+            path={
+              team && sport
+                ? athleteUploadPath({
+                    universityShort: team.university.shortName,
+                    sportSlug: sport.slug,
+                    gender: team.gender,
+                  })
+                : undefined
+            }
             label="Foto Cloudinary"
             initialUrl={photoUrl}
             onUploaded={(asset) => setPhotoUrl(asset.secureUrl)}

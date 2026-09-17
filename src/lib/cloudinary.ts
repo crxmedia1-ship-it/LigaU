@@ -2,20 +2,16 @@
 
 import { createHash } from "node:crypto";
 import { isStaffRole, isSuperadmin, type UserRole } from "@/lib/auth/roles";
+import {
+  SUPERADMIN_FOLDERS,
+  buildCloudinaryFolder,
+  resolveCloudinaryRoot,
+  type CloudinaryFolder,
+} from "@/lib/cloudinary-paths";
 import { createClient } from "@/lib/supabase/server";
 
-const CLOUDINARY_FOLDERS = [
-  "universities",
-  "athletes",
-  "news",
-  "podcasts",
-  "banners",
-  "sponsors",
-] as const;
+export type { CloudinaryFolder };
 
-export type CloudinaryFolder = (typeof CLOUDINARY_FOLDERS)[number];
-
-const SUPERADMIN_FOLDERS: CloudinaryFolder[] = ["sponsors"];
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set([
   "image/jpeg",
@@ -72,10 +68,6 @@ function getCloudinaryConfig(): CloudinaryConfig {
   return { cloudName, apiKey, apiSecret };
 }
 
-function isCloudinaryFolder(value: string): value is CloudinaryFolder {
-  return (CLOUDINARY_FOLDERS as readonly string[]).includes(value);
-}
-
 function signUploadParams(
   params: Record<string, string | number>,
   apiSecret: string,
@@ -116,11 +108,15 @@ async function requireStaffRole(): Promise<
 
 export async function createSignedUploadParams(input: {
   folder: CloudinaryFolder;
+  path?: string | null;
   publicId?: string;
 }): Promise<SignedUploadParams> {
   const { cloudName, apiKey, apiSecret } = getCloudinaryConfig();
   const timestamp = Math.round(Date.now() / 1000);
-  const folder = `ligau/${input.folder}`;
+  const folder = buildCloudinaryFolder(input.folder, input.path);
+  if (!folder) {
+    throw new Error("Carpeta de Cloudinary no permitida.");
+  }
   const paramsToSign: Record<string, string | number> = { folder, timestamp };
 
   if (input.publicId) {
@@ -145,11 +141,15 @@ export async function uploadImageAction(
   }
 
   const folderValue = String(formData.get("folder") ?? "");
-  if (!isCloudinaryFolder(folderValue)) {
+  const pathValue = String(formData.get("path") ?? "");
+  if (!resolveCloudinaryRoot(folderValue)) {
     return { ok: false, error: "Carpeta de Cloudinary no permitida." };
   }
 
-  if (SUPERADMIN_FOLDERS.includes(folderValue) && !isSuperadmin(staff.role)) {
+  if (
+    SUPERADMIN_FOLDERS.includes(folderValue as CloudinaryFolder) &&
+    !isSuperadmin(staff.role)
+  ) {
     return {
       ok: false,
       error: "Solo Superadmin puede subir assets del Hub Comercial.",
@@ -172,7 +172,10 @@ export async function uploadImageAction(
     };
   }
 
-  const signed = await createSignedUploadParams({ folder: folderValue });
+  const signed = await createSignedUploadParams({
+    folder: folderValue as CloudinaryFolder,
+    path: pathValue,
+  });
   const body = new FormData();
   body.append("file", file);
   body.append("api_key", signed.apiKey);

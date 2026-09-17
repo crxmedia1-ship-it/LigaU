@@ -12,6 +12,7 @@ import {
 
 type ImageUploaderProps = {
   folder: CloudinaryFolder;
+  path?: string;
   label?: string;
   initialUrl?: string | null;
   onUploaded?: (asset: CloudinaryUploadSuccess) => void;
@@ -19,6 +20,7 @@ type ImageUploaderProps = {
 
 export function ImageUploader({
   folder,
+  path,
   label = "Subir imagen",
   initialUrl,
   onUploaded,
@@ -39,6 +41,7 @@ export function ImageUploader({
     const formData = new FormData();
     formData.append("file", file);
     formData.append("folder", folder);
+    if (path) formData.append("path", path);
 
     startTransition(async () => {
       const result = await uploadImageAction(formData);

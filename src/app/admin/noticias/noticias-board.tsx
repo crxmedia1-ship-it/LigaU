@@ -379,7 +379,7 @@ export function NoticiasBoard({
             </Field>
             <ImageUploader
               key={draft.id ?? "new-news"}
-              folder="news"
+              folder="noticias"
               label="Imagen de portada"
               initialUrl={draft.coverImageUrl}
               onUploaded={(asset) =>
