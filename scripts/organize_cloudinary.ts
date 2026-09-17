@@ -11,19 +11,6 @@ import { resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { v2 as cloudinary } from "cloudinary";
 
-const UNIVERSITIES = ["uah", "ucab", "ucv", "uma", "une", "unimet", "usb", "usm"] as const;
-const SPORTS = [
-  "ajedrez",
-  "baloncesto",
-  "futbol-campo",
-  "futsal",
-  "rugby",
-  "tenis-campo",
-  "tenis-de-mesa",
-  "voleibol-cancha",
-  "voley-playa",
-] as const;
-
 type Move = {
   from: string;
   to: string;
@@ -34,9 +21,15 @@ type Move = {
 const MOVES: Move[] = [
   {
     from: "Photoroom_20260406_185846",
-    to: "ligau/marca/escudo",
-    assetFolder: "ligau/marca",
-    displayName: "Liga U escudo",
+    to: "ligau/logo equipos/ucv/mascota",
+    assetFolder: "ligau/logo equipos/ucv",
+    displayName: "UCV escudo",
+  },
+  {
+    from: "ligau/marca/escudo",
+    to: "ligau/logo equipos/ucv/mascota",
+    assetFolder: "ligau/logo equipos/ucv",
+    displayName: "UCV escudo",
   },
   {
     from: "Photoroom_20260408_140455",
@@ -60,13 +53,13 @@ const MOVES: Move[] = [
     from: "Unimet_Mascota",
     to: "ligau/logo equipos/unimet/mascota",
     assetFolder: "ligau/logo equipos/unimet",
-    displayName: "UNIMET León",
+    displayName: "UNIMET Cunaguaros",
   },
   {
     from: "USM_Mascota",
     to: "ligau/logo equipos/usm/mascota",
     assetFolder: "ligau/logo equipos/usm",
-    displayName: "USM mascota",
+    displayName: "USM León",
   },
   {
     from: "UAH-2",
@@ -147,6 +140,9 @@ const LOGO_URL_UPDATES: Array<{ shortName: string; publicId: string }> = [
   { shortName: "UNIMET", publicId: "ligau/logo equipos/unimet/mascota" },
   { shortName: "USM", publicId: "ligau/logo equipos/usm/mascota" },
   { shortName: "UAH", publicId: "ligau/logo equipos/uah/mascota" },
+  { shortName: "UCV", publicId: "ligau/logo equipos/ucv/mascota" },
+  { shortName: "USB", publicId: "ligau/logo equipos/usb/mascota" },
+  { shortName: "UNE", publicId: "ligau/logo universidad/une" },
 ];
 
 function loadEnvLocal() {
@@ -173,17 +169,6 @@ function requireEnv(name: string): string {
   const value = process.env[name];
   if (!value) throw new Error(`Falta ${name} en .env.local`);
   return value;
-}
-
-async function ensureFolder(path: string) {
-  try {
-    await cloudinary.api.create_folder(path);
-    console.log(`  folder + ${path}`);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    if (/already exists|duplicate/i.test(message)) return;
-    console.warn(`  folder skip ${path}: ${message}`);
-  }
 }
 
 async function moveAsset(move: Move) {
@@ -215,25 +200,7 @@ async function main() {
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
 
-  console.log("Creando carpetas...");
-  await ensureFolder("ligau/marca");
-  await ensureFolder("ligau/noticias");
-  await ensureFolder("ligau/podcasts");
-  await ensureFolder("ligau/banners");
-  await ensureFolder("ligau/videos-publicidad");
-  await ensureFolder("ligau/logo equipos/_por-clasificar");
-  await ensureFolder("ligau/jugadores");
-
-  for (const uni of UNIVERSITIES) {
-    await ensureFolder(`ligau/logo equipos/${uni}`);
-    await ensureFolder(`ligau/logo universidad/${uni}`);
-    await ensureFolder(`ligau/jugadores/${uni}`);
-    for (const sport of SPORTS) {
-      await ensureFolder(`ligau/jugadores/${uni}/${sport}`);
-    }
-  }
-
-  console.log("\nClasificando assets...");
+  console.log("Clasificando assets existentes...");
   const urls = new Map<string, string>();
   for (const move of MOVES) {
     try {
