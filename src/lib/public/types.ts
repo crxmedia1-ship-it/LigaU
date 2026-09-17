@@ -143,6 +143,7 @@ export type MedalTally = {
   silver: number;
   bronze: number;
   total: number;
+  points?: number;
 };
 
 export type StandingRow = {

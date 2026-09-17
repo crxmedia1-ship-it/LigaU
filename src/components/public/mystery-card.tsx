@@ -11,7 +11,7 @@ export function MysteryCard3D() {
 
   return (
     <TiltCard className="h-full" tone="gold">
-      <div className="relative h-full min-h-[22rem]" style={{ transform: "translateZ(24px)" }}>
+      <div className="relative h-full min-h-[22rem] md:min-h-0" style={{ transform: "translateZ(24px)" }}>
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-90"
@@ -22,7 +22,7 @@ export function MysteryCard3D() {
           }}
         />
         <div
-          className="carbon-fiber relative m-px flex h-[calc(100%-2px)] min-h-[21.8rem] flex-col overflow-hidden p-6 shadow-[0_20px_80px_rgba(139,0,0,0.45)]"
+          className="carbon-fiber relative m-px flex h-[calc(100%-2px)] min-h-[21.8rem] flex-col overflow-hidden p-6 shadow-[0_20px_80px_rgba(139,0,0,0.45)] md:min-h-0"
           style={{ clipPath: CLIP }}
         >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(212,175,55,0.22),transparent_42%),radial-gradient(circle_at_80%_90%,rgba(186,12,47,0.28),transparent_46%)]" />

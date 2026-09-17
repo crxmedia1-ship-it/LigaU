@@ -1,15 +1,26 @@
 import Link from "next/link";
 import { MvpPreview } from "@/components/studio/previews";
 import { MysteryCard3D } from "@/components/public/mystery-card";
+import { cn } from "@/lib/utils";
 import type { MvpHighlight } from "@/lib/public/types";
 
-export function MvpCard({ mvp }: { mvp: MvpHighlight | null }) {
+export function MvpCard({
+  mvp,
+  className,
+}: {
+  mvp: MvpHighlight | null;
+  className?: string;
+}) {
   if (!mvp) {
-    return <MysteryCard3D />;
+    return (
+      <div className={cn("h-full md:h-[360px]", className)}>
+        <MysteryCard3D />
+      </div>
+    );
   }
 
   return (
-    <Link href={`/atletas/${mvp.athlete.id}`} className="block">
+    <Link href={`/atletas/${mvp.athlete.id}`} className={cn("block h-full md:h-[360px]", className)}>
       <MvpPreview
         data={{
           name: mvp.athlete.fullName,
