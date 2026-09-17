@@ -3,12 +3,16 @@ import { cn } from "@/lib/utils";
 export function ShimmerButton({
   className,
   children,
+  variant = "red",
   ...props
-}: React.ComponentProps<"button">) {
+}: React.ComponentProps<"button"> & { variant?: "red" | "gold" }) {
   return (
     <button
       className={cn(
-        "relative inline-flex h-11 min-h-11 w-full items-center justify-center overflow-hidden rounded-xl bg-[#BA0C2F] px-3 text-sm font-medium text-white shadow-[0_0_25px_rgba(186,12,47,0.28)]",
+        "relative inline-flex h-11 min-h-11 w-full items-center justify-center overflow-hidden rounded-xl px-3 text-sm font-medium",
+        variant === "gold"
+          ? "bg-linear-to-r from-[#D4AF37] to-[#F59E0B] text-zinc-950 shadow-[0_0_22px_rgba(212,175,55,0.28)]"
+          : "bg-[#BA0C2F] text-white shadow-[0_0_25px_rgba(186,12,47,0.28)]",
         className,
       )}
       {...props}

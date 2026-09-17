@@ -7,9 +7,11 @@ import { cn } from "@/lib/utils";
 export function TiltCard({
   children,
   className,
+  tone = "red",
 }: {
   children: React.ReactNode;
   className?: string;
+  tone?: "red" | "gold";
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -40,26 +42,36 @@ export function TiltCard({
   return (
     <motion.div
       ref={ref}
-      className={cn("relative [perspective:1200px]", className)}
-      onMouseMove={(event) => {
+      className={cn("relative touch-pan-y [perspective:1200px]", className)}
+      onPointerMove={(event) => {
         const rect = ref.current?.getBoundingClientRect();
         if (!rect) return;
         x.set((event.clientX - rect.left) / rect.width - 0.5);
         y.set((event.clientY - rect.top) / rect.height - 0.5);
       }}
-      onMouseLeave={() => {
+      onPointerLeave={() => {
         x.set(0);
         y.set(0);
       }}
     >
       <motion.div
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="relative h-full overflow-hidden drop-shadow-glow-red"
+        className={cn(
+          "relative h-full overflow-hidden",
+          tone === "gold"
+            ? "drop-shadow-[0_12px_28px_rgba(212,175,55,0.28)]"
+            : "drop-shadow-glow-red",
+        )}
       >
         {children}
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute size-36 rounded-full bg-[radial-gradient(circle,rgba(226,232,240,0.5),rgba(200,16,46,0.22)_45%,transparent_70%)] mix-blend-screen"
+          className={cn(
+            "pointer-events-none absolute size-36 rounded-full mix-blend-screen",
+            tone === "gold"
+              ? "bg-[radial-gradient(circle,rgba(253,230,138,0.55),rgba(212,175,55,0.22)_45%,transparent_70%)]"
+              : "bg-[radial-gradient(circle,rgba(226,232,240,0.5),rgba(186,12,47,0.22)_45%,transparent_70%)]",
+          )}
           style={{
             left: shineX,
             top: shineY,
