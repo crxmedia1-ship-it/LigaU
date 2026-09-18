@@ -105,9 +105,9 @@ function TileContent({
  *
  * Below `md:`, the polygons are dropped entirely (they're pixel-tuned for
  * the desktop row heights) in favour of "Tactical Glass Panels": a single
- * flex column of plain rectangular glass cards, each nudged with a subtle
- * alternating tilt (`rotate-[±1.2deg]`, reset via `md:rotate-0`) so the
- * stack reads as a hand-placed zig-zag instead of a rigid list, without
+ * flex column of plain rectangular glass cards, each clearly tilted with an
+ * alternating ±3° rotate plus a slight horizontal nudge so the stack reads
+ * as hand-placed glass screens in a zig-zag (left / right / left…), without
  * ever clipping text or causing horizontal overflow.
  *
  * The `Tile` shard itself (float animation + click-to-shatter navigation,
@@ -175,11 +175,11 @@ export function HomeBento({
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-900/35 via-transparent to-transparent md:h-80"
       />
       <GlassWarpDefs />
-      <div className="flex flex-col gap-4 overflow-x-hidden md:grid md:grid-cols-12 md:grid-rows-[280px_280px_240px] md:gap-[6px] md:overflow-visible">
+      <div className="flex flex-col gap-5 overflow-x-hidden max-md:px-1 md:grid md:grid-cols-12 md:grid-rows-[280px_280px_240px] md:gap-[6px] md:overflow-visible md:px-0">
         {/* PLANTILLAS Y EQUIPOS — col 1-8, spans both top rows */}
         <Tile
           href="/universidades"
-          className="[animation-delay:0s] rotate-[-1.2deg] md:col-span-8 md:row-span-2 md:rotate-0 md:[clip-path:polygon(28px_0,100%_0,calc(100%-40px)_280px,calc(100%-15px)_568px,0_568px,0_28px)]"
+          className="[animation-delay:0s] max-md:mx-1 max-md:-translate-x-1.5 max-md:rotate-[-3deg] md:col-span-8 md:row-span-2 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(28px_0,100%_0,calc(100%-40px)_280px,calc(100%-15px)_568px,0_568px,0_28px)]"
         >
           <PhotoLayer src={MEDIA.squad} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/70 to-transparent" />
@@ -198,7 +198,7 @@ export function HomeBento({
         {/* PRÓXIMO DUELO — col 9-12, row 1 */}
         <Tile
           href="/competicion"
-          className="[animation-delay:-2.3s] rotate-[1.2deg] md:col-span-4 md:rotate-0 md:[clip-path:polygon(40px_0,calc(100%-28px)_0,100%_28px,100%_210px,0_280px)]"
+          className="[animation-delay:-2.3s] max-md:mx-1 max-md:translate-x-1.5 max-md:rotate-[3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(40px_0,calc(100%-28px)_0,100%_28px,100%_210px,0_280px)]"
         >
           <PhotoLayer src={duelPhoto(nextMatch?.sportName)} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/80 to-transparent" />
@@ -235,7 +235,7 @@ export function HomeBento({
         {/* MVP DE LA SEMANA — col 9-12, row 2 */}
         <Tile
           href="/competicion?tab=tabla"
-          className="[animation-delay:-4.6s] rotate-[-1.2deg] md:col-span-4 md:rotate-0 md:[clip-path:polygon(8px_0,0_20px,100%_10px,100%_260px,0_220px,18px_280px)]"
+          className="[animation-delay:-4.6s] max-md:mx-1 max-md:-translate-x-1.5 max-md:rotate-[-3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(8px_0,0_20px,100%_10px,100%_260px,0_220px,18px_280px)]"
         >
           <div className="carbon-fiber absolute inset-0 overflow-hidden">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(186,12,47,0.28),transparent_42%),radial-gradient(circle_at_80%_90%,rgba(186,12,47,0.22),transparent_46%)]" />
@@ -292,7 +292,7 @@ export function HomeBento({
         {/* NOTICIAS — col 1-4, row 3 */}
         <Tile
           href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
-          className="[animation-delay:-1.1s] rotate-[1.2deg] md:col-span-4 md:rotate-0 md:[clip-path:polygon(0_0,100%_12px,calc(100%-38px)_240px,28px_240px,0_212px)]"
+          className="[animation-delay:-1.1s] max-md:mx-1 max-md:translate-x-1.5 max-md:rotate-[3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(0_0,100%_12px,calc(100%-38px)_240px,28px_240px,0_212px)]"
         >
           <PhotoLayer src={MEDIA.news} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/80 to-transparent" />
@@ -311,7 +311,7 @@ export function HomeBento({
         {/* CENTRO DE MEDIOS — col 5-8, row 3 */}
         <Tile
           href="/multimedia"
-          className="[animation-delay:-3.4s] rotate-[-1.2deg] md:col-span-4 md:rotate-0 md:[clip-path:polygon(38px_0,calc(100%-14px)_0,calc(100%-38px)_240px,0_240px,12px_38px)]"
+          className="[animation-delay:-3.4s] max-md:mx-1 max-md:-translate-x-1.5 max-md:rotate-[-3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(38px_0,calc(100%-14px)_0,calc(100%-38px)_240px,0_240px,12px_38px)]"
         >
           <PhotoLayer src={MEDIA.broadcast} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/85 to-transparent" />
@@ -328,7 +328,7 @@ export function HomeBento({
         {/* U PASS — col 9-12, row 3 */}
         <Tile
           href="/liga-u-pass"
-          className="[animation-delay:-5.8s] rotate-[1.2deg] md:col-span-4 md:rotate-0 md:[clip-path:polygon(38px_0,100%_14px,calc(100%-28px)_240px,20px_240px,14px_212px)]"
+          className="[animation-delay:-5.8s] max-md:mx-1 max-md:translate-x-1.5 max-md:rotate-[3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(38px_0,100%_14px,calc(100%-28px)_240px,20px_240px,14px_212px)]"
         >
           <PhotoLayer src={MEDIA.pass} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/70 to-transparent" />

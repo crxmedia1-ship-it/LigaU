@@ -11,18 +11,19 @@ const SHATTER_MS = 380;
 /**
  * "Shattered Pitch Mosaic" tile: an independent glass-shard clipped to a
  * unique polygon on desktop (the caller passes `md:[clip-path:...]`), and a
- * plain rectangular "tactical glass" panel with a slight alternating tilt
- * on mobile (the caller passes `rotate-[±1.2deg] md:rotate-0`). At rest it
+ * plain rectangular "tactical glass" panel with a clear alternating tilt
+ * on mobile (the caller passes `max-md:rotate-[±3deg]` + a slight
+ * `translate-x` nudge, reset via `md:rotate-0 md:translate-x-0`). At rest it
  * floats gently (handled by the `animate-ligau-float` class below) —
- * `rotate` and `translate` are independent CSS transform properties, so the
- * tilt and the float animation compose without fighting each other. This
- * component exposes `data-breaking` on its root link so the caller's
- * `PhotoLayer` (in `home-bento.tsx`) can crossfade in a real optical-warp
- * duplicate of the photo — that refraction is the actual "cracked glass"
- * cue, not a drawn line. On click, it intercepts the navigation, snaps the
- * warp to full strength + a bright impact flash + a brief haze/blur jolt,
- * and only then pushes the route, so clicking a tile visually breaks the
- * glass before handing off to the page.
+ * `rotate`, `translate` and the float's `transform` are independent CSS
+ * transform properties, so the tilt and the float animation compose without
+ * fighting each other. This component exposes `data-breaking` on its root
+ * link so the caller's `PhotoLayer` (in `home-bento.tsx`) can crossfade in a
+ * real optical-warp duplicate of the photo — that refraction is the actual
+ * "cracked glass" cue, not a drawn line. On click, it intercepts the
+ * navigation, snaps the warp to full strength + a bright impact flash + a
+ * brief haze/blur jolt, and only then pushes the route, so clicking a tile
+ * visually breaks the glass before handing off to the page.
  */
 export function Tile({
   href,
@@ -65,10 +66,10 @@ export function Tile({
       aria-disabled={breaking}
       data-breaking={breaking}
       className={cn(
-        "group relative isolate block min-h-[220px] overflow-hidden border border-white/10 bg-zinc-950/60 backdrop-blur-xl transition-[filter,border-color,rotate] duration-500 ease-out max-md:bg-zinc-950/70 md:min-h-0",
+        "group relative isolate block min-h-[220px] overflow-hidden border border-white/10 bg-zinc-950/60 backdrop-blur-xl transition-[filter,border-color,rotate,translate] duration-500 ease-out max-md:bg-zinc-950/70 md:min-h-0",
         "shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] max-md:shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]",
         !breaking && "animate-ligau-float",
-        "[filter:drop-shadow(0_16px_28px_rgba(0,0,0,0.6))_drop-shadow(0_4px_10px_rgba(0,0,0,0.45))]",
+        "[filter:drop-shadow(0_16px_28px_rgba(0,0,0,0.6))_drop-shadow(0_4px_10px_rgba(0,0,0,0.45))] max-md:[filter:drop-shadow(0_18px_32px_rgba(0,0,0,0.7))_drop-shadow(0_6px_14px_rgba(0,0,0,0.5))]",
         breaking
           ? "pointer-events-none border-white/70 [filter:drop-shadow(0_0_36px_rgba(255,255,255,0.4))]"
           : "hover:border-white/35 hover:[filter:drop-shadow(0_18px_32px_rgba(0,0,0,0.65))_drop-shadow(0_0_26px_rgba(226,232,240,0.22))]",
