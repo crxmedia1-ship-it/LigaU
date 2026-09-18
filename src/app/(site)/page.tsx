@@ -27,7 +27,7 @@ export default async function HomePage() {
       <section className="relative overflow-hidden">
         <HeroParticles />
         <TitleGlow />
-        <div className="relative mx-auto max-w-6xl px-4 pt-4 pb-6 sm:pt-10 sm:pb-8 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8 lg:pt-16 lg:pb-8">
+        <div className="relative w-full px-4 pt-4 pb-6 sm:px-6 sm:pt-10 sm:pb-8 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8 lg:px-12 lg:pt-16 lg:pb-8 xl:px-20 2xl:px-28">
           <div className="pointer-events-none absolute inset-x-0 top-0 z-0 mx-auto h-[320px] max-w-lg lg:pointer-events-auto lg:relative lg:inset-auto lg:top-auto lg:order-2 lg:h-[540px] lg:max-w-none">
             <HeroPlayerHero />
           </div>
@@ -57,7 +57,7 @@ export default async function HomePage() {
         <HomeBento news={catalog.news} nextMatch={nextMatch} mvp={mvp} />
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 pb-8">
+      <div className="w-full px-4 pb-8 sm:px-6 lg:px-12 xl:px-20 2xl:px-28">
         <SponsorMarquee sponsors={homeSponsors} />
       </div>
     </main>

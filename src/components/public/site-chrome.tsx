@@ -1,21 +1,52 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Suspense } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ThemeToggle } from "@/components/public/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/", label: "Inicio" },
-  { href: "/competicion", label: "Competición" },
-  { href: "/universidades", label: "Universidades" },
-  { href: "/multimedia", label: "Multimedia" },
-  { href: "/liga-u-pass", label: "Liga U Pass" },
-];
+  { href: "/", label: "Inicio", id: "home" },
+  { href: "/competicion?tab=tabla", label: "Clasificación", id: "tabla" },
+  { href: "/competicion", label: "Calendario", id: "calendario" },
+  { href: "/liga-u-pass", label: "U Pass", id: "pass" },
+] as const;
+
+function DesktopNav() {
+  const pathname = usePathname();
+  const view = useSearchParams().get("tab");
+
+  return (
+    <nav className="flex items-center gap-1">
+      {NAV.map((item) => {
+        const active =
+          item.id === "home"
+            ? pathname === "/"
+            : item.id === "calendario"
+              ? pathname.startsWith("/competicion") && view !== "tabla"
+              : item.id === "tabla"
+                ? pathname.startsWith("/competicion") && view === "tabla"
+                : pathname.startsWith("/liga-u-pass");
+        return (
+          <Link
+            key={item.id}
+            href={item.href}
+            className={cn(
+              "rounded-sm px-3 py-1.5 text-xs font-semibold tracking-[0.16em] text-zinc-400 uppercase transition-colors duration-150 hover:text-zinc-100",
+              active &&
+                "border border-[#BA0C2F]/50 bg-[#BA0C2F]/10 text-zinc-100",
+            )}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
 
 export function SiteHeader() {
-  const pathname = usePathname();
-
   return (
     <header className="sticky top-0 z-40 hidden border-b border-zinc-800 bg-[#09090B]/80 backdrop-blur-xl md:block dark:border-zinc-800 dark:bg-[#09090B]/80">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
@@ -31,27 +62,9 @@ export function SiteHeader() {
           </span>
           <span className="font-semibold tracking-[0.18em] uppercase">Liga U</span>
         </Link>
-        <nav className="flex items-center gap-1">
-          {NAV.map((item) => {
-            const active =
-              item.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "rounded-sm px-3 py-1.5 text-xs font-semibold tracking-[0.16em] text-zinc-400 uppercase transition-colors duration-150 hover:text-zinc-100",
-                  active &&
-                    "border border-[#BA0C2F]/50 bg-[#BA0C2F]/10 text-zinc-100",
-                )}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <Suspense fallback={<nav className="flex items-center gap-1" />}>
+          <DesktopNav />
+        </Suspense>
         <div className="flex items-center gap-2">
           <ThemeToggle />
         </div>
