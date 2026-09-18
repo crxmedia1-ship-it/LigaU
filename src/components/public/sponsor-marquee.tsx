@@ -38,10 +38,10 @@ export function SponsorMarquee({ sponsors }: { sponsors: SponsorCard[] }) {
                   <img
                     src={logo}
                     alt={sponsor.name}
-                    className="h-14 max-w-40 object-contain brightness-0 invert opacity-80"
+                    className="h-14 max-w-40 object-contain opacity-75 transition-opacity duration-200 hover:opacity-100"
                   />
                 ) : (
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-silver">
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
                     {sponsor.name}
                   </span>
                 )}

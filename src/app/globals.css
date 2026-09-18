@@ -185,35 +185,37 @@ html:not(.dark) body {
   --sidebar-ring: #ba0c2f;
 }
 
+/* Liga U public portal — always light regardless of OS/html dark class */
 .ligau-public,
 html.dark .ligau-public {
-  --background: #09090b;
-  --foreground: #e2e8f0;
-  --card: rgb(9 9 11 / 70%);
-  --card-foreground: #e2e8f0;
-  --popover: #101014;
-  --popover-foreground: #e2e8f0;
-  --primary: #ba0c2f;
+  color-scheme: light;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: rgb(255 255 255 / 85%);
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #c8102e;
   --primary-foreground: #ffffff;
-  --secondary: #141418;
-  --secondary-foreground: #e2e8f0;
-  --muted: #141418;
-  --muted-foreground: #94a3b8;
-  --accent: #1a1214;
-  --accent-foreground: #e2e8f0;
-  --destructive: #ba0c2f;
-  --border: rgb(39 39 42 / 80%);
-  --input: rgb(39 39 42 / 80%);
-  --ring: #ba0c2f;
-  --color-background: #09090b;
-  --color-foreground: #e2e8f0;
-  --color-card: rgb(9 9 11 / 70%);
-  --color-primary: #ba0c2f;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #fff1f2;
+  --accent-foreground: #9e1b28;
+  --destructive: #c8102e;
+  --border: rgb(226 232 240 / 90%);
+  --input: rgb(226 232 240 / 90%);
+  --ring: #c8102e;
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-card: rgb(255 255 255 / 85%);
+  --color-primary: #c8102e;
   --color-primary-foreground: #ffffff;
-  --color-muted: #141418;
-  --color-muted-foreground: #94a3b8;
-  --color-border: rgb(39 39 42 / 80%);
-  --color-ring: #ba0c2f;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-border: rgb(226 232 240 / 90%);
+  --color-ring: #c8102e;
 }
 
 .ligau-admin {
@@ -265,12 +267,23 @@ body:has(.ligau-admin) {
 }
 
 .ligau-public {
-  color: inherit;
+  color: #0f172a;
   overflow-x: hidden;
-  background-color: #09090b;
+  background-color: #f8fafc;
   background-image:
-    linear-gradient(to right, rgb(39 39 42 / 35%) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(39 39 42 / 35%) 1px, transparent 1px);
+    linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+    linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Keep root body light when the public portal is mounted (prevents dark
+   peek-through during mobile rubber-band scroll) */
+body:has(.ligau-public) {
+  background-color: #f8fafc;
+  color: #0f172a;
+  background-image:
+    linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+    linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
@@ -312,21 +325,23 @@ body:has(.ligau-admin) {
 
 html .ligau-public .glass-card,
 .ligau-public .glass-card {
-  border: 1px solid rgb(39 39 42 / 80%);
-  background-color: rgb(9 9 11 / 78%);
-  box-shadow: inset 0 1px 0 rgb(226 232 240 / 8%);
+  border: 1px solid rgb(226 232 240 / 90%);
+  background-color: rgb(255 255 255 / 85%);
+  box-shadow: inset 0 1px 1px rgb(255 255 255 / 90%), 0 10px 30px rgb(0 0 0 / 5%);
 }
 
 .ligau-public .chrome-text {
-  background-image: linear-gradient(180deg, #ffffff 0%, #cbd5e1 78%);
+  background-image: linear-gradient(180deg, #0f172a 0%, #334155 78%);
 }
 
 .ligau-public .laser-badge {
-  background: rgb(9 9 11 / 70%);
-  color: #e2e8f0;
+  background: rgb(255 255 255 / 80%);
+  color: #18181b;
+  border-color: rgb(200 16 46 / 50%);
 }
 
 .ligau-public .carbon-fiber {
+  /* MVP tile keeps dark carbon texture for contrast */
   background-color: #0a0a0c;
   background-image:
     repeating-linear-gradient(45deg, #111113 0 2px, #1c1c20 2px 4px),
@@ -334,10 +349,11 @@ html .ligau-public .glass-card,
 }
 
 .ligau-public .podium-glass {
-  background-color: rgb(9 9 11 / 62%);
+  background-color: rgb(255 255 255 / 72%);
+  border-color: rgb(226 232 240 / 80%);
   box-shadow:
-    inset 0 1px 0 rgb(226 232 240 / 10%),
-    0 16px 40px rgb(0 0 0 / 45%);
+    inset 0 1px 1px rgb(255 255 255 / 90%),
+    0 16px 40px rgb(0 0 0 / 8%);
 }
 
 .glass-card.glass-card-uncut {
@@ -350,6 +366,13 @@ html .ligau-public .glass-card,
   border: 1px solid rgb(39 39 42 / 80%);
   background-color: rgb(24 24 27 / 60%);
   box-shadow: inset 0 1px 0 rgb(226 232 240 / 8%);
+}
+
+/* Public portal glass-card stays bright even when html.dark is set */
+html.dark .ligau-public .glass-card {
+  border: 1px solid rgb(226 232 240 / 90%);
+  background-color: rgb(255 255 255 / 85%);
+  box-shadow: inset 0 1px 1px rgb(255 255 255 / 90%), 0 10px 30px rgb(0 0 0 / 5%);
 }
 
 .glass-card:hover {
@@ -462,6 +485,13 @@ html .ligau-public .glass-card,
   color: #e2e8f0;
 }
 
+/* Public portal always light — override dark-html context with higher order */
+html.dark .ligau-public .laser-badge {
+  background: rgb(255 255 255 / 80%);
+  color: #18181b;
+  border-color: rgb(200 16 46 / 70%);
+}
+
 .laser-badge::after {
   content: "";
   position: absolute;
@@ -487,13 +517,21 @@ html .ligau-public .glass-card,
   backdrop-filter: blur(18px) saturate(160%);
 }
 
-.dark .podium-glass,
-.ligau-public .podium-glass {
+.dark .podium-glass {
   background-color: rgb(9 9 11 / 62%);
   border-color: rgb(226 232 240 / 12%);
   box-shadow:
     inset 0 1px 0 rgb(226 232 240 / 10%),
     0 16px 40px rgb(0 0 0 / 45%);
+}
+
+/* Public portal: podium glass stays bright/light */
+html.dark .ligau-public .podium-glass {
+  background-color: rgb(255 255 255 / 72%);
+  border-color: rgb(226 232 240 / 80%);
+  box-shadow:
+    inset 0 1px 1px rgb(255 255 255 / 90%),
+    0 16px 40px rgb(0 0 0 / 8%);
 }
 
 @keyframes ligau-marquee {

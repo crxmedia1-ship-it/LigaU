@@ -37,7 +37,7 @@ export function MatchCountdown({
   }, [date, live]);
 
   return (
-    <span className="font-mono text-xs tracking-[0.18em] text-zinc-200 uppercase">
+    <span className="font-mono text-xs tracking-[0.18em] text-zinc-600 uppercase">
       {label}
     </span>
   );

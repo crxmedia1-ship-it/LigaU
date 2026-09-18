@@ -16,28 +16,28 @@ export function HeroPlayerHero() {
 
   return (
     <div className="relative isolate mx-auto flex h-full min-h-[280px] w-full max-w-lg items-end justify-center lg:max-w-none">
+      {/* Watermark behind player */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center select-none font-jersey text-[7rem] leading-none font-black tracking-tighter text-zinc-800/80 sm:text-[11rem] lg:text-[14rem]"
+        className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center select-none font-jersey text-[7rem] leading-none font-black tracking-tighter text-zinc-300/50 sm:text-[11rem] lg:text-[14rem]"
       >
         LIGA U
       </span>
 
+      {/* Ambient crimson halo — softer on white canvas */}
       <div
         aria-hidden
-        className="pointer-events-none absolute top-[12%] left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-[#C8102E]/50 blur-3xl sm:h-80 sm:w-80"
+        className="pointer-events-none absolute top-[12%] left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-[#C8102E]/18 blur-3xl sm:h-80 sm:w-80"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-[6%] left-1/2 h-24 w-72 -translate-x-1/2 rounded-full bg-[#BA0C2F]/40 blur-3xl"
+        className="pointer-events-none absolute bottom-[6%] left-1/2 h-24 w-72 -translate-x-1/2 rounded-full bg-[#C8102E]/12 blur-3xl"
       />
 
-      {/* Ambient bleed behind the athlete's legs: extends the hero's red
-          glow down toward the grid's own opening seam so the handoff reads
-          as one continuous lit surface instead of a hard dark stripe. */}
+      {/* Subtle crimson bleed down toward the grid edge */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-900/30 via-transparent to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-500/10 via-transparent to-transparent"
       />
 
       <motion.div
@@ -46,7 +46,7 @@ export function HeroPlayerHero() {
         transition={{ duration: 5.6, repeat: Infinity, ease: "easeInOut" }}
       >
         <div
-          className="relative flex h-full w-auto max-w-[min(100%,28rem)] items-end justify-center [filter:drop-shadow(0_0_50px_rgba(200,16,46,0.45))_drop-shadow(0_24px_80px_rgba(158,27,40,0.4))] lg:max-w-[30rem] xl:max-w-[34rem]"
+          className="relative flex h-full w-auto max-w-[min(100%,28rem)] items-end justify-center [filter:drop-shadow(0_20px_30px_rgba(0,0,0,0.12))_drop-shadow(0_0_40px_rgba(200,16,46,0.18))] lg:max-w-[30rem] xl:max-w-[34rem]"
           style={{
             maskImage: MASK,
             WebkitMaskImage: MASK,
@@ -78,15 +78,17 @@ export function HeroPlayerHero() {
             height={1000}
             fetchPriority="high"
             decoding="async"
-            className="relative h-full w-auto object-cover object-top mix-blend-luminosity brightness-150 contrast-125"
+            className="relative h-full w-auto object-cover object-top mix-blend-multiply brightness-105 contrast-110 saturate-105"
           />
+          {/* Radial vignette fading the athlete edges into the light canvas */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_38%,transparent_28%,#09090B_76%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_38%,transparent_30%,rgba(248,250,252,0.85)_80%)]"
           />
+          {/* Bottom fade into white */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#09090B] to-transparent"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#F8FAFC] to-transparent"
           />
         </div>
       </motion.div>

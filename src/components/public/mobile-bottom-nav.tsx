@@ -30,7 +30,7 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label="Navegación principal"
-      className="fixed right-0 bottom-0 left-0 z-50 border-t border-zinc-800 bg-zinc-950/90 pb-safe backdrop-blur-xl md:hidden"
+      className="fixed right-0 bottom-0 left-0 z-50 border-t border-zinc-200/80 bg-white/88 pb-safe backdrop-blur-xl md:hidden"
     >
       <ul className="grid grid-cols-4">
         {TABS.map((tab) => {
@@ -48,7 +48,7 @@ export function MobileBottomNav() {
               <Link
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
-                className="flex min-h-11 touch-manipulation flex-col items-center justify-center gap-1 px-1 pt-2 pb-1.5 text-zinc-400 transition-colors duration-150"
+                className="flex min-h-11 touch-manipulation flex-col items-center justify-center gap-1 px-1 pt-2 pb-1.5 text-zinc-400 transition-colors duration-150 hover:text-zinc-700"
               >
                 <span
                   className={cn(

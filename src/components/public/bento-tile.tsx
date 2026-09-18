@@ -66,13 +66,15 @@ export function Tile({
       aria-disabled={breaking}
       data-breaking={breaking}
       className={cn(
-        "group relative isolate block min-h-[220px] overflow-hidden border border-white/10 bg-zinc-950/60 backdrop-blur-xl transition-[filter,border-color,rotate,translate] duration-500 ease-out max-md:bg-zinc-950/70 md:min-h-0",
-        "shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] max-md:shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]",
+        // Base: white frosted-acrylic panel — light border, bright top bevel
+        "group relative isolate block min-h-[220px] overflow-hidden border border-zinc-200/80 bg-white/85 backdrop-blur-xl transition-[filter,border-color,rotate,translate] duration-500 ease-out md:min-h-0",
+        "shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_10px_30px_rgba(0,0,0,0.05)]",
         !breaking && "animate-ligau-float",
-        "[filter:drop-shadow(0_16px_28px_rgba(0,0,0,0.6))_drop-shadow(0_4px_10px_rgba(0,0,0,0.45))] max-md:[filter:drop-shadow(0_18px_32px_rgba(0,0,0,0.7))_drop-shadow(0_6px_14px_rgba(0,0,0,0.5))]",
+        // Resting levitation — soft natural shadow
+        "[filter:drop-shadow(0_12px_24px_rgba(0,0,0,0.07))_drop-shadow(0_3px_8px_rgba(0,0,0,0.04))] max-md:[filter:drop-shadow(0_14px_28px_rgba(0,0,0,0.09))_drop-shadow(0_4px_10px_rgba(0,0,0,0.05))]",
         breaking
-          ? "pointer-events-none border-white/70 [filter:drop-shadow(0_0_36px_rgba(255,255,255,0.4))]"
-          : "hover:border-white/35 hover:[filter:drop-shadow(0_18px_32px_rgba(0,0,0,0.65))_drop-shadow(0_0_26px_rgba(226,232,240,0.22))]",
+          ? "pointer-events-none border-[#C8102E]/60 [filter:drop-shadow(0_0_30px_rgba(200,16,46,0.25))]"
+          : "hover:border-[#C8102E]/40 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_15px_35px_rgba(200,16,46,0.08)] hover:[filter:drop-shadow(0_14px_28px_rgba(0,0,0,0.09))_drop-shadow(0_0_20px_rgba(200,16,46,0.10))]",
         className,
       )}
     >
@@ -86,15 +88,16 @@ export function Tile({
       >
         {children}
       </div>
-      {/* Bright impact flash on click, burning out as we hand off to the route. */}
+      {/* Crimson impact flash on click — Liga U red burst before route. */}
       {breaking ? (
         <div
           aria-hidden
-          className="animate-ligau-shatter-flash pointer-events-none absolute inset-0 z-[6] bg-white"
+          className="animate-ligau-shatter-flash pointer-events-none absolute inset-0 z-[6] bg-[#C8102E]/15"
         />
       ) : null}
-      {/* Permanent glossy sheen so the shard reads as glass even at rest. */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-70 mix-blend-overlay" />
+      {/* Permanent top-gloss sheen — the hallmark of high-end frosted acrylic. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-60" />
     </Link>
   );
 }

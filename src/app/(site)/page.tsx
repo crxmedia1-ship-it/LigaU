@@ -34,18 +34,18 @@ export default async function HomePage() {
           <div className="relative z-10 flex flex-col gap-6 pt-[210px] sm:gap-8 lg:order-1 lg:pt-0">
             <LaserBadge>Caracas · 8 universidades · 9 deportes</LaserBadge>
             <h1 className="font-jersey max-w-3xl text-5xl leading-[0.88] font-black tracking-tight wrap-break-word uppercase sm:text-7xl lg:text-8xl">
-              <span className="bg-gradient-to-b from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-b from-zinc-950 via-zinc-700 to-zinc-600 bg-clip-text text-transparent">
                 El{" "}
               </span>
-              <span className="text-[#C8102E] drop-shadow-[0_0_28px_rgba(200,16,46,0.65)]">
+              <span className="text-[#C8102E] drop-shadow-[0_0_24px_rgba(200,16,46,0.35)]">
                 epicentro
               </span>
-              <span className="bg-gradient-to-b from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-b from-zinc-950 via-zinc-700 to-zinc-600 bg-clip-text text-transparent">
                 {" "}
                 del talento universitario.
               </span>
             </h1>
-            <p className="max-w-xl text-base text-zinc-400 sm:text-lg">
+            <p className="max-w-xl text-base text-zinc-600 sm:text-lg">
               Resultados en vivo, fichas de atletas, noticias y el club de beneficios
               Liga U Pass.
             </p>
