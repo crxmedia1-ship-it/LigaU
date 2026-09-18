@@ -73,7 +73,7 @@ function TileWatermark({
   );
 }
 
-/** Foreground text block that levitates 2px toward the viewer on hover. */
+/** Foreground text block — anchored still, only the photo zooms on hover. */
 function TileContent({
   className,
   children,
@@ -84,7 +84,7 @@ function TileContent({
   return (
     <div
       className={cn(
-        "relative z-10 flex h-full min-h-[220px] flex-col justify-end pt-6 pr-6 pb-6 pl-8 transition-transform duration-500 ease-out group-hover:-translate-y-0.5 md:min-h-0",
+        "relative z-10 flex h-full min-h-[220px] flex-col justify-end pt-6 pr-6 pb-6 pl-8 md:min-h-0",
         className,
       )}
     >
@@ -136,15 +136,14 @@ function GlassWarpDefs() {
 function PhotoLayer({ src }: { src: string }) {
   return (
     <>
+      {/* Primary photo — slow zoom on hover, that's the only hover animation */}
       <div
-        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110 group-data-[breaking=true]:scale-110"
         style={{ backgroundImage: `url('${src}')` }}
       />
-      {/* Warped duplicate: the glass visibly bends/refracts the photo behind
-          it as it stresses under hover, then snaps to full distortion the
-          instant it's clicked — a real optical warp, not painted lines. */}
+      {/* Optical warp only on click (breaking state) — no hover distortion */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-0 transition-[opacity,transform] duration-700 ease-out group-hover:scale-110 group-hover:opacity-70 group-data-[breaking=true]:scale-110 group-data-[breaking=true]:opacity-100 group-data-[breaking=true]:duration-150"
+        className="absolute inset-0 bg-cover bg-center opacity-0 transition-[opacity,transform] duration-150 ease-out group-data-[breaking=true]:scale-110 group-data-[breaking=true]:opacity-100"
         style={{ backgroundImage: `url('${src}')`, filter: "url(#ligau-glass-warp)" }}
       />
     </>
@@ -173,14 +172,15 @@ export function HomeBento({
       />
       <GlassWarpDefs />
       <div className="flex flex-col gap-5 overflow-x-hidden max-md:px-1 md:grid md:grid-cols-12 md:grid-rows-[280px_280px_240px] md:gap-[6px] md:overflow-visible md:px-0">
-        {/* PLANTILLAS Y EQUIPOS — col 1-8, spans both top rows */}
+        {/* PLANTILLAS Y EQUIPOS — col 1-8, spans both top rows
+            Shape: both right corners chamfered 64px → "monitor" / widescreen panel */}
         <Tile
           href="/universidades"
-          className="[animation-delay:0s] max-md:mx-1 max-md:-translate-x-1.5 max-md:rotate-[-3deg] md:col-span-8 md:row-span-2 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(28px_0,100%_0,calc(100%-40px)_280px,calc(100%-15px)_568px,0_568px,0_28px)]"
+          className="max-md:mx-1 max-md:-translate-x-1.5 max-md:rotate-[-3deg] md:col-span-8 md:row-span-2 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(0_0,calc(100%-64px)_0,100%_64px,100%_504px,calc(100%-64px)_568px,0_568px)]"
         >
           <PhotoLayer src={MEDIA.squad} />
-          {/* White gradient bottom — text sits on clean white acrylic */}
-          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent" />
+          {/* Light fade — bottom is white for text, top is fully transparent so photo shows */}
+          <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/30 to-transparent" />
           <TileWatermark className="-right-6 -bottom-12 text-[13rem] md:text-[16rem]">U</TileWatermark>
           <TileContent>
             <TileBadge>Rosters oficiales</TileBadge>
@@ -193,13 +193,14 @@ export function HomeBento({
           </TileContent>
         </Tile>
 
-        {/* PRÓXIMO DUELO — col 9-12, row 1 */}
+        {/* PRÓXIMO DUELO — col 9-12, row 1
+            Shape: chamfer bottom-right → angled handoff to MVP tile below */}
         <Tile
           href="/competicion"
-          className="[animation-delay:-2.3s] max-md:mx-1 max-md:translate-x-1.5 max-md:rotate-[3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(40px_0,calc(100%-28px)_0,100%_28px,100%_210px,0_280px)]"
+          className="max-md:mx-1 max-md:translate-x-1.5 max-md:rotate-[3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(0_0,100%_0,100%_216px,calc(100%-64px)_280px,0_280px)]"
         >
           <PhotoLayer src={duelPhoto(nextMatch?.sportName)} />
-          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/30 to-transparent" />
           <TileWatermark className="-right-3 -bottom-10 text-[9rem]">VS</TileWatermark>
           <TileContent>
             <TileBadge>Próximo duelo</TileBadge>
@@ -236,9 +237,11 @@ export function HomeBento({
           in the light grid, the same way a pitch monitor glows against daylight.
           The crimson radials are slightly stronger so they pop on the carbon.
         */}
+        {/* MVP — col 9-12, row 2
+            Shape: chamfer bottom-left → mirrors Match tile above for visual rhythm */}
         <Tile
           href="/competicion?tab=tabla"
-          className="[animation-delay:-4.6s] max-md:mx-1 max-md:-translate-x-1.5 max-md:rotate-[-3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(8px_0,0_20px,100%_10px,100%_260px,0_220px,18px_280px)]"
+          className="max-md:mx-1 max-md:-translate-x-1.5 max-md:rotate-[-3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(0_0,100%_0,100%_280px,64px_280px,0_216px)]"
         >
           <div className="carbon-fiber absolute inset-0 overflow-hidden">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(200,16,46,0.32),transparent_45%),radial-gradient(circle_at_80%_88%,rgba(200,16,46,0.20),transparent_46%)]" />
@@ -251,13 +254,13 @@ export function HomeBento({
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover object-top opacity-70 transition-transform duration-700 group-hover:scale-110"
                 />
-                {/* Warped duplicate — real optical refraction, same as PhotoLayer */}
+                {/* Warped duplicate — optical warp only on click (breaking), not hover */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   aria-hidden
                   src={mvp.athlete.photoUrl}
                   alt=""
-                  className="absolute inset-0 h-full w-full object-cover object-top opacity-0 transition-[opacity,transform] duration-700 group-hover:scale-110 group-hover:opacity-60 group-data-[breaking=true]:scale-110 group-data-[breaking=true]:opacity-90 group-data-[breaking=true]:duration-150"
+                  className="absolute inset-0 h-full w-full object-cover object-top opacity-0 transition-[opacity,transform] duration-150 ease-out group-data-[breaking=true]:scale-110 group-data-[breaking=true]:opacity-90"
                   style={{ filter: "url(#ligau-glass-warp)" }}
                 />
               </>
@@ -293,13 +296,14 @@ export function HomeBento({
           </TileContent>
         </Tile>
 
-        {/* NOTICIAS — col 1-4, row 3 */}
+        {/* NOTICIAS — col 1-4, row 3
+            Shape: chamfer top-right */}
         <Tile
           href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
-          className="[animation-delay:-1.1s] max-md:mx-1 max-md:translate-x-1.5 max-md:rotate-[3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(0_0,100%_12px,calc(100%-38px)_240px,28px_240px,0_212px)]"
+          className="max-md:mx-1 max-md:translate-x-1.5 max-md:rotate-[3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(0_0,calc(100%-64px)_0,100%_64px,100%_240px,0_240px)]"
         >
           <PhotoLayer src={MEDIA.news} />
-          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/30 to-transparent" />
           <TileWatermark className="-right-4 -bottom-10 text-[9rem]">N</TileWatermark>
           <TileContent>
             <TileBadge>Noticias</TileBadge>
@@ -312,13 +316,14 @@ export function HomeBento({
           </TileContent>
         </Tile>
 
-        {/* CENTRO DE MEDIOS — col 5-8, row 3 */}
+        {/* CENTRO DE MEDIOS — col 5-8, row 3
+            Shape: chamfer top-left (mirrors Noticias for rhythm) */}
         <Tile
           href="/multimedia"
-          className="[animation-delay:-3.4s] max-md:mx-1 max-md:-translate-x-1.5 max-md:rotate-[-3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(38px_0,calc(100%-14px)_0,calc(100%-38px)_240px,0_240px,12px_38px)]"
+          className="max-md:mx-1 max-md:-translate-x-1.5 max-md:rotate-[-3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(64px_0,100%_0,100%_240px,0_240px,0_64px)]"
         >
           <PhotoLayer src={MEDIA.broadcast} />
-          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/30 to-transparent" />
           <TileWatermark className="-right-4 -bottom-10 text-[9rem]">▶</TileWatermark>
           <TileContent>
             <TileBadge>Multimedia</TileBadge>
@@ -329,13 +334,14 @@ export function HomeBento({
           </TileContent>
         </Tile>
 
-        {/* U PASS — col 9-12, row 3 */}
+        {/* U PASS — col 9-12, row 3
+            Shape: chamfer bottom-left → rising diagonal creates upward energy */}
         <Tile
           href="/liga-u-pass"
-          className="[animation-delay:-5.8s] max-md:mx-1 max-md:translate-x-1.5 max-md:rotate-[3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(38px_0,100%_14px,calc(100%-28px)_240px,20px_240px,14px_212px)]"
+          className="max-md:mx-1 max-md:translate-x-1.5 max-md:rotate-[3deg] md:col-span-4 md:translate-x-0 md:rotate-0 md:[clip-path:polygon(0_0,100%_0,100%_240px,64px_240px,0_176px)]"
         >
           <PhotoLayer src={MEDIA.pass} />
-          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/30 to-transparent" />
           <TileWatermark className="-right-4 -bottom-10 text-[9rem]">U+</TileWatermark>
           <TileContent>
             <TileBadge>Beneficios</TileBadge>

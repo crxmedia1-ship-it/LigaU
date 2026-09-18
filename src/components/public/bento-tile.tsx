@@ -66,15 +66,14 @@ export function Tile({
       aria-disabled={breaking}
       data-breaking={breaking}
       className={cn(
-        // Base: white frosted-acrylic panel — light border, bright top bevel
-        "group relative isolate block min-h-[220px] overflow-hidden border border-zinc-200/80 bg-white/85 backdrop-blur-xl transition-[filter,border-color,rotate,translate] duration-500 ease-out md:min-h-0",
-        "shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_10px_30px_rgba(0,0,0,0.05)]",
-        !breaking && "animate-ligau-float",
-        // Resting levitation — soft natural shadow
-        "[filter:drop-shadow(0_12px_24px_rgba(0,0,0,0.07))_drop-shadow(0_3px_8px_rgba(0,0,0,0.04))] max-md:[filter:drop-shadow(0_14px_28px_rgba(0,0,0,0.09))_drop-shadow(0_4px_10px_rgba(0,0,0,0.05))]",
+        // Panel base: near-transparent so the photo dominates.
+        // backdrop-blur-[2px] creates the faintest edge-frost; no heavy fog.
+        "group relative isolate block min-h-[220px] overflow-hidden border border-zinc-300/40 bg-transparent backdrop-blur-[2px] transition-[filter,border-color,rotate,translate] duration-500 ease-out md:min-h-0",
+        // Clean drop-shadow that separates the panel from the white canvas
+        "[filter:drop-shadow(0_10px_28px_rgba(0,0,0,0.13))_drop-shadow(0_2px_6px_rgba(0,0,0,0.08))]",
         breaking
           ? "pointer-events-none border-[#C8102E]/60 [filter:drop-shadow(0_0_30px_rgba(200,16,46,0.25))]"
-          : "hover:border-[#C8102E]/40 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_15px_35px_rgba(200,16,46,0.08)] hover:[filter:drop-shadow(0_14px_28px_rgba(0,0,0,0.09))_drop-shadow(0_0_20px_rgba(200,16,46,0.10))]",
+          : "hover:border-[#C8102E]/55 hover:[filter:drop-shadow(0_14px_32px_rgba(0,0,0,0.16))_drop-shadow(0_0_18px_rgba(200,16,46,0.13))]",
         className,
       )}
     >
@@ -88,16 +87,15 @@ export function Tile({
       >
         {children}
       </div>
-      {/* Crimson impact flash on click — Liga U red burst before route. */}
+      {/* Crimson flash on click — Liga U burst before route */}
       {breaking ? (
         <div
           aria-hidden
           className="animate-ligau-shatter-flash pointer-events-none absolute inset-0 z-[6] bg-[#C8102E]/15"
         />
       ) : null}
-      {/* Permanent top-gloss sheen — the hallmark of high-end frosted acrylic. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-60" />
+      {/* 1px specular highlight — the only white layer on the panel */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent" />
     </Link>
   );
 }
