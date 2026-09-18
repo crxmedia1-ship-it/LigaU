@@ -28,7 +28,7 @@ export default async function HomePage() {
         <HeroParticles />
         <TitleGlow />
         <div className="relative w-full px-4 pt-4 pb-6 sm:px-6 sm:pt-10 sm:pb-8 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8 lg:px-12 lg:pt-16 lg:pb-8 xl:px-20 2xl:px-28">
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-0 mx-auto h-[320px] max-w-lg lg:pointer-events-auto lg:relative lg:inset-auto lg:top-auto lg:order-2 lg:h-[540px] lg:max-w-none">
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-0 mx-auto h-[320px] max-w-lg lg:pointer-events-auto lg:relative lg:inset-auto lg:top-auto lg:order-2 lg:h-[600px] lg:max-w-none xl:h-[660px]">
             <HeroPlayerHero />
           </div>
           <div className="relative z-10 flex flex-col gap-6 pt-[210px] sm:gap-8 lg:order-1 lg:pt-0">
@@ -53,7 +53,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <div className="mt-6 sm:mt-8">
+      <div className="relative z-10 mt-6 sm:mt-8 md:-mt-12 lg:-mt-16">
         <HomeBento news={catalog.news} nextMatch={nextMatch} mvp={mvp} />
       </div>
 

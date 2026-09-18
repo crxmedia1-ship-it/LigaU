@@ -6,9 +6,9 @@ const PLAYER_SRC =
   "https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=720&h=1000&q=55";
 
 const MASK = [
-  "linear-gradient(to bottom, black 48%, transparent 92%)",
+  "linear-gradient(to bottom, black 70%, transparent 100%)",
   "linear-gradient(to right, transparent, black 20%, black 80%, transparent)",
-  "radial-gradient(ellipse 70% 78% at 50% 36%, black 38%, transparent 72%)",
+  "radial-gradient(ellipse 70% 84% at 50% 40%, black 42%, transparent 78%)",
 ].join(", ");
 
 export function HeroPlayerHero() {
@@ -32,13 +32,21 @@ export function HeroPlayerHero() {
         className="pointer-events-none absolute bottom-[6%] left-1/2 h-24 w-72 -translate-x-1/2 rounded-full bg-[#BA0C2F]/40 blur-3xl"
       />
 
+      {/* Ambient bleed behind the athlete's legs: extends the hero's red
+          glow down toward the grid's own opening seam so the handoff reads
+          as one continuous lit surface instead of a hard dark stripe. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-900/30 via-transparent to-transparent"
+      />
+
       <motion.div
         className="relative z-10 flex h-full w-full items-end justify-center will-change-transform"
         animate={reduce ? undefined : { y: [0, -12, 0] }}
         transition={{ duration: 5.6, repeat: Infinity, ease: "easeInOut" }}
       >
         <div
-          className="relative flex h-full w-auto max-w-[min(100%,28rem)] items-end justify-center [filter:drop-shadow(0_0_50px_rgba(200,16,46,0.45))_drop-shadow(0_24px_80px_rgba(158,27,40,0.4))]"
+          className="relative flex h-full w-auto max-w-[min(100%,28rem)] items-end justify-center [filter:drop-shadow(0_0_50px_rgba(200,16,46,0.45))_drop-shadow(0_24px_80px_rgba(158,27,40,0.4))] lg:max-w-[30rem] xl:max-w-[34rem]"
           style={{
             maskImage: MASK,
             WebkitMaskImage: MASK,
