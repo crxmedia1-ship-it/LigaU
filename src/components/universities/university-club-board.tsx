@@ -112,7 +112,7 @@ export function UniversityClubBoard({
                 aria-selected={active}
                 onClick={() => setSportId(sport.id)}
                 className={cn(
-                  "shrink-0 rounded-full border px-3 py-1.5 font-mono text-[11px] tracking-[0.14em] uppercase transition-colors",
+                  "inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 py-2 font-mono text-[11px] tracking-[0.14em] uppercase transition-colors",
                   active
                     ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
                     : "border-zinc-800 bg-zinc-950/70 text-zinc-400 hover:border-red-600/40",
@@ -156,7 +156,7 @@ export function UniversityClubBoard({
                   key={athlete.id}
                   type="button"
                   onClick={() => setSelected(sheet)}
-                  className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 text-left transition-all hover:border-red-600/60"
+                  className="flex min-h-16 items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 text-left transition-all hover:border-red-600/60"
                 >
                   {athlete.photoUrl ? (
                     <img
@@ -180,7 +180,7 @@ export function UniversityClubBoard({
                       {athlete.position || "Roster"}
                     </span>
                   </span>
-                  <span className="font-mono text-xl text-zinc-400">
+                  <span className="font-jersey text-2xl leading-none text-zinc-400">
                     {athlete.jerseyNumber ?? "—"}
                   </span>
                 </button>

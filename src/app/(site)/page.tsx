@@ -1,8 +1,6 @@
 import { HeroParticles } from "@/components/magic/hero-particles";
-import { UniversityClubGrid } from "@/components/home/UniversityClubGrid";
 import { HomeBento } from "@/components/public/home-bento";
 import { HeroPlayerHero } from "@/components/public/hero-media";
-import { MvpCard } from "@/components/public/mvp-card";
 import { SponsorMarquee } from "@/components/public/sponsor-marquee";
 import { getHomeSponsorLogos } from "@/lib/public/home-sponsors";
 import { getMvpHighlight, getPublicCatalog } from "@/lib/public/queries";
@@ -56,26 +54,12 @@ export default async function HomePage() {
       </section>
 
       <div className="mt-6 sm:mt-8">
-        <HomeBento news={catalog.news} nextMatch={nextMatch} />
+        <HomeBento news={catalog.news} nextMatch={nextMatch} mvp={mvp} />
       </div>
-
-      <UniversityClubGrid universities={catalog.universities} />
 
       <div className="mx-auto max-w-6xl px-4 pb-8">
         <SponsorMarquee sponsors={homeSponsors} />
       </div>
-
-      <section className="mx-auto max-w-6xl px-4 pb-10 sm:pb-12">
-        <p className="text-[11px] font-semibold tracking-[0.32em] text-[#BA0C2F] uppercase">
-          Destacado
-        </p>
-        <h2 className="mt-2 font-jersey text-3xl tracking-wide text-white uppercase sm:text-4xl">
-          MVP de la semana
-        </h2>
-        <div className="mt-5">
-          <MvpCard mvp={mvp} />
-        </div>
-      </section>
     </main>
   );
 }

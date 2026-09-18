@@ -153,7 +153,7 @@ export function LivePodium({
 
   return (
     <LayoutGroup>
-    <GlassCard className="glass-card-uncut flex h-auto flex-col overflow-visible rounded-2xl border border-zinc-800/80 bg-zinc-950/80 p-4 md:h-[360px] md:p-5">
+    <GlassCard className="glass-card-uncut flex h-full flex-col overflow-visible rounded-2xl border border-zinc-800/80 bg-zinc-950/80 p-4 md:p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <PageKicker>Medallero</PageKicker>

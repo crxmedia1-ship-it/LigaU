@@ -13,14 +13,14 @@ export function MvpCard({
 }) {
   if (!mvp) {
     return (
-      <div className={cn("h-full min-h-[240px] md:h-[280px]", className)}>
+      <div className={cn("h-full min-h-[240px] md:h-full", className)}>
         <MysteryCard3D />
       </div>
     );
   }
 
   return (
-    <Link href={`/atletas/${mvp.athlete.id}`} className={cn("block h-full min-h-[240px] md:h-[280px]", className)}>
+    <Link href={`/atletas/${mvp.athlete.id}`} className={cn("block h-full min-h-[240px] md:h-full", className)}>
       <MvpPreview
         data={{
           name: mvp.athlete.fullName,
