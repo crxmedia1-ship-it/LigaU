@@ -1,19 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { HomeIcon, TrophyIcon, ShieldIcon, SparklesIcon } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
+import {
+  CalendarDaysIcon,
+  HomeIcon,
+  SparklesIcon,
+  TablePropertiesIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TABS = [
-  { href: "/", label: "Inicio", icon: HomeIcon },
-  { href: "/competicion", label: "Competición", icon: TrophyIcon },
-  { href: "/universidades", label: "Universidades", icon: ShieldIcon },
-  { href: "/liga-u-pass", label: "Liga U Pass", icon: SparklesIcon },
+  { href: "/", label: "Inicio", icon: HomeIcon, id: "home" },
+  { href: "/competicion", label: "Calendario", icon: CalendarDaysIcon, id: "calendario" },
+  {
+    href: "/competicion?tab=tabla",
+    label: "Clasificación",
+    icon: TablePropertiesIcon,
+    id: "tabla",
+  },
+  { href: "/liga-u-pass", label: "U Pass", icon: SparklesIcon, id: "pass" },
 ] as const;
 
 export function MobileBottomNav() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const view = searchParams.get("tab");
 
   return (
     <nav
@@ -23,12 +35,16 @@ export function MobileBottomNav() {
       <ul className="grid grid-cols-4">
         {TABS.map((tab) => {
           const active =
-            tab.href === "/"
+            tab.id === "home"
               ? pathname === "/"
-              : pathname.startsWith(tab.href);
+              : tab.id === "calendario"
+                ? pathname.startsWith("/competicion") && view !== "tabla"
+                : tab.id === "tabla"
+                  ? pathname.startsWith("/competicion") && view === "tabla"
+                  : pathname.startsWith("/liga-u-pass");
           const Icon = tab.icon;
           return (
-            <li key={tab.href}>
+            <li key={tab.id}>
               <Link
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
@@ -44,7 +60,7 @@ export function MobileBottomNav() {
                 </span>
                 <span
                   className={cn(
-                    "text-[10px] leading-none font-medium tracking-wide",
+                    "max-w-full px-0.5 text-center text-[10px] leading-tight font-medium",
                     active && "text-[#BA0C2F]",
                   )}
                 >

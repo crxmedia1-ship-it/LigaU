@@ -11,7 +11,7 @@ export function MysteryCard3D() {
 
   return (
     <TiltCard className="h-full" tone="gold">
-      <div className="relative h-full min-h-[22rem] md:min-h-0" style={{ transform: "translateZ(24px)" }}>
+      <div className="relative h-full min-h-[240px] md:min-h-0" style={{ transform: "translateZ(24px)" }}>
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-90"
@@ -22,14 +22,16 @@ export function MysteryCard3D() {
           }}
         />
         <div
-          className="carbon-fiber relative m-px flex h-[calc(100%-2px)] min-h-[21.8rem] flex-col overflow-hidden p-6 shadow-[0_20px_80px_rgba(139,0,0,0.45)] md:min-h-0"
+          className="carbon-fiber relative m-px flex h-[calc(100%-2px)] min-h-[240px] flex-col overflow-hidden p-6 shadow-[0_20px_80px_rgba(139,0,0,0.45)] md:min-h-0 md:flex-row md:items-center md:gap-8"
           style={{ clipPath: CLIP }}
         >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(212,175,55,0.22),transparent_42%),radial-gradient(circle_at_80%_90%,rgba(186,12,47,0.28),transparent_46%)]" />
-          <p className="relative text-xs font-semibold tracking-[0.22em] text-[#D4AF37] uppercase">
-            MVP de la semana
-          </p>
-          <div className="relative mt-6 grid min-h-56 flex-1 place-items-center overflow-hidden">
+          <div className="relative z-10 md:max-w-md">
+            <p className="relative text-sm text-zinc-400">
+              Identidad oculta. Se revela al cerrar la jornada con MVP oficial.
+            </p>
+          </div>
+          <div className="relative mt-4 grid min-h-32 flex-1 place-items-center overflow-hidden md:mt-0">
             <div
               aria-hidden
               className="absolute h-40 w-40 rounded-full bg-[#BA0C2F]/35 blur-3xl"
@@ -64,9 +66,6 @@ export function MysteryCard3D() {
               </span>
             </motion.span>
           </div>
-          <p className="relative mt-2 text-center text-sm text-zinc-400">
-            Identidad oculta. Se revela al cerrar la jornada con MVP oficial.
-          </p>
         </div>
       </div>
     </TiltCard>

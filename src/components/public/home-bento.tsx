@@ -1,23 +1,44 @@
 import Link from "next/link";
 import { MatchCountdown } from "@/components/public/match-countdown";
 import { cn } from "@/lib/utils";
-import type { BenefitCard, MatchCard, NewsCard, SponsorCard } from "@/lib/public/types";
+import type { MatchCard, NewsCard } from "@/lib/public/types";
 
 const MEDIA = {
-  chronicle:
-    "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1400&q=60",
-  match:
-    "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=900&q=60",
-  radio:
-    "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=60",
+  news: "https://images.unsplash.com/photo-1523995462485-3d171b5c8fa9?auto=format&fit=crop&w=1200&q=80",
+  basket:
+    "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=900&q=80",
+  football:
+    "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=900&q=80",
+  pass: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
+  futsal:
+    "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=900&q=80",
+  volley:
+    "https://images.unsplash.com/photo-1612872088519-3e939b0ba5b3?auto=format&fit=crop&w=900&q=80",
+  rugby:
+    "https://images.unsplash.com/photo-1566577739112-5180d4bf3900?auto=format&fit=crop&w=900&q=80",
+  chess:
+    "https://images.unsplash.com/photo-1529699211552-35d0cfa2c0b3?auto=format&fit=crop&w=900&q=80",
+  broadcast:
+    "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=900&q=80",
 };
 
 const CLIP = {
-  news: "[clip-path:polygon(16px_0,100%_0,100%_100%,0_100%,0_16px)]",
-  duel: "[clip-path:polygon(0_0,calc(100%-16px)_0,100%_16px,100%_100%,0_100%)]",
-  pass: "[clip-path:polygon(0_0,100%_0,100%_calc(100%-16px),calc(100%-16px)_100%,0_100%)]",
-  radio: "[clip-path:polygon(0_0,100%_0,100%_100%,16px_100%,0_calc(100%-16px))]",
+  news: "[clip-path:polygon(20px_0,100%_0,100%_100%,0_100%,0_20px)]",
+  duel: "[clip-path:polygon(0_0,calc(100%-20px)_0,100%_20px,100%_100%,0_100%)]",
+  pass: "[clip-path:polygon(0_0,100%_0,100%_calc(100%-20px),calc(100%-20px)_100%,0_100%)]",
+  media: "[clip-path:polygon(0_0,100%_0,100%_100%,20px_100%,0_calc(100%-20px))]",
 } as const;
+
+function duelPhoto(sportName: string | undefined) {
+  const sport = sportName?.toLowerCase() ?? "";
+  if (sport.includes("balonc") || sport.includes("basket")) return MEDIA.basket;
+  if (sport.includes("voleib") || sport.includes("voley")) return MEDIA.volley;
+  if (sport.includes("futsal")) return MEDIA.futsal;
+  if (sport.includes("rugby")) return MEDIA.rugby;
+  if (sport.includes("ajedrez") || sport.includes("chess")) return MEDIA.chess;
+  if (sport.includes("fútbol") || sport.includes("futbol")) return MEDIA.football;
+  return MEDIA.basket;
+}
 
 function formatDate(value: string | null) {
   if (!value) return null;
@@ -35,59 +56,52 @@ function formatDate(value: string | null) {
   return `${day} ${months[month - 1]}`;
 }
 
+function formatKickoff(value: string) {
+  return new Intl.DateTimeFormat("es-VE", {
+    timeZone: "America/Caracas",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(new Date(value));
+}
+
+function PhotoLayer({ src }: { src: string }) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt=""
+      className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+    />
+  );
+}
+
 function Tile({
   href,
-  image,
   clip,
   className,
   gold,
-  carbon,
   children,
 }: {
   href: string;
-  image?: string;
   clip: string;
   className?: string;
   gold?: boolean;
-  carbon?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
       className={cn(
-        "group relative min-h-48 overflow-hidden border bg-zinc-950 p-5 transition-colors duration-300",
-        "active:scale-[0.98] md:min-h-56",
-        clip,
+        "group relative overflow-hidden border transition-colors duration-300",
         gold
-          ? "border-amber-500/40 shadow-[0_0_28px_rgba(212,175,55,0.14)] hover:border-amber-400/70"
-          : "border-zinc-800/80 hover:border-red-600/60",
-        carbon && "carbon-fiber",
+          ? "border-amber-500/40 bg-zinc-950 hover:border-amber-400"
+          : "border-zinc-800/90 hover:border-red-600/80",
+        clip,
         className,
       )}
     >
-      {image ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={image}
-          alt=""
-          className="absolute inset-0 -z-10 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-        />
-      ) : null}
-      <div
-        aria-hidden
-        className={cn(
-          "absolute inset-0 -z-[9] bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent",
-          gold && "from-zinc-950 via-amber-950/45 to-transparent",
-        )}
-      />
-      {gold ? (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 shadow-[inset_0_0_0_1px_rgba(212,175,55,0.28),inset_0_0_40px_rgba(212,175,55,0.12)]"
-        />
-      ) : null}
-      <div className="relative z-10 flex h-full min-h-36 flex-col justify-end">{children}</div>
+      {children}
     </Link>
   );
 }
@@ -95,86 +109,107 @@ function Tile({
 export function HomeBento({
   news = [],
   nextMatch,
-  weeklyBenefit,
-  featuredSponsor,
 }: {
   news?: NewsCard[];
   nextMatch: MatchCard | null;
-  weeklyBenefit: BenefitCard | null;
-  featuredSponsor?: SponsorCard | null;
 }) {
   const featured = news.find((item) => item.isFeatured) ?? news[0];
-  const chronicleDate = formatDate(featured?.publishedAt);
-  const passLogo = weeklyBenefit?.sponsorLogo || featuredSponsor?.logoUrl || null;
-  const passTitle = weeklyBenefit?.discountTitle ?? featuredSponsor?.name ?? "Club de beneficios";
-  const passSponsor = weeklyBenefit?.sponsorName ?? featuredSponsor?.name ?? "Liga U Pass VIP";
+  const newsDate = formatDate(featured?.publishedAt);
+  const kickoff = nextMatch ? formatKickoff(nextMatch.matchDate) : null;
+  const venue = nextMatch?.location?.trim() || null;
 
   return (
-    <section className="mx-auto grid max-w-7xl grid-cols-1 gap-3 px-4 md:grid-cols-3">
-      <Tile
-        href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
-        image={featured?.coverImageUrl || MEDIA.chronicle}
-        clip={CLIP.news}
-        className="md:col-span-2"
-      >
-        <span className="mb-3 inline-flex w-fit rounded-full bg-[#C8102E] px-2.5 py-0.5 text-[10px] font-bold tracking-[0.22em] text-white uppercase">
-          Crónica{chronicleDate ? ` · ${chronicleDate}` : ""}
-        </span>
-        <h3 className="font-jersey text-3xl leading-[0.9] font-black tracking-tight text-white uppercase">
-          {featured?.title ?? "La jornada en cancha"}
-        </h3>
-        <p className="mt-2 max-w-sm text-sm text-zinc-300">
-          {featured?.excerpt ?? "El pulso de Liga U, partido a partido."}
-        </p>
-      </Tile>
-
-      <Tile href={nextMatch ? `/partidos/${nextMatch.id}` : "/competicion"} image={MEDIA.match} clip={CLIP.duel}>
-        <span className="mb-3 inline-flex w-fit rounded-full bg-[#C8102E] px-2.5 py-0.5 text-[10px] font-bold tracking-[0.22em] text-white uppercase">
-          {nextMatch?.status === "live" ? "En vivo" : "Fixture"}
-        </span>
-        <h3 className="font-jersey text-3xl leading-[0.9] font-black tracking-tight text-white uppercase">
-          Próximo duelo
-        </h3>
-        {nextMatch ? (
-          <div className="mt-2 space-y-1">
-            <p className="text-sm font-semibold tracking-wide text-white">
-              {nextMatch.homeShort} vs {nextMatch.awayShort}
-            </p>
-            <p className="text-xs text-zinc-300">{nextMatch.sportName}</p>
-            <MatchCountdown date={nextMatch.matchDate} live={nextMatch.status === "live"} />
-          </div>
-        ) : (
-          <p className="mt-2 text-sm text-zinc-300">Fixture por confirmar.</p>
-        )}
-      </Tile>
-
-      <Tile href="/multimedia" image={MEDIA.radio} clip={CLIP.radio}>
-        <span className="mb-3 inline-flex w-fit rounded-full bg-[#C8102E] px-2.5 py-0.5 text-[10px] font-bold tracking-[0.22em] text-white uppercase">
-          Podcast
-        </span>
-        <h3 className="font-jersey text-3xl leading-[0.9] font-black tracking-tight text-white uppercase">
-          Multimedia Hub
-        </h3>
-        <p className="mt-2 text-sm text-zinc-300">Cabina, Spotify y YouTube.</p>
-      </Tile>
-
-      <Tile href="/liga-u-pass" carbon gold clip={CLIP.pass} className="md:col-span-2">
-        <span className="mb-3 inline-flex w-fit rounded-full border border-amber-400/40 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.22em] text-amber-300 uppercase">
-          Descuento de la semana
-        </span>
-        <div className="flex items-end gap-3">
-          {passLogo ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={passLogo} alt={passSponsor} className="h-10 w-10 object-contain" />
-          ) : null}
-          <div>
-            <h3 className="font-jersey text-3xl leading-[0.9] font-black tracking-tight text-white uppercase">
-              {passTitle}
+    <section className="mx-auto w-full max-w-7xl px-4 py-8">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:grid-rows-[minmax(280px,1fr)_minmax(200px,auto)] md:gap-3">
+        <Tile
+          href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
+          clip={CLIP.news}
+          className="min-h-[240px] md:col-span-2 md:min-h-0"
+        >
+          <PhotoLayer src={MEDIA.news} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/55 to-transparent" />
+          <div className="relative z-10 flex h-full min-h-[240px] flex-col justify-end p-6 md:min-h-0">
+            <span className="mb-2 w-fit bg-red-600 px-2.5 py-0.5 text-[10px] font-black tracking-wider text-white uppercase [clip-path:polygon(6px_0,100%_0,calc(100%-6px)_100%,0_100%)]">
+              Noticia{newsDate ? ` • ${newsDate}` : ""}
+            </span>
+            <h3 className="text-xl font-black tracking-tight text-white uppercase transition-colors group-hover:text-red-400 md:text-2xl">
+              {featured?.title ?? "La jornada en cancha"}
             </h3>
-            <p className="mt-1 text-sm text-zinc-300">{passSponsor}</p>
+            <p className="mt-1 line-clamp-2 text-xs text-zinc-400 md:text-sm">
+              {featured?.excerpt ?? "El pulso de Liga U, partido a partido."}
+            </p>
           </div>
-        </div>
-      </Tile>
+        </Tile>
+
+        <Tile
+          href={nextMatch ? `/partidos/${nextMatch.id}` : "/competicion"}
+          clip={CLIP.duel}
+          className="min-h-[240px] md:min-h-0"
+        >
+          <PhotoLayer src={duelPhoto(nextMatch?.sportName)} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/80 to-[#09090B]/40" />
+          <div className="relative z-10 flex h-full min-h-[240px] flex-col justify-between p-6 md:min-h-0">
+            <span className="w-fit rounded border border-red-800/50 bg-red-950/80 px-2 py-0.5 text-[10px] font-bold tracking-wider text-red-400 uppercase">
+              {nextMatch ? nextMatch.sportName : "Fixture"}
+            </span>
+            <div>
+              <span className="font-mono text-[11px] tracking-widest text-zinc-400 uppercase">
+                Próximo duelo
+              </span>
+              {nextMatch ? (
+                <>
+                  <h4 className="mt-1 text-lg font-extrabold tracking-wide text-white uppercase md:text-xl">
+                    {nextMatch.homeShort}{" "}
+                    <span className="font-mono text-red-500">VS</span> {nextMatch.awayShort}
+                  </h4>
+                  {venue || kickoff ? (
+                    <p className="mt-1 font-mono text-xs text-zinc-400">
+                      {[venue, kickoff].filter(Boolean).join(" • ")}
+                    </p>
+                  ) : null}
+                  <div className="mt-1">
+                    <MatchCountdown date={nextMatch.matchDate} />
+                  </div>
+                </>
+              ) : (
+                <p className="mt-1 text-sm text-zinc-400">Aún no hay un partido programado.</p>
+              )}
+            </div>
+          </div>
+        </Tile>
+
+        <Tile href="/liga-u-pass" clip={CLIP.pass} gold className="min-h-[200px] md:col-span-2 md:min-h-0">
+          <PhotoLayer src={MEDIA.pass} />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#09090B] via-[#09090B]/55 to-amber-950/25" />
+          <div className="relative z-10 flex h-full min-h-[200px] flex-col justify-between p-6 md:min-h-0">
+            <span className="w-fit rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-amber-300 uppercase">
+              Liga U Pass
+            </span>
+            <div className="mt-4">
+              <h4 className="text-2xl font-black tracking-tight text-white uppercase transition-colors group-hover:text-amber-300">
+                U Pass
+              </h4>
+              <p className="mt-1 max-w-lg text-xs text-zinc-400">
+                Conoce y accede a los beneficios de Liga U.
+              </p>
+            </div>
+          </div>
+        </Tile>
+
+        <Tile href="/multimedia" clip={CLIP.media} className="min-h-[200px] md:min-h-0">
+          <PhotoLayer src={MEDIA.broadcast} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/60 to-transparent" />
+          <div className="relative z-10 flex h-full min-h-[200px] flex-col justify-between p-6 md:min-h-0">
+            <span className="w-fit rounded border border-zinc-800 bg-zinc-900 px-2 py-0.5 text-[10px] font-bold tracking-wider text-zinc-300 uppercase">
+              Centro de medios
+            </span>
+            <div>
+              <h4 className="text-lg font-black tracking-wide text-white uppercase">Multimedia Hub</h4>
+              <p className="mt-1 font-mono text-xs text-zinc-400">Podcasts • Videos • Highlights</p>
+            </div>
+          </div>
+        </Tile>
+      </div>
     </section>
   );
 }

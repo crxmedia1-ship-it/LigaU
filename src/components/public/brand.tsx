@@ -43,7 +43,7 @@ export function TitleGlow() {
 
 export function LaserBadge({ children }: { children: React.ReactNode }) {
   return (
-    <span className="laser-badge inline-flex items-center px-3 py-1 text-[10px] font-semibold uppercase">
+    <span className="laser-badge inline-flex max-w-full items-center px-3 py-1 text-[10px] font-semibold whitespace-normal uppercase">
       {children}
     </span>
   );

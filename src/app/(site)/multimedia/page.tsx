@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { GlassCard, PageHero } from "@/components/public/brand";
 import { getPublicCatalog } from "@/lib/public/queries";
-import { spotifyEmbed, youtubeEmbed } from "@/lib/public/format";
+import { youtubeEmbed } from "@/lib/public/format";
 
 export const metadata: Metadata = {
   title: "Multimedia",
@@ -14,17 +14,22 @@ export default async function MultimediaPage() {
 
   return (
     <main className="relative mx-auto max-w-6xl px-4 py-10">
-      <PageHero kicker="Audio y crónicas" title="Multimedia" mark="FM" />
+      <PageHero
+        kicker="Centro de medios"
+        title="Multimedia"
+        mark="TV"
+        description="Podcasts, videos y highlights de la jornada universitaria."
+      />
 
       <section className="space-y-6">
+        <h2 className="text-2xl font-semibold">Podcasts y videos</h2>
         {podcasts.length === 0 ? (
           <p className="text-sm text-brand-silver-dim">
-            Los episodios oficiales aparecerán aquí con Spotify y YouTube.
+            Los episodios y videos oficiales de Liga U aparecerán aquí.
           </p>
         ) : (
           podcasts.map((episode) => {
             const youtube = youtubeEmbed(episode.youtubeUrl);
-            const spotify = spotifyEmbed(episode.spotifyUrl);
             return (
               <GlassCard key={episode.id}>
                 <div className="grid gap-0 md:grid-cols-[16rem_1fr]">
@@ -43,18 +48,16 @@ export default async function MultimediaPage() {
                     <Badge variant="outline">Episodio {episode.episodeNumber}</Badge>
                     <h2 className="text-2xl font-semibold">{episode.title}</h2>
                     <p className="text-sm text-brand-silver-dim">{episode.description}</p>
-                    <div className="flex flex-wrap gap-3 text-sm">
-                      {episode.spotifyUrl ? (
-                        <a href={episode.spotifyUrl} className="text-brand-gold underline" target="_blank" rel="noreferrer">
-                          Spotify
-                        </a>
-                      ) : null}
-                      {episode.youtubeUrl ? (
-                        <a href={episode.youtubeUrl} className="text-brand-gold underline" target="_blank" rel="noreferrer">
-                          YouTube
-                        </a>
-                      ) : null}
-                    </div>
+                    {episode.youtubeUrl ? (
+                      <a
+                        href={episode.youtubeUrl}
+                        className="text-brand-gold underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Ver video
+                      </a>
+                    ) : null}
                     {youtube ? (
                       <iframe
                         title={episode.title}
@@ -62,14 +65,6 @@ export default async function MultimediaPage() {
                         className="aspect-video w-full rounded-md"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
-                      />
-                    ) : null}
-                    {spotify && !youtube ? (
-                      <iframe
-                        title={episode.title}
-                        src={spotify}
-                        className="h-20 w-full rounded-md"
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                       />
                     ) : null}
                   </div>
@@ -81,7 +76,7 @@ export default async function MultimediaPage() {
       </section>
 
       <section className="mt-12">
-        <h2 className="text-2xl font-semibold">Crónicas</h2>
+        <h2 className="text-2xl font-semibold">Highlights y noticias</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {news.map((item) => (
             <Link key={item.id} href={`/noticias/${item.slug}`}>

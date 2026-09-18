@@ -15,6 +15,8 @@ export type UniversityCard = {
   name: string;
   shortName: string;
   logoUrl: string | null;
+  crestUrl: string | null;
+  mascotUrl: string | null;
   colors: UniversityColors;
 };
 

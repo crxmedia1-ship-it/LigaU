@@ -7,8 +7,15 @@ export const metadata: Metadata = {
   title: "Competición",
 };
 
-export default async function CompeticionPage() {
+export default async function CompeticionPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string | string[] }>;
+}) {
   const catalog = await getPublicCatalog();
+  const params = await searchParams;
+  const raw = Array.isArray(params.tab) ? params.tab[0] : params.tab;
+  const initialTab = raw === "tabla" || raw === "medallero" ? raw : "fixture";
 
   return (
     <main className="relative mx-auto max-w-6xl px-4 py-10">
@@ -19,6 +26,8 @@ export default async function CompeticionPage() {
         description="Filtra el fixture por disciplina, universidad y fase. La clasificación y el medallero se recalculan con cada partido FINISHED."
       />
       <CompetitionBoard
+        key={initialTab}
+        initialTab={initialTab}
         sports={catalog.sports}
         universities={catalog.universities}
         teams={catalog.teams}

@@ -1,5 +1,6 @@
 import { teamLabel } from "@/lib/admin/labels";
 import { createClient } from "@/lib/supabase/server";
+import { applyUniversityMarks, getUniversityMarks } from "@/lib/public/university-marks";
 import type { Json } from "@/types/database.types";
 import {
   one,
@@ -25,12 +26,18 @@ type UniversityRow = {
   colors: unknown;
 };
 
-function mapUniversity(row: UniversityRow): UniversityCard {
+function mapUniversity(
+  row: UniversityRow,
+  marks: Record<string, { crestUrl: string | null; mascotUrl: string | null }> = {},
+): UniversityCard {
+  const brand = applyUniversityMarks(row.short_name, row.logo_url, marks);
   return {
     id: row.id,
     name: row.name,
     shortName: row.short_name,
     logoUrl: row.logo_url,
+    crestUrl: brand.crestUrl,
+    mascotUrl: brand.mascotUrl,
     colors: parseUniversityColors(row.colors as Json),
   };
 }
@@ -44,10 +51,11 @@ function mapTeam(
     coach_name: string | null;
     universities: UniversityRow | UniversityRow[] | null;
   },
+  marks: Record<string, { crestUrl: string | null; mascotUrl: string | null }>,
 ): TeamCard | null {
   const university = one(row.universities);
   if (!university) return null;
-  const mapped = mapUniversity(university);
+  const mapped = mapUniversity(university, marks);
   return {
     id: row.id,
     sportId: row.sport_id,
@@ -138,6 +146,7 @@ function mapNews(item: {
 
 export async function getPublicCatalog(options?: { staff?: boolean }) {
   const supabase = await createClient();
+  const marks = await getUniversityMarks();
   const benefitsSelect =
     "id, sponsor_id, discount_title, status, redemption_type, promo_code, instructions, external_url, click_count, pass_sponsors(name, logo_url, category, location_tag)";
   const benefitsQuery = options?.staff
@@ -200,7 +209,7 @@ export async function getPublicCatalog(options?: { staff?: boolean }) {
     benefitsQuery,
   ]);
 
-  const universities = (universitiesRes.data ?? []).map(mapUniversity);
+  const universities = (universitiesRes.data ?? []).map((row) => mapUniversity(row, marks));
   const sports: SportCard[] = (sportsRes.data ?? []).map((sport) => ({
     id: sport.id,
     name: sport.name,
@@ -208,7 +217,7 @@ export async function getPublicCatalog(options?: { staff?: boolean }) {
     categoryType: sport.category_type,
   }));
   const teams = (teamsRes.data ?? [])
-    .map(mapTeam)
+    .map((row) => mapTeam(row, marks))
     .filter((team): team is TeamCard => Boolean(team));
   const teamById = new Map(teams.map((team) => [team.id, team]));
   const athletes: AthleteCard[] = (athletesRes.data ?? []).map((athlete) => ({

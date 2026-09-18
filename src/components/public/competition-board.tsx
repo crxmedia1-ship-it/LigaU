@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/admin/field";
@@ -25,16 +26,19 @@ export function CompetitionBoard({
   universities,
   teams,
   matches,
+  initialTab = "fixture",
 }: {
   sports: SportCard[];
   universities: UniversityCard[];
   teams: TeamCard[];
   matches: MatchCard[];
+  initialTab?: string;
 }) {
+  const router = useRouter();
   const [sportId, setSportId] = useState(sports[0]?.id ?? "all");
   const [universityId, setUniversityId] = useState("all");
   const [roundName, setRoundName] = useState("all");
-  const [tab, setTab] = useState("fixture");
+  const [tab, setTab] = useState(initialTab);
 
   const rounds = useMemo(
     () =>
@@ -105,7 +109,15 @@ export function CompetitionBoard({
         </NativeSelect>
       </div>
 
-      <Tabs value={tab} onValueChange={setTab}>
+      <Tabs
+        value={tab}
+        onValueChange={(value) => {
+          setTab(value);
+          router.replace(value === "fixture" ? "/competicion" : `/competicion?tab=${value}`, {
+            scroll: false,
+          });
+        }}
+      >
         <TabsList>
           <TabsTrigger value="fixture">Fixture</TabsTrigger>
           <TabsTrigger value="tabla">Clasificación</TabsTrigger>

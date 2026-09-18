@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Bebas_Neue } from "next/font/google";
 import { MobileBottomNav } from "@/components/public/mobile-bottom-nav";
 import { SiteFooter, SiteHeader } from "@/components/public/site-chrome";
@@ -33,7 +34,7 @@ export default function SiteLayout({
   return (
     <div
       className={cn(
-        "dark ligau-public min-h-screen bg-[#09090B] text-zinc-100",
+        "dark ligau-public min-h-screen overflow-x-hidden bg-[#09090B] text-zinc-100",
         jersey.variable,
       )}
     >
@@ -42,7 +43,9 @@ export default function SiteLayout({
         {children}
         <SiteFooter />
       </div>
-      <MobileBottomNav />
+      <Suspense fallback={null}>
+        <MobileBottomNav />
+      </Suspense>
     </div>
   );
 }

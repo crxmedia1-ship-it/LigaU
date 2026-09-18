@@ -4,7 +4,7 @@ import { JerseyMark, PageKicker } from "@/components/public/brand";
 import { getPublicCatalog } from "@/lib/public/queries";
 
 export const metadata: Metadata = {
-  title: "Crónica",
+  title: "Noticia",
 };
 
 export default async function NoticiaPage({
@@ -21,7 +21,7 @@ export default async function NoticiaPage({
     <main className="relative mx-auto max-w-3xl px-4 py-10">
       <JerseyMark number="01" />
       <PageKicker>
-        {item.sportName || "Crónica"} {item.universityName ? `· ${item.universityName}` : ""}
+        {item.sportName || "Noticia"} {item.universityName ? `· ${item.universityName}` : ""}
       </PageKicker>
       <h1 className="chrome-text mt-3 text-4xl font-black">{item.title}</h1>
       {item.coverImageUrl ? (
