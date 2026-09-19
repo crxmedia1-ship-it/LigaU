@@ -269,11 +269,9 @@ body:has(.ligau-admin) {
 .ligau-public {
   color: #0f172a;
   overflow-x: hidden;
+  /* Platinum titanium canvas — pitch chalk lives in TacticalPitchCanvas on Home */
   background-color: #f8fafc;
-  background-image:
-    linear-gradient(to right, #e2e8f0 1px, transparent 1px),
-    linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-image: none;
 }
 
 /* Keep root body light when the public portal is mounted (prevents dark
@@ -281,10 +279,7 @@ body:has(.ligau-admin) {
 body:has(.ligau-public) {
   background-color: #f8fafc;
   color: #0f172a;
-  background-image:
-    linear-gradient(to right, #e2e8f0 1px, transparent 1px),
-    linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-image: none;
 }
 
 .grid-pattern {

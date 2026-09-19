@@ -1,10 +1,10 @@
-import { HeroParticles } from "@/components/magic/hero-particles";
 import { HomeBento } from "@/components/public/home-bento";
 import { HeroPlayerHero } from "@/components/public/hero-media";
 import { SponsorMarquee } from "@/components/public/sponsor-marquee";
+import { TacticalPitchCanvas } from "@/components/public/tactical-pitch-canvas";
 import { getHomeSponsorLogos } from "@/lib/public/home-sponsors";
 import { getMvpHighlight, getPublicCatalog } from "@/lib/public/queries";
-import { LaserBadge, TitleGlow } from "@/components/public/brand";
+import { LaserBadge } from "@/components/public/brand";
 
 export default async function HomePage() {
   const [catalog, homeSponsors] = await Promise.all([
@@ -23,10 +23,10 @@ export default async function HomePage() {
       .sort((a, b) => +new Date(a.matchDate) - +new Date(b.matchDate))[0] ?? null;
 
   return (
-    <main className="overflow-x-hidden">
+    <main className="relative overflow-x-hidden bg-[#F8FAFC]">
+      <TacticalPitchCanvas />
+
       <section className="relative overflow-hidden">
-        <HeroParticles />
-        <TitleGlow />
         <div className="relative w-full px-4 pt-4 pb-6 sm:px-6 sm:pt-10 sm:pb-8 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8 lg:px-12 lg:pt-16 lg:pb-8 xl:px-20 2xl:px-28">
           <div className="pointer-events-none absolute inset-x-0 top-0 z-0 mx-auto h-[320px] max-w-lg lg:pointer-events-auto lg:relative lg:inset-auto lg:top-auto lg:order-2 lg:h-[600px] lg:max-w-none xl:h-[660px]">
             <HeroPlayerHero />
@@ -57,7 +57,7 @@ export default async function HomePage() {
         <HomeBento news={catalog.news} nextMatch={nextMatch} mvp={mvp} />
       </div>
 
-      <div className="w-full px-4 pb-8 sm:px-6 lg:px-12 xl:px-20 2xl:px-28">
+      <div className="relative z-10 w-full px-4 pb-8 sm:px-6 lg:px-12 xl:px-20 2xl:px-28">
         <SponsorMarquee sponsors={homeSponsors} />
       </div>
     </main>
