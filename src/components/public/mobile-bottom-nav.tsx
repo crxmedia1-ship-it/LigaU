@@ -30,7 +30,7 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label="Navegación principal"
-      className="fixed right-0 bottom-0 left-0 z-50 border-t border-zinc-200/80 bg-white/88 pb-safe backdrop-blur-xl md:hidden"
+      className="fixed right-0 bottom-0 left-0 z-50 border-t border-zinc-200/80 bg-[#eef1f4] pb-safe md:hidden"
     >
       <ul className="grid grid-cols-4">
         {TABS.map((tab) => {

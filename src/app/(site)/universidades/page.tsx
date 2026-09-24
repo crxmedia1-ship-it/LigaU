@@ -12,7 +12,7 @@ export default async function UniversidadesPage() {
   const { universities } = await getPublicCatalog();
 
   return (
-    <main className="relative mx-auto max-w-6xl px-4 py-10">
+    <main className="relative mx-auto max-w-6xl px-4 py-6 md:py-10">
       <PageHero
         kicker="Rosters oficiales"
         title="Plantillas y atletas"

@@ -66,14 +66,11 @@ export function Tile({
       aria-disabled={breaking}
       data-breaking={breaking}
       className={cn(
-        // Panel base: near-transparent so the photo dominates.
-        // backdrop-blur-[2px] creates the faintest edge-frost; no heavy fog.
-        "group relative isolate block min-h-[220px] overflow-hidden border border-zinc-300/40 bg-transparent backdrop-blur-[2px] transition-[filter,border-color,rotate,translate] duration-500 ease-out md:min-h-0",
-        // Clean drop-shadow that separates the panel from the white canvas
-        "[filter:drop-shadow(0_10px_28px_rgba(0,0,0,0.13))_drop-shadow(0_2px_6px_rgba(0,0,0,0.08))]",
+        // Frosted glass acrylic on platinum canvas
+        "group relative isolate block min-h-[200px] overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.07)] transition-[border-color,box-shadow] duration-500 ease-out md:min-h-0 md:rounded-none md:bg-white/85 md:shadow-[0_8px_30px_rgba(0,0,0,0.04)] md:backdrop-blur-xl md:transition-[border-color,box-shadow,rotate,translate]",
         breaking
-          ? "pointer-events-none border-[#C8102E]/60 [filter:drop-shadow(0_0_30px_rgba(200,16,46,0.25))]"
-          : "hover:border-[#C8102E]/55 hover:[filter:drop-shadow(0_14px_32px_rgba(0,0,0,0.16))_drop-shadow(0_0_18px_rgba(200,16,46,0.13))]",
+          ? "pointer-events-none border-[#C8102E]/60 shadow-[0_8px_30px_rgba(200,16,46,0.12)]"
+          : "hover:border-[#C8102E]/45 hover:shadow-[0_12px_36px_rgba(200,16,46,0.08)]",
         className,
       )}
     >

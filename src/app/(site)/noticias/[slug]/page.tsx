@@ -18,7 +18,7 @@ export default async function NoticiaPage({
   if (!item) notFound();
 
   return (
-    <main className="relative mx-auto max-w-3xl px-4 py-10">
+    <main className="relative mx-auto max-w-3xl px-4 py-6 md:py-10">
       <JerseyMark number="01" />
       <PageKicker>
         {item.sportName || "Noticia"} {item.universityName ? `· ${item.universityName}` : ""}

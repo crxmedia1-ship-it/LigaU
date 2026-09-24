@@ -22,7 +22,7 @@ export default async function UniversidadPage({
   const athletes = catalog.athletes.filter((athlete) => teamIds.has(athlete.teamId));
 
   return (
-    <main className="relative mx-auto max-w-6xl px-4 py-10">
+    <main className="relative mx-auto max-w-6xl px-4 py-6 md:py-10">
       <UniversityClubBoard
         university={university}
         sports={catalog.sports}

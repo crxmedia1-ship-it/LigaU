@@ -39,7 +39,7 @@ export default async function AtletaPage({
   const assists = catalog.events.filter((event) => event.assistAthleteId === athlete.id).length;
 
   return (
-    <main className="relative mx-auto max-w-4xl px-4 py-10">
+    <main className="relative mx-auto max-w-4xl px-4 py-6 md:py-10">
       <JerseyMark number={athlete.jerseyNumber?.toString() ?? "U"} />
       <GlassCard className="p-6 sm:flex sm:items-center sm:gap-6">
         {athlete.photoUrl ? (

@@ -13,7 +13,7 @@ export default async function MultimediaPage() {
   const { podcasts, news } = await getPublicCatalog();
 
   return (
-    <main className="relative mx-auto max-w-6xl px-4 py-10">
+    <main className="relative mx-auto max-w-6xl px-4 py-6 md:py-10">
       <PageHero
         kicker="Centro de medios"
         title="Multimedia"

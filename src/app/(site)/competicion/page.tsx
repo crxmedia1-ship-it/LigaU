@@ -18,7 +18,7 @@ export default async function CompeticionPage({
   const initialTab = raw === "tabla" || raw === "medallero" ? raw : "fixture";
 
   return (
-    <main className="relative mx-auto max-w-6xl px-4 py-10">
+    <main className="relative mx-auto max-w-6xl px-4 py-6 md:py-10">
       <PageHero
         kicker="Match Center"
         title="Competición"

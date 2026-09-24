@@ -17,7 +17,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#09090B",
+  themeColor: "#eef1f4",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={cn("font-sans", geist.variable)} suppressHydrationWarning>
-      <body className="relative min-h-screen bg-[#09090B] text-zinc-100 antialiased [background-image:linear-gradient(to_right,rgb(39_39_42_/_28%)_1px,transparent_1px),linear-gradient(to_bottom,rgb(39_39_42_/_28%)_1px,transparent_1px)] [background-size:32px_32px]">
+      <body className="relative min-h-screen bg-[#eef1f4] text-zinc-900 antialiased">
         <ThemeProvider>
           <SiteCanvas />
           <div className="relative z-10">

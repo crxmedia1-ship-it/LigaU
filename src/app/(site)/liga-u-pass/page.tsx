@@ -19,7 +19,7 @@ export default async function LigaUPassPage() {
         <h1 className="chrome-text mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl">
           Liga U Pass
         </h1>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-400">
+        <p className="mt-2 max-w-2xl text-sm text-zinc-600">
           Credencial VIP de beneficios universitarios. Canje web con un toque o validación
           física con CarnetX en caja.
         </p>

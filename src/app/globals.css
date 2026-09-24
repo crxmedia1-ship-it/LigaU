@@ -15,24 +15,18 @@ html {
 
 body {
   font-family: ui-sans-serif, system-ui, sans-serif;
-  background-color: #09090b;
-  color: #e2e8f0;
-  background-image:
-    linear-gradient(to right, rgb(39 39 42 / 28%) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(39 39 42 / 28%) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-color: #eef1f4;
+  color: #0f172a;
+  background-image: none;
   overflow-x: hidden;
   overscroll-behavior-x: none;
   overscroll-behavior-y: none;
 }
 
 html:not(.dark) body {
-  background-color: #fafafa;
-  color: #18181b;
-  background-image:
-    linear-gradient(to right, #e4e4e740 1px, transparent 1px),
-    linear-gradient(to bottom, #e4e4e740 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-color: #f8fafc;
+  color: #0f172a;
+  background-image: none;
 }
 
 @theme inline {
@@ -88,34 +82,34 @@ html:not(.dark) body {
 
 :root {
   color-scheme: light;
-  --background: #fafafa;
-  --foreground: #18181b;
-  --card: rgb(255 255 255 / 82%);
-  --card-foreground: #18181b;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: rgb(255 255 255 / 85%);
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #18181b;
-  --primary: #ba0c2f;
+  --popover-foreground: #0f172a;
+  --primary: #c8102e;
   --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --muted: #f4f4f5;
-  --muted-foreground: #52525b;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
   --accent: #fff1f2;
   --accent-foreground: #9e1b28;
-  --destructive: #ba0c2f;
-  --border: rgb(228 228 231 / 90%);
-  --input: rgb(228 228 231 / 90%);
-  --ring: #ba0c2f;
-  --color-background: #fafafa;
-  --color-foreground: #18181b;
-  --color-card: rgb(255 255 255 / 82%);
-  --color-card-foreground: #18181b;
-  --color-primary: #ba0c2f;
+  --destructive: #c8102e;
+  --border: rgb(226 232 240 / 90%);
+  --input: rgb(226 232 240 / 90%);
+  --ring: #c8102e;
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-card: rgb(255 255 255 / 85%);
+  --color-card-foreground: #0f172a;
+  --color-primary: #c8102e;
   --color-primary-foreground: #ffffff;
-  --color-muted: #f4f4f5;
-  --color-muted-foreground: #52525b;
-  --color-border: rgb(228 228 231 / 90%);
-  --color-ring: #ba0c2f;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-border: rgb(226 232 240 / 90%);
+  --color-ring: #c8102e;
   --chart-1: #ba0c2f;
   --chart-2: #71717a;
   --chart-3: #d4af37;
@@ -333,6 +327,22 @@ html .ligau-public .glass-card,
   background: rgb(255 255 255 / 80%);
   color: #18181b;
   border-color: rgb(200 16 46 / 50%);
+}
+
+/* Static pitch wash. No blur, no fixed attachment — those repaint every scroll frame on mobile. */
+.ligau-canvas {
+  background-color: #eef1f4;
+  background-image:
+    radial-gradient(ellipse 90% 48% at 50% -6%, rgba(200, 16, 46, 0.1), transparent 58%),
+    radial-gradient(circle at 50% 42%, transparent 18%, rgba(148, 163, 184, 0.16) 19%, transparent 20.2%),
+    linear-gradient(rgba(100, 116, 139, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 116, 139, 0.14) 1px, transparent 1px);
+  background-size: auto, 100% 100%, 64px 64px, 64px 64px;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+}
+
+.ligau-public {
+  background-color: transparent;
 }
 
 .ligau-public .carbon-fiber {

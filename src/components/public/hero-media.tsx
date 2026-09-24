@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
 const PLAYER_SRC =
@@ -13,9 +14,19 @@ const MASK = [
 
 export function HeroPlayerHero() {
   const reduce = useReducedMotion();
+  const [float, setFloat] = useState(false);
+
+  useEffect(() => {
+    if (reduce) return;
+    const mq = window.matchMedia("(min-width: 768px)");
+    const sync = () => setFloat(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, [reduce]);
 
   return (
-    <div className="relative isolate mx-auto flex h-full min-h-[280px] w-full max-w-lg items-end justify-center lg:max-w-none">
+    <div className="relative isolate mx-auto flex h-full w-full max-w-lg items-end justify-center lg:min-h-[280px] lg:max-w-none">
       {/* Watermark behind player */}
       <span
         aria-hidden
@@ -27,11 +38,11 @@ export function HeroPlayerHero() {
       {/* Ambient crimson halo — softer on white canvas */}
       <div
         aria-hidden
-        className="pointer-events-none absolute top-[12%] left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-[#C8102E]/18 blur-3xl sm:h-80 sm:w-80"
+        className="pointer-events-none absolute top-[12%] left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(200,16,46,0.2),transparent_68%)] sm:h-80 sm:w-80"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-[6%] left-1/2 h-24 w-72 -translate-x-1/2 rounded-full bg-[#C8102E]/12 blur-3xl"
+        className="pointer-events-none absolute bottom-[6%] left-1/2 h-24 w-72 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(200,16,46,0.14),transparent_70%)]"
       />
 
       {/* Subtle crimson bleed down toward the grid edge */}
@@ -41,8 +52,8 @@ export function HeroPlayerHero() {
       />
 
       <motion.div
-        className="relative z-10 flex h-full w-full items-end justify-center will-change-transform"
-        animate={reduce ? undefined : { y: [0, -12, 0] }}
+        className="relative z-10 flex h-full w-full items-end justify-center"
+        animate={float ? { y: [0, -12, 0] } : undefined}
         transition={{ duration: 5.6, repeat: Infinity, ease: "easeInOut" }}
       >
         <div
@@ -78,7 +89,7 @@ export function HeroPlayerHero() {
             height={1000}
             fetchPriority="high"
             decoding="async"
-            className="relative h-full w-auto object-cover object-top mix-blend-multiply brightness-105 contrast-110 saturate-105"
+            className="relative h-full w-auto object-contain object-bottom mix-blend-multiply brightness-105 contrast-110 saturate-105 lg:object-cover lg:object-top"
           />
           {/* Radial vignette fading the athlete edges into the light canvas */}
           <div
@@ -88,7 +99,7 @@ export function HeroPlayerHero() {
           {/* Bottom fade into white */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#F8FAFC] to-transparent"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#eef1f4] to-transparent"
           />
         </div>
       </motion.div>

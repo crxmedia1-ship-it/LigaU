@@ -34,12 +34,12 @@ export default function SiteLayout({
   return (
     <div
       className={cn(
-        "ligau-public min-h-screen overflow-x-hidden bg-[#F8FAFC] text-zinc-900",
+        "ligau-public min-h-screen overflow-x-hidden bg-transparent text-zinc-900",
         jersey.variable,
       )}
     >
       <SiteHeader />
-      <div className="pt-safe pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pt-0 md:pb-0">
+      <div className="pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
         {children}
         <SiteFooter />
       </div>

@@ -25,7 +25,7 @@ export function JerseyMark({ number = "U" }: { number?: string }) {
   return (
     <span
       aria-hidden
-      className="font-jersey pointer-events-none absolute -right-2 -bottom-6 max-w-[200px] overflow-hidden text-[7rem] leading-none text-zinc-800 opacity-20 select-none sm:text-[8rem]"
+      className="font-jersey pointer-events-none absolute top-0 right-0 max-w-[120px] overflow-hidden text-[4.5rem] leading-none text-zinc-400 opacity-25 select-none sm:top-auto sm:-right-2 sm:-bottom-6 sm:max-w-[200px] sm:text-[8rem] sm:text-zinc-800 sm:opacity-20"
     >
       {number}
     </span>
@@ -77,7 +77,7 @@ export function PageHero({
         {title}
       </h1>
       {description ? (
-        <p className="relative mt-2 max-w-2xl text-sm text-zinc-400">{description}</p>
+        <p className="relative mt-2 max-w-2xl text-sm text-zinc-600">{description}</p>
       ) : null}
     </header>
   );
