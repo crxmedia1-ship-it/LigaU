@@ -66,8 +66,8 @@ export function Tile({
       aria-disabled={breaking}
       data-breaking={breaking}
       className={cn(
-        // Frosted glass acrylic on platinum canvas
-        "group relative isolate block min-h-[200px] overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.07)] transition-[border-color,box-shadow] duration-500 ease-out md:min-h-0 md:rounded-none md:bg-white/85 md:shadow-[0_8px_30px_rgba(0,0,0,0.04)] md:backdrop-blur-xl md:transition-[border-color,box-shadow,rotate,translate]",
+        // Clear crystal pane: the photo stays sharp; glass is the edge highlight, not a white blur
+        "group relative isolate block min-h-[280px] overflow-hidden rounded-2xl border border-white/80 bg-zinc-300 shadow-[0_12px_32px_rgba(15,23,42,0.1),inset_0_1px_0_rgba(255,255,255,0.75)] transition-[border-color,box-shadow] duration-500 ease-out md:min-h-0 md:rounded-none md:bg-transparent md:shadow-[0_12px_32px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.65)] md:transition-[border-color,box-shadow,rotate,translate]",
         breaking
           ? "pointer-events-none border-[#C8102E]/60 shadow-[0_8px_30px_rgba(200,16,46,0.12)]"
           : "hover:border-[#C8102E]/45 hover:shadow-[0_12px_36px_rgba(200,16,46,0.08)]",

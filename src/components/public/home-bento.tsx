@@ -84,7 +84,7 @@ function TileContent({
   return (
     <div
       className={cn(
-        "relative z-10 flex h-full min-h-[220px] flex-col justify-end pt-6 pr-6 pb-6 pl-8 md:min-h-0",
+        "relative z-10 flex h-full min-h-[280px] flex-col justify-end pt-6 pr-6 pb-6 pl-8 md:min-h-0",
         className,
       )}
     >
@@ -135,8 +135,21 @@ function PhotoLayer({ src }: { src: string }) {
     <>
       {/* Primary photo — slow zoom on hover, that's the only hover animation */}
       <div
-        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110 group-data-[breaking=true]:scale-110"
+        className="absolute inset-0 bg-cover bg-center contrast-[1.06] saturate-[1.12] transition-transform duration-700 ease-out group-hover:scale-110 group-data-[breaking=true]:scale-110"
         style={{ backgroundImage: `url('${src}')` }}
+      />
+      {/* Glass over the whole photo: a thin highlight, the image stays complete */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(118deg,rgba(255,255,255,0.42)_0%,rgba(255,255,255,0.1)_9%,transparent_24%,transparent_72%,rgba(255,255,255,0.14)_100%)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),inset_0_0_0_1px_rgba(255,255,255,0.35)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(9,9,11,0.78)_0%,rgba(9,9,11,0.34)_24%,transparent_48%)]"
       />
       {/* Optical warp only on click (breaking state) — no hover distortion */}
       <div
@@ -161,7 +174,10 @@ export function HomeBento({
   const venue = nextMatch?.location?.trim() || null;
 
   return (
-    <section className="relative isolate w-full px-4 pt-4 pb-8 sm:px-6 sm:pt-10 sm:pb-24 lg:px-12 xl:px-20 2xl:px-28">
+    <section
+      id="home-grids"
+      className="relative isolate w-full scroll-mt-[calc(3.25rem+env(safe-area-inset-top,0px))] px-4 pt-4 pb-8 sm:px-6 sm:pt-10 sm:pb-24 lg:px-12 xl:px-20 2xl:px-28"
+    >
       {/* Soft crimson ambient blush — barely there, depth without dirt */}
       <div
         aria-hidden
@@ -176,15 +192,13 @@ export function HomeBento({
           className="md:col-span-8 md:row-span-2 md:[clip-path:polygon(0_0,calc(100%-64px)_0,100%_64px,100%_504px,calc(100%-64px)_568px,0_568px)]"
         >
           <PhotoLayer src={MEDIA.squad} />
-          {/* Light fade — bottom is white for text, top is fully transparent so photo shows */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-white/75 to-transparent" />
-          <TileWatermark className="-right-6 -bottom-12 text-[13rem] md:text-[16rem]">U</TileWatermark>
+          <TileWatermark className="top-1 -right-4 text-[7rem] text-white/20 md:text-[10rem]">U</TileWatermark>
           <TileContent>
             <TileBadge>Rosters oficiales</TileBadge>
-            <h3 className="text-2xl font-black tracking-tight text-zinc-950 uppercase transition-colors group-hover:text-[#C8102E] md:text-3xl">
+            <h3 className="text-2xl font-black tracking-tight text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200 md:text-3xl">
               Plantillas y equipos
             </h3>
-            <p className="mt-1 text-sm text-zinc-600">
+            <p className="mt-1 text-sm text-white/80">
               Explora las alineaciones de las 8 universidades.
             </p>
           </TileContent>
@@ -197,15 +211,14 @@ export function HomeBento({
           className="md:col-span-4 md:[clip-path:polygon(0_0,100%_0,100%_216px,calc(100%-64px)_280px,0_280px)]"
         >
           <PhotoLayer src={duelPhoto(nextMatch?.sportName)} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-white/75 to-transparent" />
-          <TileWatermark className="-right-3 -bottom-10 text-[9rem]">VS</TileWatermark>
+          <TileWatermark className="top-0 -right-2 text-[5.5rem] text-white/20">VS</TileWatermark>
           <TileContent>
             <TileBadge>Próximo duelo</TileBadge>
-            <h4 className="text-lg font-black text-zinc-950 uppercase transition-colors group-hover:text-[#C8102E] md:text-xl">
+            <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200 md:text-xl">
               {nextMatch ? (
                 <>
                   {nextMatch.homeShort}{" "}
-                  <span className="font-mono text-[#C8102E]">VS</span> {nextMatch.awayShort}
+                  <span className="font-mono text-red-300">VS</span> {nextMatch.awayShort}
                 </>
               ) : (
                 "Match Center"
@@ -214,7 +227,7 @@ export function HomeBento({
             {nextMatch ? (
               <>
                 {venue || kickoff ? (
-                  <p className="mt-1 font-mono text-xs text-zinc-500">
+                  <p className="mt-1 font-mono text-xs text-white/75">
                     {[venue, kickoff].filter(Boolean).join(" • ")}
                   </p>
                 ) : null}
@@ -223,7 +236,7 @@ export function HomeBento({
                 </div>
               </>
             ) : (
-              <p className="mt-1 text-sm text-zinc-500">Aún no hay un partido programado.</p>
+              <p className="mt-1 text-sm text-white/75">Aún no hay un partido programado.</p>
             )}
           </TileContent>
         </Tile>
@@ -249,7 +262,7 @@ export function HomeBento({
                 <img
                   src={mvp.athlete.photoUrl}
                   alt=""
-                  className="absolute inset-0 h-full w-full object-cover object-top opacity-70 transition-transform duration-700 group-hover:scale-110"
+                  className="absolute inset-0 h-full w-full object-cover object-top contrast-[1.05] saturate-[1.08] opacity-95 transition-transform duration-700 group-hover:scale-110"
                 />
                 {/* Warped duplicate — optical warp only on click (breaking), not hover */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -267,8 +280,11 @@ export function HomeBento({
               </span>
             )}
           </div>
-          {/* Dark-bottom gradient — keeps white text readable on carbon fiber */}
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/55 to-transparent" />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(118deg,rgba(255,255,255,0.22)_0%,transparent_28%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(to_top,#09090b_0%,rgba(9,9,11,0.55)_20%,transparent_46%)]" />
           <TileContent>
             <TileBadge>Destacado</TileBadge>
             {mvp ? (
@@ -300,15 +316,14 @@ export function HomeBento({
           className="md:col-span-4 md:[clip-path:polygon(0_0,calc(100%-64px)_0,100%_64px,100%_240px,0_240px)]"
         >
           <PhotoLayer src={MEDIA.news} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-white/75 to-transparent" />
-          <TileWatermark className="-right-4 -bottom-10 text-[9rem]">N</TileWatermark>
+          <TileWatermark className="top-0 -right-2 text-[5.5rem] text-white/20">N</TileWatermark>
           <TileContent>
             <TileBadge>Noticias</TileBadge>
-            <h4 className="text-lg font-black text-zinc-950 uppercase group-hover:text-[#C8102E]">
+            <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] group-hover:text-red-200">
               {featured?.title ?? "La jornada en cancha"}
             </h4>
             {featured?.excerpt ? (
-              <p className="mt-1 line-clamp-2 text-sm text-zinc-600">{featured.excerpt}</p>
+              <p className="mt-1 line-clamp-2 text-sm text-white/80">{featured.excerpt}</p>
             ) : null}
           </TileContent>
         </Tile>
@@ -320,14 +335,13 @@ export function HomeBento({
           className="md:col-span-4 md:[clip-path:polygon(64px_0,100%_0,100%_240px,0_240px,0_64px)]"
         >
           <PhotoLayer src={MEDIA.broadcast} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-white/75 to-transparent" />
-          <TileWatermark className="-right-4 -bottom-10 text-[9rem]">▶</TileWatermark>
+          <TileWatermark className="top-0 -right-2 text-[5.5rem] text-white/25">▶</TileWatermark>
           <TileContent>
             <TileBadge>Multimedia</TileBadge>
-            <h4 className="text-lg font-black text-zinc-950 uppercase group-hover:text-[#C8102E]">
+            <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] group-hover:text-red-200">
               Centro de medios
             </h4>
-            <p className="mt-1 text-sm text-zinc-600">Podcasts • Videos • Highlights</p>
+            <p className="mt-1 text-sm text-white/80">Podcasts • Videos • Highlights</p>
           </TileContent>
         </Tile>
 
@@ -338,14 +352,13 @@ export function HomeBento({
           className="md:col-span-4 md:[clip-path:polygon(0_0,100%_0,100%_240px,64px_240px,0_176px)]"
         >
           <PhotoLayer src={MEDIA.pass} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-white/75 to-transparent" />
-          <TileWatermark className="-right-4 -bottom-10 text-[9rem]">U+</TileWatermark>
+          <TileWatermark className="top-0 -right-1 text-[5rem] text-white/20">U+</TileWatermark>
           <TileContent>
             <TileBadge>Beneficios</TileBadge>
-            <h4 className="text-lg font-black text-zinc-950 uppercase transition-colors group-hover:text-[#C8102E]">
+            <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200">
               U Pass
             </h4>
-            <p className="mt-1 text-sm text-zinc-600">
+            <p className="mt-1 text-sm text-white/80">
               Conoce y accede a los beneficios de Liga U.
             </p>
           </TileContent>

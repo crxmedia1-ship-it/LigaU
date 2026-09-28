@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { HeaderKickBall } from "@/components/public/header-kick-ball";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -48,7 +49,7 @@ function DesktopNav() {
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-200/80 bg-[#eef1f4] pt-safe md:border-zinc-200/80 md:bg-white/80 md:pt-0 md:backdrop-blur-xl">
-      <div className="flex h-12 items-center px-4 md:hidden">
+      <div className="flex h-12 items-center justify-between px-4 md:hidden">
         <Link href="/" className="flex min-h-11 items-center gap-2">
           <span
             className="grid size-7 place-items-center bg-[#C8102E] text-[11px] font-black text-white"
@@ -63,6 +64,7 @@ export function SiteHeader() {
             Liga U
           </span>
         </Link>
+        <HeaderKickBall />
       </div>
       <div className="mx-auto hidden h-14 max-w-6xl items-center justify-between px-4 md:flex">
         <Link href="/" className="flex min-h-11 items-center gap-2">

@@ -598,6 +598,26 @@ html.dark .ligau-public .podium-glass {
   animation: ligau-shatter-flash 380ms ease-out forwards;
 }
 
+@keyframes ligau-ball-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-10deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(10deg);
+  }
+}
+
+@utility animate-ligau-ball-bob {
+  animation: ligau-ball-bob 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ligau-ball-bob {
+    animation: none;
+  }
+}
+
 @utility pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
