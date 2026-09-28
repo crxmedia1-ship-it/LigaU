@@ -28,10 +28,12 @@ const SHATTER_MS = 380;
 export function Tile({
   href,
   className,
+  style,
   children,
 }: {
   href: string;
   className?: string;
+  style?: React.CSSProperties;
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -65,12 +67,13 @@ export function Tile({
       onClick={handleClick}
       aria-disabled={breaking}
       data-breaking={breaking}
+      style={style}
       className={cn(
-        // Clear crystal pane: the photo stays sharp; glass is the edge highlight, not a white blur
-        "group relative isolate block min-h-[280px] overflow-hidden rounded-2xl border border-white/80 bg-zinc-300 shadow-[0_12px_32px_rgba(15,23,42,0.1),inset_0_1px_0_rgba(255,255,255,0.75)] transition-[border-color,box-shadow] duration-500 ease-out md:min-h-0 md:rounded-none md:bg-transparent md:shadow-[0_12px_32px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.65)] md:transition-[border-color,box-shadow,rotate,translate]",
+        // Clear crystal pane sized by the grid; clip-path draws the L
+        "group relative isolate block h-full min-h-0 overflow-hidden rounded-none border-0 bg-transparent shadow-[0_10px_24px_rgba(15,23,42,0.14)] transition-shadow duration-500 ease-out",
         breaking
-          ? "pointer-events-none border-[#C8102E]/60 shadow-[0_8px_30px_rgba(200,16,46,0.12)]"
-          : "hover:border-[#C8102E]/45 hover:shadow-[0_12px_36px_rgba(200,16,46,0.08)]",
+          ? "pointer-events-none shadow-[0_8px_30px_rgba(200,16,46,0.18)]"
+          : "hover:shadow-[0_12px_28px_rgba(200,16,46,0.16)]",
         className,
       )}
     >
@@ -78,7 +81,7 @@ export function Tile({
           you're looking through just fractured, right before we navigate. */}
       <div
         className={cn(
-          "h-full transition-[filter,transform] duration-150 ease-out",
+          "flex h-full w-full flex-col transition-[filter,transform] duration-150 ease-out",
           breaking && "scale-[1.03] blur-[2px] brightness-125 contrast-125",
         )}
       >

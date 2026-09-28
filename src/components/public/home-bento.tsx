@@ -84,7 +84,7 @@ function TileContent({
   return (
     <div
       className={cn(
-        "relative z-10 flex h-full min-h-[280px] flex-col justify-end pt-6 pr-6 pb-6 pl-8 md:min-h-0",
+        "relative z-10 flex h-full min-h-0 flex-col justify-end pt-5 pr-5 pb-5 pl-6 sm:pt-6 sm:pr-6 sm:pb-6 sm:pl-8",
         className,
       )}
     >
@@ -94,24 +94,56 @@ function TileContent({
 }
 
 /**
- * "Shattered Pitch Mosaic" (`md:` and up): every tile is an independent
- * glass-shard clipped to a unique polygon, but the tiles all sit on the SAME
- * 12-column / 3-row grid so every shared border between two neighbours is a
- * straight line of fixed length. Each pair of touching edges uses "swapped"
- * inset endpoints (a,b) / (b,a) — that guarantees the perpendicular crack
- * width stays constant along the whole seam once the CSS grid gap pulls the
- * pieces slightly apart, exactly like a plate that shattered but was pushed
- * back together with hairline gaps.
- *
- * Below `md:`, the polygons are dropped (they're pixel-tuned for the
- * desktop row heights). Cards stack in a single column, square to the
- * viewport, with a fixed gap so neighbours never touch.
- *
- * The `Tile` shard itself (float animation + click-to-shatter navigation,
- * exposed via `data-breaking`) lives in `bento-tile.tsx` as a small client
- * boundary; the actual optical-warp refraction it triggers is rendered here
- * by `PhotoLayer`, so the date-formatting logic below stays server-rendered.
+ * Three pairs of horizontal L's. Each pair locks: one piece is the wide bar
+ * on top with a foot down the left, the other is the wide bar on the bottom
+ * with a foot up the right. They share a grid and only the mating edges are
+ * inset, so the crack between them stays even.
  */
+const CRACK = "4px";
+
+/** Long horizontal bar, short foot — the L is stretched on its side. */
+const CLIP = {
+  /** Wide top (10 cols), short foot bottom-left. */
+  gamma: `polygon(0 0, calc(100% - ${CRACK}) 0, calc(100% - ${CRACK}) calc(50% - ${CRACK}), calc(40% + ${CRACK}) calc(50% - ${CRACK}), calc(40% + ${CRACK}) 100%, 0 100%)`,
+  /** Wide bottom, short foot top-right. */
+  ell: `polygon(calc(75% + ${CRACK}) 0, 100% 0, 100% 100%, ${CRACK} 100%, ${CRACK} calc(50% + ${CRACK}), calc(75% + ${CRACK}) calc(50% + ${CRACK}))`,
+  /** Wide bottom, short foot top-left. */
+  ellLeft: `polygon(0 0, calc(25% - ${CRACK}) 0, calc(25% - ${CRACK}) calc(50% + ${CRACK}), calc(100% - ${CRACK}) calc(50% + ${CRACK}), calc(100% - ${CRACK}) 100%, 0 100%)`,
+  /** Wide top, short foot bottom-right. */
+  gammaRight: `polygon(${CRACK} 0, 100% 0, 100% 100%, calc(60% + ${CRACK}) 100%, calc(60% + ${CRACK}) calc(50% - ${CRACK}), ${CRACK} calc(50% - ${CRACK}))`,
+} as const;
+
+const COURT: Record<keyof typeof CLIP, string> = {
+  gamma: "1.2,1.2 98.6,1.2 98.6,47 41.2,47 41.2,98.8 1.2,98.8",
+  ell: "76.4,1.2 98.8,1.2 98.8,98.8 1.2,98.8 1.2,53 76.4,53",
+  ellLeft: "1.2,1.2 23.6,1.2 23.6,53 98.6,53 98.6,98.8 1.2,98.8",
+  gammaRight: "1.2,1.2 98.8,1.2 98.8,98.8 61.4,98.8 61.4,47 1.2,47",
+};
+
+/** Text sits in the long bar, the part of the L with room. */
+const BAR =
+  "overflow-hidden px-4 pt-2 pb-4 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-black/32";
+const TOP_BAR = `h-1/2 justify-end ${BAR}`;
+const BOTTOM_BAR = `mt-auto h-1/2 justify-end ${BAR}`;
+
+function CourtLine({ shape }: { shape: keyof typeof CLIP }) {
+  return (
+    <svg
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-20 h-full w-full text-white/80 transition-colors duration-300 group-hover:text-[#C8102E]"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+    >
+      <polygon
+        points={COURT[shape]}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.25"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
 
 /**
  * Invisible defs, rendered once: a real optical-warp filter (fractal-noise
@@ -149,7 +181,7 @@ function PhotoLayer({ src }: { src: string }) {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(9,9,11,0.78)_0%,rgba(9,9,11,0.34)_24%,transparent_48%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(9,9,11,0.35)_0%,transparent_36%)]"
       />
       {/* Optical warp only on click (breaking state) — no hover distortion */}
       <div
@@ -184,35 +216,17 @@ export function HomeBento({
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-500/6 via-transparent to-transparent md:h-80"
       />
       <GlassWarpDefs />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:grid-rows-[280px_280px_240px] md:gap-[6px]">
-        {/* PLANTILLAS Y EQUIPOS — col 1-8, spans both top rows
-            Shape: both right corners chamfered 64px → "monitor" / widescreen panel */}
-        <Tile
-          href="/universidades"
-          className="md:col-span-8 md:row-span-2 md:[clip-path:polygon(0_0,calc(100%-64px)_0,100%_64px,100%_504px,calc(100%-64px)_568px,0_568px)]"
-        >
-          <PhotoLayer src={MEDIA.squad} />
-          <TileWatermark className="top-1 -right-4 text-[7rem] text-white/20 md:text-[10rem]">U</TileWatermark>
-          <TileContent>
-            <TileBadge>Rosters oficiales</TileBadge>
-            <h3 className="text-2xl font-black tracking-tight text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200 md:text-3xl">
-              Plantillas y equipos
-            </h3>
-            <p className="mt-1 text-sm text-white/80">
-              Explora las alineaciones de las 8 universidades.
-            </p>
-          </TileContent>
-        </Tile>
-
-        {/* PRÓXIMO DUELO — col 9-12, row 1
-            Shape: chamfer bottom-right → angled handoff to MVP tile below */}
+      <div className="grid grid-cols-12 gap-0 grid-rows-[210px_210px_12px_210px_210px_12px_210px_210px] sm:grid-rows-[224px_224px_14px_224px_224px_14px_224px_224px] md:grid-rows-[210px_210px_14px_210px_210px_14px_210px_210px] lg:grid-rows-[248px_248px_16px_248px_248px_16px_248px_248px]">
+        {/* Pair 1 — duelo is the top bar, plantillas locks in underneath */}
         <Tile
           href="/competicion"
-          className="md:col-span-4 md:[clip-path:polygon(0_0,100%_0,100%_216px,calc(100%-64px)_280px,0_280px)]"
+          style={{ clipPath: CLIP.gamma }}
+          className="col-start-1 col-end-11 row-start-1 row-end-3"
         >
           <PhotoLayer src={duelPhoto(nextMatch?.sportName)} />
-          <TileWatermark className="top-0 -right-2 text-[5.5rem] text-white/20">VS</TileWatermark>
-          <TileContent>
+          <CourtLine shape="gamma" />
+          <TileWatermark className="top-0 right-1 text-[5.5rem] text-white/20">VS</TileWatermark>
+          <TileContent className={TOP_BAR}>
             <TileBadge>Próximo duelo</TileBadge>
             <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200 md:text-xl">
               {nextMatch ? (
@@ -227,7 +241,7 @@ export function HomeBento({
             {nextMatch ? (
               <>
                 {venue || kickoff ? (
-                  <p className="mt-1 font-mono text-xs text-white/75">
+                  <p className="mt-1 line-clamp-1 font-mono text-xs text-white/75">
                     {[venue, kickoff].filter(Boolean).join(" • ")}
                   </p>
                 ) : null}
@@ -241,18 +255,37 @@ export function HomeBento({
           </TileContent>
         </Tile>
 
-        {/* MVP DE LA SEMANA — col 9-12, row 2 */}
+        <Tile
+          href="/universidades"
+          style={{ clipPath: CLIP.ell }}
+          className="col-start-5 col-end-13 row-start-1 row-end-3"
+        >
+          <PhotoLayer src={MEDIA.squad} />
+          <CourtLine shape="ell" />
+          <TileWatermark className="right-1 bottom-0 text-[6rem] text-white/20 md:text-[8rem]">U</TileWatermark>
+          <TileContent className={BOTTOM_BAR}>
+            <TileBadge>Rosters oficiales</TileBadge>
+            <h3 className="text-lg font-black tracking-tight text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200 sm:text-2xl lg:text-3xl">
+              Plantillas y equipos
+            </h3>
+            <p className="mt-1 text-sm text-white/80">
+              Explora las alineaciones de las 8 universidades.
+            </p>
+          </TileContent>
+        </Tile>
+
+        {/* Pair 3 sits below; MVP is the wide bottom bar */}
         {/*
           MVP tile stays dark by design — it's a dramatic contrast anchor
           in the light grid, the same way a pitch monitor glows against daylight.
           The crimson radials are slightly stronger so they pop on the carbon.
         */}
-        {/* MVP — col 9-12, row 2
-            Shape: chamfer bottom-left → mirrors Match tile above for visual rhythm */}
         <Tile
           href="/competicion?tab=tabla"
-          className="md:col-span-4 md:[clip-path:polygon(0_0,100%_0,100%_280px,64px_280px,0_216px)]"
+          style={{ clipPath: CLIP.ell }}
+          className="col-start-5 col-end-13 row-start-7 row-end-9"
         >
+          <CourtLine shape="ell" />
           <div className="carbon-fiber absolute inset-0 overflow-hidden">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(200,16,46,0.32),transparent_45%),radial-gradient(circle_at_80%_88%,rgba(200,16,46,0.20),transparent_46%)]" />
             <TileWatermark className="-right-1 -bottom-8 text-[7.5rem]">MVP</TileWatermark>
@@ -285,7 +318,7 @@ export function HomeBento({
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(118deg,rgba(255,255,255,0.22)_0%,transparent_28%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]"
           />
           <div className="absolute inset-0 bg-[linear-gradient(to_top,#09090b_0%,rgba(9,9,11,0.55)_20%,transparent_46%)]" />
-          <TileContent>
+          <TileContent className={BOTTOM_BAR}>
             <TileBadge>Destacado</TileBadge>
             {mvp ? (
               <>
@@ -309,34 +342,35 @@ export function HomeBento({
           </TileContent>
         </Tile>
 
-        {/* NOTICIAS — col 1-4, row 3
-            Shape: chamfer top-right */}
+        {/* Pair 2 — mirrored so the seam zigzags into the pair above */}
         <Tile
           href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
-          className="md:col-span-4 md:[clip-path:polygon(0_0,calc(100%-64px)_0,100%_64px,100%_240px,0_240px)]"
+          style={{ clipPath: CLIP.ellLeft }}
+          className="col-start-1 col-end-9 row-start-4 row-end-6"
         >
           <PhotoLayer src={MEDIA.news} />
+          <CourtLine shape="ellLeft" />
           <TileWatermark className="top-0 -right-2 text-[5.5rem] text-white/20">N</TileWatermark>
-          <TileContent>
+          <TileContent className={BOTTOM_BAR}>
             <TileBadge>Noticias</TileBadge>
-            <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] group-hover:text-red-200">
+            <h4 className="line-clamp-2 text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] group-hover:text-red-200">
               {featured?.title ?? "La jornada en cancha"}
             </h4>
             {featured?.excerpt ? (
-              <p className="mt-1 line-clamp-2 text-sm text-white/80">{featured.excerpt}</p>
+              <p className="mt-1 line-clamp-1 text-sm text-white/80">{featured.excerpt}</p>
             ) : null}
           </TileContent>
         </Tile>
 
-        {/* CENTRO DE MEDIOS — col 5-8, row 3
-            Shape: chamfer top-left (mirrors Noticias for rhythm) */}
         <Tile
           href="/multimedia"
-          className="md:col-span-4 md:[clip-path:polygon(64px_0,100%_0,100%_240px,0_240px,0_64px)]"
+          style={{ clipPath: CLIP.gammaRight }}
+          className="col-start-3 col-end-13 row-start-4 row-end-6"
         >
           <PhotoLayer src={MEDIA.broadcast} />
+          <CourtLine shape="gammaRight" />
           <TileWatermark className="top-0 -right-2 text-[5.5rem] text-white/25">▶</TileWatermark>
-          <TileContent>
+          <TileContent className={TOP_BAR}>
             <TileBadge>Multimedia</TileBadge>
             <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] group-hover:text-red-200">
               Centro de medios
@@ -345,15 +379,15 @@ export function HomeBento({
           </TileContent>
         </Tile>
 
-        {/* U PASS — col 9-12, row 3
-            Shape: chamfer bottom-left → rising diagonal creates upward energy */}
         <Tile
           href="/liga-u-pass"
-          className="md:col-span-4 md:[clip-path:polygon(0_0,100%_0,100%_240px,64px_240px,0_176px)]"
+          style={{ clipPath: CLIP.gamma }}
+          className="col-start-1 col-end-11 row-start-7 row-end-9"
         >
           <PhotoLayer src={MEDIA.pass} />
+          <CourtLine shape="gamma" />
           <TileWatermark className="top-0 -right-1 text-[5rem] text-white/20">U+</TileWatermark>
-          <TileContent>
+          <TileContent className={TOP_BAR}>
             <TileBadge>Beneficios</TileBadge>
             <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200">
               U Pass
