@@ -34,7 +34,7 @@ export default function SiteLayout({
   return (
     <div
       className={cn(
-        "ligau-public min-h-screen overflow-x-hidden bg-transparent text-zinc-900",
+        "ligau-public min-h-screen overflow-x-clip bg-transparent text-zinc-900",
         jersey.variable,
       )}
     >

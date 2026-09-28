@@ -70,10 +70,10 @@ export function Tile({
       style={style}
       className={cn(
         // Clear crystal pane sized by the grid; clip-path draws the L
-        "group relative isolate block h-full min-h-0 overflow-hidden rounded-none border-0 bg-transparent shadow-[0_10px_24px_rgba(15,23,42,0.14)] transition-shadow duration-500 ease-out",
+        "group relative isolate block h-full min-h-0 overflow-hidden rounded-none border-0 bg-transparent shadow-[0_14px_28px_rgba(15,23,42,0.08)] outline-none transition-shadow duration-500 ease-out focus-visible:outline-none",
         breaking
-          ? "pointer-events-none shadow-[0_8px_30px_rgba(200,16,46,0.18)]"
-          : "hover:shadow-[0_12px_28px_rgba(200,16,46,0.16)]",
+          ? "pointer-events-none"
+          : "hover:shadow-[0_16px_32px_rgba(15,23,42,0.12)]",
         className,
       )}
     >
@@ -81,7 +81,7 @@ export function Tile({
           you're looking through just fractured, right before we navigate. */}
       <div
         className={cn(
-          "flex h-full w-full flex-col transition-[filter,transform] duration-150 ease-out",
+          "ligau-scroll-card flex h-full w-full flex-col transition-[filter,transform] duration-150 ease-out",
           breaking && "scale-[1.03] blur-[2px] brightness-125 contrast-125",
         )}
       >

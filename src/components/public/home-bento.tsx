@@ -94,56 +94,33 @@ function TileContent({
 }
 
 /**
- * Three pairs of horizontal L's. Each pair locks: one piece is the wide bar
- * on top with a foot down the left, the other is the wide bar on the bottom
- * with a foot up the right. They share a grid and only the mating edges are
- * inset, so the crack between them stays even.
+ * Three pairs of almost-square panes. Each pair is two wide rectangles that
+ * share a 12-column block; only a thin foot (about two columns) steps out,
+ * so they still lock as a sideways L without a chunky stair.
+ * Mating edges inset by CRACK so the joint is a small gap, not a drawn line.
  */
 const CRACK = "4px";
 
-/** Long horizontal bar, short foot — the L is stretched on its side. */
 const CLIP = {
-  /** Wide top (10 cols), short foot bottom-left. */
-  gamma: `polygon(0 0, calc(100% - ${CRACK}) 0, calc(100% - ${CRACK}) calc(50% - ${CRACK}), calc(40% + ${CRACK}) calc(50% - ${CRACK}), calc(40% + ${CRACK}) 100%, 0 100%)`,
-  /** Wide bottom, short foot top-right. */
-  ell: `polygon(calc(75% + ${CRACK}) 0, 100% 0, 100% 100%, ${CRACK} 100%, ${CRACK} calc(50% + ${CRACK}), calc(75% + ${CRACK}) calc(50% + ${CRACK}))`,
-  /** Wide bottom, short foot top-left. */
-  ellLeft: `polygon(0 0, calc(25% - ${CRACK}) 0, calc(25% - ${CRACK}) calc(50% + ${CRACK}), calc(100% - ${CRACK}) calc(50% + ${CRACK}), calc(100% - ${CRACK}) 100%, 0 100%)`,
-  /** Wide top, short foot bottom-right. */
-  gammaRight: `polygon(${CRACK} 0, 100% 0, 100% 100%, calc(60% + ${CRACK}) 100%, calc(60% + ${CRACK}) calc(50% - ${CRACK}), ${CRACK} calc(50% - ${CRACK}))`,
+  /** Wide top, thin foot bottom-left (20% of a 10-col pane). */
+  gamma: `polygon(0 0, calc(100% - ${CRACK}) 0, calc(100% - ${CRACK}) calc(50% - ${CRACK}), calc(20% - ${CRACK}) calc(50% - ${CRACK}), calc(20% - ${CRACK}) 100%, 0 100%)`,
+  /** Wide bottom, thin foot top-right. */
+  ell: `polygon(calc(80% + ${CRACK}) 0, 100% 0, 100% 100%, ${CRACK} 100%, ${CRACK} calc(50% + ${CRACK}), calc(80% + ${CRACK}) calc(50% + ${CRACK}))`,
+  /** Wide bottom, thin foot top-left. */
+  ellLeft: `polygon(0 0, calc(20% - ${CRACK}) 0, calc(20% - ${CRACK}) calc(50% + ${CRACK}), calc(100% - ${CRACK}) calc(50% + ${CRACK}), calc(100% - ${CRACK}) 100%, 0 100%)`,
+  /** Wide top, thin foot bottom-right. */
+  gammaRight: `polygon(${CRACK} 0, 100% 0, 100% 100%, calc(80% + ${CRACK}) 100%, calc(80% + ${CRACK}) calc(50% - ${CRACK}), ${CRACK} calc(50% - ${CRACK}))`,
 } as const;
-
-const COURT: Record<keyof typeof CLIP, string> = {
-  gamma: "1.2,1.2 98.6,1.2 98.6,47 41.2,47 41.2,98.8 1.2,98.8",
-  ell: "76.4,1.2 98.8,1.2 98.8,98.8 1.2,98.8 1.2,53 76.4,53",
-  ellLeft: "1.2,1.2 23.6,1.2 23.6,53 98.6,53 98.6,98.8 1.2,98.8",
-  gammaRight: "1.2,1.2 98.8,1.2 98.8,98.8 61.4,98.8 61.4,47 1.2,47",
-};
 
 /** Text sits in the long bar, the part of the L with room. */
 const BAR =
-  "overflow-hidden px-4 pt-2 pb-4 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-black/32";
-const TOP_BAR = `h-1/2 justify-end ${BAR}`;
-const BOTTOM_BAR = `mt-auto h-1/2 justify-end ${BAR}`;
+  "overflow-hidden px-4 pt-2 pb-4 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-black/32 max-md:h-full max-md:before:inset-x-0 max-md:before:top-auto max-md:before:bottom-0 max-md:before:h-3/5 max-md:before:bg-gradient-to-t max-md:before:from-black/72 max-md:before:via-black/20 max-md:before:to-transparent";
+const TOP_BAR = `h-1/2 justify-end max-md:mt-0 max-md:h-full ${BAR}`;
+const BOTTOM_BAR = `mt-auto h-1/2 justify-end max-md:mt-0 max-md:h-full ${BAR}`;
 
-function CourtLine({ shape }: { shape: keyof typeof CLIP }) {
-  return (
-    <svg
-      aria-hidden
-      className="pointer-events-none absolute inset-0 z-20 h-full w-full text-white/80 transition-colors duration-300 group-hover:text-[#C8102E]"
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-    >
-      <polygon
-        points={COURT[shape]}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.25"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
-  );
-}
+/** Phone cards fill the space between the header and the bottom nav, then stick. */
+const PHONE_CARD =
+  "max-md:sticky max-md:top-[calc(3.25rem+env(safe-area-inset-top,0px))] max-md:h-[calc(100svh-3.25rem-5.5rem-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))] max-md:rounded-[1.35rem] max-md:shadow-[0_18px_40px_rgba(15,23,42,0.22)]";
 
 /**
  * Invisible defs, rendered once: a real optical-warp filter (fractal-noise
@@ -165,19 +142,15 @@ function GlassWarpDefs() {
 function PhotoLayer({ src }: { src: string }) {
   return (
     <>
-      {/* Primary photo — slow zoom on hover, that's the only hover animation */}
+      {/* Primary photo — slow zoom on hover; on phone it also drifts with the scroll */}
       <div
-        className="absolute inset-0 bg-cover bg-center contrast-[1.06] saturate-[1.12] transition-transform duration-700 ease-out group-hover:scale-110 group-data-[breaking=true]:scale-110"
+        className="ligau-scroll-photo absolute inset-0 bg-cover bg-center contrast-[1.06] saturate-[1.12] transition-transform duration-700 ease-out group-hover:scale-110 group-data-[breaking=true]:scale-110"
         style={{ backgroundImage: `url('${src}')` }}
       />
-      {/* Glass over the whole photo: a thin highlight, the image stays complete */}
+      {/* Crystal sheen across the photo. No inset stroke — that traced the L. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(118deg,rgba(255,255,255,0.42)_0%,rgba(255,255,255,0.1)_9%,transparent_24%,transparent_72%,rgba(255,255,255,0.14)_100%)]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),inset_0_0_0_1px_rgba(255,255,255,0.35)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(128deg,rgba(255,255,255,0.48)_0%,rgba(255,255,255,0.12)_8%,transparent_24%)]"
       />
       <div
         aria-hidden
@@ -216,19 +189,18 @@ export function HomeBento({
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-500/6 via-transparent to-transparent md:h-80"
       />
       <GlassWarpDefs />
-      <div className="grid grid-cols-12 gap-0 grid-rows-[210px_210px_12px_210px_210px_12px_210px_210px] sm:grid-rows-[224px_224px_14px_224px_224px_14px_224px_224px] md:grid-rows-[210px_210px_14px_210px_210px_14px_210px_210px] lg:grid-rows-[248px_248px_16px_248px_248px_16px_248px_248px]">
+      <div className="phone-stack flex flex-col gap-3 md:grid md:grid-cols-12 md:gap-0 md:grid-rows-[210px_210px_14px_210px_210px_14px_210px_210px] lg:grid-rows-[248px_248px_16px_248px_248px_16px_248px_248px]">
         {/* Pair 1 — duelo is the top bar, plantillas locks in underneath */}
         <Tile
           href="/competicion"
           style={{ clipPath: CLIP.gamma }}
-          className="col-start-1 col-end-11 row-start-1 row-end-3"
+          className={cn(PHONE_CARD, "max-md:z-[1] max-md:order-1 md:col-start-1 md:col-end-11 md:row-start-1 md:row-end-3")}
         >
           <PhotoLayer src={duelPhoto(nextMatch?.sportName)} />
-          <CourtLine shape="gamma" />
           <TileWatermark className="top-0 right-1 text-[5.5rem] text-white/20">VS</TileWatermark>
           <TileContent className={TOP_BAR}>
             <TileBadge>Próximo duelo</TileBadge>
-            <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200 md:text-xl">
+            <h4 className="text-lg font-black max-md:text-3xl max-md:leading-[0.95] text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200 md:text-xl">
               {nextMatch ? (
                 <>
                   {nextMatch.homeShort}{" "}
@@ -258,14 +230,13 @@ export function HomeBento({
         <Tile
           href="/universidades"
           style={{ clipPath: CLIP.ell }}
-          className="col-start-5 col-end-13 row-start-1 row-end-3"
+          className={cn(PHONE_CARD, "max-md:z-[2] max-md:order-2 md:col-start-3 md:col-end-13 md:row-start-1 md:row-end-3")}
         >
           <PhotoLayer src={MEDIA.squad} />
-          <CourtLine shape="ell" />
           <TileWatermark className="right-1 bottom-0 text-[6rem] text-white/20 md:text-[8rem]">U</TileWatermark>
           <TileContent className={BOTTOM_BAR}>
             <TileBadge>Rosters oficiales</TileBadge>
-            <h3 className="text-lg font-black tracking-tight text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200 sm:text-2xl lg:text-3xl">
+            <h3 className="text-lg font-black max-md:text-3xl max-md:leading-[0.95] tracking-tight text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200 sm:text-2xl lg:text-3xl">
               Plantillas y equipos
             </h3>
             <p className="mt-1 text-sm text-white/80">
@@ -283,9 +254,8 @@ export function HomeBento({
         <Tile
           href="/competicion?tab=tabla"
           style={{ clipPath: CLIP.ell }}
-          className="col-start-5 col-end-13 row-start-7 row-end-9"
+          className={cn(PHONE_CARD, "max-md:z-[6] max-md:order-6 md:col-start-3 md:col-end-13 md:row-start-7 md:row-end-9")}
         >
-          <CourtLine shape="ell" />
           <div className="carbon-fiber absolute inset-0 overflow-hidden">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(200,16,46,0.32),transparent_45%),radial-gradient(circle_at_80%_88%,rgba(200,16,46,0.20),transparent_46%)]" />
             <TileWatermark className="-right-1 -bottom-8 text-[7.5rem]">MVP</TileWatermark>
@@ -295,7 +265,7 @@ export function HomeBento({
                 <img
                   src={mvp.athlete.photoUrl}
                   alt=""
-                  className="absolute inset-0 h-full w-full object-cover object-top contrast-[1.05] saturate-[1.08] opacity-95 transition-transform duration-700 group-hover:scale-110"
+                  className="ligau-scroll-photo absolute inset-0 h-full w-full object-cover object-top contrast-[1.05] saturate-[1.08] opacity-95 transition-transform duration-700 group-hover:scale-110"
                 />
                 {/* Warped duplicate — optical warp only on click (breaking), not hover */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -322,7 +292,7 @@ export function HomeBento({
             <TileBadge>Destacado</TileBadge>
             {mvp ? (
               <>
-                <h4 className="text-xl font-black text-white uppercase transition-colors group-hover:text-red-300">
+                <h4 className="text-xl font-black text-white uppercase max-md:text-4xl max-md:leading-[0.95] transition-colors group-hover:text-red-300">
                   {mvp.athlete.fullName}
                 </h4>
                 <p className="mt-1 text-sm text-zinc-300">
@@ -331,7 +301,7 @@ export function HomeBento({
               </>
             ) : (
               <>
-                <h4 className="text-xl font-black text-white uppercase transition-colors group-hover:text-red-300">
+                <h4 className="text-xl font-black text-white uppercase max-md:text-4xl max-md:leading-[0.95] transition-colors group-hover:text-red-300">
                   MVP de la semana
                 </h4>
                 <p className="mt-1 text-sm text-zinc-300">
@@ -346,14 +316,13 @@ export function HomeBento({
         <Tile
           href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
           style={{ clipPath: CLIP.ellLeft }}
-          className="col-start-1 col-end-9 row-start-4 row-end-6"
+          className={cn(PHONE_CARD, "max-md:z-[4] max-md:order-4 md:col-start-1 md:col-end-11 md:row-start-4 md:row-end-6")}
         >
           <PhotoLayer src={MEDIA.news} />
-          <CourtLine shape="ellLeft" />
           <TileWatermark className="top-0 -right-2 text-[5.5rem] text-white/20">N</TileWatermark>
           <TileContent className={BOTTOM_BAR}>
             <TileBadge>Noticias</TileBadge>
-            <h4 className="line-clamp-2 text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] group-hover:text-red-200">
+            <h4 className="line-clamp-2 text-lg font-black max-md:text-3xl max-md:leading-[0.95] text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] group-hover:text-red-200">
               {featured?.title ?? "La jornada en cancha"}
             </h4>
             {featured?.excerpt ? (
@@ -365,14 +334,13 @@ export function HomeBento({
         <Tile
           href="/multimedia"
           style={{ clipPath: CLIP.gammaRight }}
-          className="col-start-3 col-end-13 row-start-4 row-end-6"
+          className={cn(PHONE_CARD, "max-md:z-[3] max-md:order-3 md:col-start-3 md:col-end-13 md:row-start-4 md:row-end-6")}
         >
           <PhotoLayer src={MEDIA.broadcast} />
-          <CourtLine shape="gammaRight" />
           <TileWatermark className="top-0 -right-2 text-[5.5rem] text-white/25">▶</TileWatermark>
           <TileContent className={TOP_BAR}>
             <TileBadge>Multimedia</TileBadge>
-            <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] group-hover:text-red-200">
+            <h4 className="text-lg font-black max-md:text-3xl max-md:leading-[0.95] text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] group-hover:text-red-200">
               Centro de medios
             </h4>
             <p className="mt-1 text-sm text-white/80">Podcasts • Videos • Highlights</p>
@@ -382,14 +350,13 @@ export function HomeBento({
         <Tile
           href="/liga-u-pass"
           style={{ clipPath: CLIP.gamma }}
-          className="col-start-1 col-end-11 row-start-7 row-end-9"
+          className={cn(PHONE_CARD, "max-md:z-[5] max-md:order-5 md:col-start-1 md:col-end-11 md:row-start-7 md:row-end-9")}
         >
           <PhotoLayer src={MEDIA.pass} />
-          <CourtLine shape="gamma" />
           <TileWatermark className="top-0 -right-1 text-[5rem] text-white/20">U+</TileWatermark>
           <TileContent className={TOP_BAR}>
             <TileBadge>Beneficios</TileBadge>
-            <h4 className="text-lg font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200">
+            <h4 className="text-lg font-black max-md:text-3xl max-md:leading-[0.95] text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] transition-colors group-hover:text-red-200">
               U Pass
             </h4>
             <p className="mt-1 text-sm text-white/80">

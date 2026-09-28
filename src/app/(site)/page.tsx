@@ -23,7 +23,7 @@ export default async function HomePage() {
       .sort((a, b) => +new Date(a.matchDate) - +new Date(b.matchDate))[0] ?? null;
 
   return (
-    <main className="relative overflow-x-hidden">
+    <main className="relative overflow-x-clip">
       <TacticalPitchCanvas />
 
       <section className="relative z-10">

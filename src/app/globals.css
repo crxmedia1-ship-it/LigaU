@@ -10,7 +10,7 @@
 
 html {
   -webkit-tap-highlight-color: transparent;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -18,7 +18,7 @@ body {
   background-color: #eef1f4;
   color: #0f172a;
   background-image: none;
-  overflow-x: hidden;
+  overflow-x: clip;
   overscroll-behavior-x: none;
   overscroll-behavior-y: none;
 }
@@ -262,7 +262,7 @@ body:has(.ligau-admin) {
 
 .ligau-public {
   color: #0f172a;
-  overflow-x: hidden;
+  overflow-x: clip;
   /* Platinum titanium canvas — pitch chalk lives in TacticalPitchCanvas on Home */
   background-color: #f8fafc;
   background-image: none;
@@ -614,6 +614,70 @@ html.dark .ligau-public .podium-glass {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-ligau-ball-bob {
+    animation: none;
+  }
+}
+
+/* Phone grids: the next card rises over the one that is stuck. */
+@keyframes ligau-card-rise {
+  from {
+    transform: translateY(36px) scale(0.94);
+  }
+  to {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ligau-photo-drift {
+  from {
+    transform: scale(1.16) translateY(6%);
+  }
+  to {
+    transform: scale(1.04) translateY(-4%);
+  }
+}
+
+@media (max-width: 767px) {
+  .ligau-scroll-card {
+    animation: ligau-card-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 60%;
+  }
+
+  .ligau-scroll-photo {
+    animation: ligau-photo-drift linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 45%;
+    transition: none;
+  }
+
+  /* The L clip is a desktop mosaic. On the phone each grid is a full card. */
+  #home-grids .phone-stack {
+    counter-reset: ligau-card;
+  }
+
+  #home-grids .phone-stack > a {
+    clip-path: none !important;
+  }
+
+  #home-grids .phone-stack > a::before {
+    counter-increment: ligau-card;
+    content: counter(ligau-card, decimal-leading-zero);
+    position: absolute;
+    z-index: 20;
+    top: 1rem;
+    left: 1.25rem;
+    font-family: var(--font-jersey), sans-serif;
+    font-size: 2.75rem;
+    line-height: 1;
+    color: rgb(255 255 255 / 80%);
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ligau-scroll-card,
+  .ligau-scroll-photo {
     animation: none;
   }
 }
