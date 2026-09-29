@@ -618,6 +618,13 @@ html.dark .ligau-public .podium-glass {
   }
 }
 
+/* The home tactic boards run on SMIL; without motion the pieces step off. */
+@media (prefers-reduced-motion: reduce) {
+  .ligau-tactics {
+    display: none;
+  }
+}
+
 @utility pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }

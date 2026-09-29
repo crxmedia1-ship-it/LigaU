@@ -1,27 +1,26 @@
-import { Tile } from "@/components/public/bento-tile";
+import Link from "next/link";
+import { ArrowUpRight, Play, Sparkles, Users } from "lucide-react";
 import { MatchCountdown } from "@/components/public/match-countdown";
-import { RailPitch } from "@/components/public/sport-courts";
+import { Reveal } from "@/components/public/reveal";
 import type { MatchCard, MvpHighlight, NewsCard } from "@/lib/public/types";
+import { cn } from "@/lib/utils";
 
 const MEDIA = {
   news: "https://images.unsplash.com/photo-1523995462485-3d171b5c8fa9?auto=format&fit=crop&w=800&q=80",
   basket:
-    "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=80",
   football:
-    "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=80",
   futsal:
-    "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1200&q=80",
   volley:
-    "https://images.unsplash.com/photo-1612872088519-3e939b0ba5b3?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1612872088519-3e939b0ba5b3?auto=format&fit=crop&w=1200&q=80",
   rugby:
-    "https://images.unsplash.com/photo-1566577739112-5180d4bf3900?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1566577739112-5180d4bf3900?auto=format&fit=crop&w=1200&q=80",
   chess:
-    "https://images.unsplash.com/photo-1529699211552-35d0cfa2c0b3?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1529699211552-35d0cfa2c0b3?auto=format&fit=crop&w=1200&q=80",
   broadcast:
     "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=800&q=80",
-  squad:
-    "https://images.unsplash.com/photo-1739694453275-a5326bbb37ea?auto=format&fit=crop&w=1200&q=80",
-  pass: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
   mvp: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=900&q=80",
 };
 
@@ -39,54 +38,48 @@ function duelPhoto(sportName: string | undefined) {
 function formatKickoff(value: string) {
   return new Intl.DateTimeFormat("es-VE", {
     timeZone: "America/Caracas",
+    weekday: "short",
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
   }).format(new Date(value));
 }
 
-/**
- * Invisible defs, rendered once: a real optical-warp filter (fractal-noise
- * displacement map) shared by every tile's "cracked" photo duplicate below.
- * This is what makes the glass genuinely refract the image instead of just
- * drawing lines on top of it.
- */
-function GlassWarpDefs() {
-  return (
-    <svg aria-hidden focusable="false" className="absolute h-0 w-0 overflow-hidden">
-      <filter id="ligau-glass-warp" x="-20%" y="-20%" width="140%" height="140%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7" result="noise" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="34" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </svg>
-  );
-}
+const GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
-function PhotoLayer({ src }: { src: string }) {
+const card =
+  "group relative isolate flex h-full overflow-hidden rounded-[1.25rem] outline-none transition-transform duration-500 ease-out active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#ff4d6a] focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-white/10 after:ring-inset";
+
+function Photo({ src, shade = "from-black/90 via-black/30 to-transparent" }: { src: string; shade?: string }) {
   return (
     <>
       <div
-        className="absolute inset-0 bg-cover bg-center contrast-[1.08] saturate-[1.14] transition-transform duration-700 ease-out group-hover:scale-105 group-data-[breaking=true]:scale-110"
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-zinc-900 bg-cover bg-center transition-transform duration-[1.2s] ease-out group-hover:scale-[1.06]"
         style={{ backgroundImage: `url('${src}')` }}
       />
-      {/* The whole pane is the crystal: sheen across the photo, not a plate behind the type. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,rgba(255,255,255,0.62)_0%,rgba(255,255,255,0.14)_12%,transparent_34%,transparent_62%,rgba(255,255,255,0.16)_100%)]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-white/10"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(9,9,11,0.72)_0%,rgba(9,9,11,0.18)_42%,transparent_68%)]"
-      />
-      <div
-        className="absolute inset-0 hidden bg-cover bg-center opacity-0 transition-[opacity,transform] duration-150 ease-out group-data-[breaking=true]:scale-110 group-data-[breaking=true]:opacity-100 md:block"
-        style={{ backgroundImage: `url('${src}')`, filter: "url(#ligau-glass-warp)" }}
-      />
+      <div aria-hidden className={cn("absolute inset-0 -z-10 bg-gradient-to-t", shade)} />
     </>
+  );
+}
+
+function Corner() {
+  return (
+    <span
+      aria-hidden
+      className="absolute top-3 right-3 grid size-8 place-items-center rounded-full bg-white/10 text-white ring-1 ring-white/15 backdrop-blur-md transition-all duration-300 group-hover:bg-white group-hover:text-zinc-950"
+    >
+      <ArrowUpRight className="size-4" strokeWidth={2.25} />
+    </span>
+  );
+}
+
+function Kicker({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <p className={cn("text-[10px] font-semibold tracking-[0.24em] text-white/55 uppercase", className)}>
+      {children}
+    </p>
   );
 }
 
@@ -102,96 +95,161 @@ export function HomeBento({
   const featured = news.find((item) => item.isFeatured) ?? news[0];
   const kickoff = nextMatch ? formatKickoff(nextMatch.matchDate) : null;
   const venue = nextMatch?.location?.trim() || null;
-
-  const mvpPhoto = mvp?.athlete.photoUrl || MEDIA.mvp;
   const homeName = nextMatch?.homeShort ?? "Liga";
   const awayName = nextMatch?.awayShort ?? "U";
 
   return (
     <section
       id="home-grids"
-      className="relative isolate w-full scroll-mt-[calc(3.25rem+env(safe-area-inset-top,0px))] px-4 pb-8 sm:px-6 sm:pt-8 sm:pb-24 lg:px-12 xl:px-20 2xl:px-28"
+      className="relative w-full scroll-mt-[calc(3.25rem+env(safe-area-inset-top,0px))] px-2 pb-10 sm:px-4 sm:pt-8 sm:pb-24 lg:px-8"
     >
-      <GlassWarpDefs />
-      <Tile
-        href="/competicion"
-        className="border border-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_18px_40px_rgba(15,23,42,0.12)]"
-      >
-        <div className="relative h-[64vw] min-h-[248px] max-h-[300px] sm:h-[400px] sm:max-h-none md:h-[460px]">
-          <PhotoLayer src={duelPhoto(nextMatch?.sportName)} />
-          <div className="relative z-10 flex h-full flex-col justify-end px-4 pb-4 sm:px-7 sm:pb-6">
-            <div className="flex items-baseline justify-between gap-3">
-              <p className="min-w-0 truncate text-[11px] font-semibold tracking-[0.22em] text-white/80 uppercase">
-                {nextMatch?.sportName ?? "Próximo partido"}
-              </p>
-              {nextMatch ? <MatchCountdown date={nextMatch.matchDate} className="shrink-0 text-[11px] text-white" /> : null}
-            </div>
-            <h2 className="mt-2 grid grid-cols-[1fr_auto_1fr] items-end gap-2 sm:gap-3">
-              <span className="font-jersey min-w-0 truncate text-[clamp(3rem,14vw,4.25rem)] leading-none text-white sm:text-8xl">{homeName}</span>
-              <span className="mb-1 shrink-0 font-jersey text-lg leading-none text-[#ff4d6a] sm:mb-2 sm:text-3xl">VS</span>
-              <span className="font-jersey min-w-0 truncate text-right text-[clamp(3rem,14vw,4.25rem)] leading-none text-white sm:text-8xl">{awayName}</span>
-            </h2>
-            <p className="mt-2 truncate text-sm font-medium text-white/85">
-              {nextMatch ? [venue, kickoff].filter(Boolean).join(" · ") : "Aún no hay un partido programado"}
-            </p>
-          </div>
-        </div>
-      </Tile>
+      <div className="relative isolate overflow-hidden rounded-[2rem] bg-[#0a0a0c] px-3 pt-6 pb-3 shadow-[0_40px_80px_-40px_rgba(10,10,12,0.6)] sm:px-5 sm:pt-8 sm:pb-5 lg:rounded-[2.5rem] lg:px-10 lg:pt-12 lg:pb-10 xl:px-14 2xl:px-20">
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-[radial-gradient(90%_55%_at_50%_-8%,rgba(200,16,46,0.38),transparent_70%),radial-gradient(60%_40%_at_100%_100%,rgba(200,16,46,0.12),transparent_70%)]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 opacity-[0.07] mix-blend-overlay"
+          style={{ backgroundImage: GRAIN }}
+        />
+        <div aria-hidden className="absolute inset-x-10 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
 
-      <div className="relative mt-5 sm:mt-6">
-        <p className="relative z-10 mb-3 text-xs font-semibold tracking-[0.16em] text-zinc-700 uppercase">La jornada</p>
-        <div className="relative">
-          <RailPitch />
-          <div className="relative left-1/2 flex w-screen -translate-x-1/2 snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 [mask-image:linear-gradient(to_right,black_calc(100%-2.5rem),transparent)] [scrollbar-width:none] md:left-0 md:w-auto md:translate-x-0 md:grid md:grid-cols-5 md:gap-3 md:overflow-visible md:px-0 md:[mask-image:none] [&::-webkit-scrollbar]:hidden">
-          <RailCard href="/competicion?tab=tabla" src={mvpPhoto} kicker="MVP" title={mvp?.athlete.fullName ?? "De la semana"} />
-          <RailCard
-            href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
-            src={featured?.coverImageUrl || MEDIA.news}
-            kicker="Noticias"
-            title={featured?.title ?? "La jornada en cancha"}
-            story
-          />
-          <RailCard href="/universidades" src={MEDIA.squad} kicker="Rosters" title="Plantillas" />
-          <RailCard href="/multimedia" src={MEDIA.broadcast} kicker="Multimedia" title="Clips" />
-          <RailCard href="/liga-u-pass" src={MEDIA.pass} kicker="Beneficios" title="U Pass" />
+        <Reveal className="mb-5 flex items-end justify-between gap-4 px-1 lg:mb-8">
+          <div>
+            <p className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.28em] text-white/50 uppercase">
+              <span className="relative flex size-1.5">
+                <span className="absolute inset-0 animate-ping rounded-full bg-[#ff4d6a] opacity-75" />
+                <span className="relative size-1.5 rounded-full bg-[#ff4d6a]" />
+              </span>
+              Temporada 2026
+            </p>
+            <h2 className="font-jersey mt-1.5 text-[2.5rem] leading-none text-white uppercase lg:text-6xl">La jornada</h2>
           </div>
+          <Link
+            href="/competicion"
+            className="mb-1 inline-flex items-center gap-1 text-xs font-semibold text-white/70 transition-colors hover:text-white"
+          >
+            Calendario
+            <ArrowUpRight className="size-3.5" strokeWidth={2.25} />
+          </Link>
+        </Reveal>
+
+        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4 md:grid-rows-[repeat(2,15rem)] lg:gap-4">
+          <Reveal className="col-span-2 md:row-span-2">
+            <Link href="/competicion" className={cn(card, "h-64 flex-col justify-between p-4 sm:h-80 sm:p-6 md:h-full")}>
+              <Photo src={duelPhoto(nextMatch?.sportName)} shade="from-black/95 via-black/50 to-black/25" />
+              <div className="flex items-center justify-between gap-2">
+                <span className="min-w-0 truncate rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-semibold tracking-[0.2em] text-white uppercase ring-1 ring-white/15 backdrop-blur-md">
+                  {nextMatch?.sportName ?? "Próximo partido"}
+                </span>
+                {nextMatch ? (
+                  <MatchCountdown
+                    date={nextMatch.matchDate}
+                    className="shrink-0 rounded-full bg-[#C8102E] px-3 py-1.5 text-[10px] font-semibold text-white shadow-[0_0_24px_rgba(200,16,46,0.6)]"
+                  />
+                ) : null}
+              </div>
+              <div>
+                <p className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                  <span className="font-jersey min-w-0 truncate text-[clamp(3rem,15vw,4.5rem)] leading-[0.85] text-white sm:text-7xl lg:text-8xl">
+                    {homeName}
+                  </span>
+                  <span className="grid size-9 place-items-center rounded-full bg-white/10 text-[11px] font-bold tracking-wider text-white ring-1 ring-white/20 backdrop-blur-md sm:size-11">
+                    VS
+                  </span>
+                  <span className="font-jersey min-w-0 truncate text-right text-[clamp(3rem,15vw,4.5rem)] leading-[0.85] text-white sm:text-7xl lg:text-8xl">
+                    {awayName}
+                  </span>
+                </p>
+                <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
+                  <p className="min-w-0 truncate text-[13px] text-white/70">
+                    {nextMatch ? [venue, kickoff].filter(Boolean).join(" · ") : "Aún no hay un partido programado"}
+                  </p>
+                  <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[11px] font-semibold text-zinc-950 transition-transform duration-300 group-hover:translate-x-0.5">
+                    Ver
+                    <ArrowUpRight className="size-3.5" strokeWidth={2.5} />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </Reveal>
+
+          <Reveal className="row-span-2 md:row-span-2" delay={0.08}>
+            <Link href="/competicion?tab=tabla" className={cn(card, "flex-col justify-end p-4")}>
+              <Photo src={mvp?.athlete.photoUrl || MEDIA.mvp} />
+              <Corner />
+              <Kicker>MVP · Semana</Kicker>
+              <h3 className="font-jersey mt-1 line-clamp-3 text-[2rem] leading-[0.92] text-white sm:text-4xl">
+                {mvp?.athlete.fullName ?? "Por anunciar"}
+              </h3>
+            </Link>
+          </Reveal>
+
+          <Reveal delay={0.14}>
+            <Link
+              href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
+              className={cn(card, "h-40 flex-col justify-end p-3.5 md:h-full")}
+            >
+              <Photo src={featured?.coverImageUrl || MEDIA.news} shade="from-black/95 via-black/65 to-black/15" />
+              <Corner />
+              <Kicker>Noticias</Kicker>
+              <h3 className="mt-1 line-clamp-3 text-[13px] leading-snug font-medium text-white sm:text-sm">
+                {featured?.title ?? "La jornada en cancha"}
+              </h3>
+            </Link>
+          </Reveal>
+
+          <Reveal delay={0.2}>
+            <Link href="/multimedia" className={cn(card, "h-40 flex-col justify-end p-3.5 md:h-full")}>
+              <Photo src={MEDIA.broadcast} shade="from-black/90 via-black/40 to-black/20" />
+              <span
+                aria-hidden
+                className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-[75%] place-items-center rounded-full bg-white/15 text-white ring-1 ring-white/30 backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-hover:bg-white group-hover:text-zinc-950"
+              >
+                <Play className="size-4 translate-x-px fill-current" />
+              </span>
+              <Kicker>Multimedia</Kicker>
+              <h3 className="font-jersey mt-0.5 text-[1.75rem] leading-none text-white">Clips</h3>
+            </Link>
+          </Reveal>
+
+          <Reveal className="md:col-span-2" delay={0.26}>
+            <Link
+              href="/universidades"
+              className={cn(card, "h-32 flex-col justify-between bg-white/[0.04] p-3.5 backdrop-blur-md md:h-36 md:p-5")}
+            >
+              <Corner />
+              <Users className="size-5 text-[#ff4d6a]" strokeWidth={1.75} />
+              <div>
+                <Kicker>Rosters</Kicker>
+                <h3 className="font-jersey text-[1.75rem] leading-none text-white md:text-4xl">Plantillas</h3>
+              </div>
+            </Link>
+          </Reveal>
+
+          <Reveal className="md:col-span-2" delay={0.32}>
+            <Link
+              href="/liga-u-pass"
+              className={cn(
+                card,
+                "h-32 flex-col justify-between bg-[linear-gradient(135deg,#E8193C_0%,#B00E2A_55%,#6E0719_100%)] p-3.5 shadow-[0_18px_40px_-16px_rgba(200,16,46,0.9)] md:h-36 md:p-5",
+              )}
+            >
+              <div
+                aria-hidden
+                className="absolute -top-10 -right-10 -z-10 size-32 rounded-full bg-white/20 blur-2xl"
+              />
+              <Corner />
+              <Sparkles className="size-5 text-white" strokeWidth={1.75} />
+              <div>
+                <Kicker className="text-white/70">Beneficios</Kicker>
+                <h3 className="font-jersey text-[1.75rem] leading-none text-white md:text-4xl">U Pass</h3>
+              </div>
+            </Link>
+          </Reveal>
         </div>
       </div>
     </section>
-  );
-}
-
-function RailCard({
-  href,
-  src,
-  kicker,
-  title,
-  story,
-}: {
-  href: string;
-  src: string;
-  kicker: string;
-  title: string;
-  story?: boolean;
-}) {
-  return (
-    <Tile
-      href={href}
-      className="h-[58vw] max-h-[280px] w-[calc(100vw-2.5rem)] shrink-0 snap-start border border-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_14px_32px_rgba(15,23,42,0.1)] md:h-[320px] md:max-h-none md:w-auto"
-    >
-      <PhotoLayer src={src} />
-      <div className="relative z-10 flex h-full min-w-0 flex-col justify-end p-4">
-        <p className="text-[11px] font-semibold tracking-[0.18em] text-[#ffb3c0] uppercase">{kicker}</p>
-        <h3
-          className={
-            story
-              ? "mt-1.5 line-clamp-3 text-[0.95rem] leading-snug font-semibold text-white normal-case"
-              : "font-jersey mt-1 line-clamp-2 text-[2rem] leading-[1.05] text-white"
-          }
-        >
-          {title}
-        </h3>
-      </div>
-    </Tile>
   );
 }
