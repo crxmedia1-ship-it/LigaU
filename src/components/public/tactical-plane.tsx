@@ -2,6 +2,7 @@
 
 import { LaserBadge } from "@/components/public/brand";
 import { MatchCountdown } from "@/components/public/match-countdown";
+import { SportCourts } from "@/components/public/sport-courts";
 import { cn } from "@/lib/utils";
 import type { MatchCard, MvpHighlight, NewsCard, SponsorCard } from "@/lib/public/types";
 import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, type MotionValue } from "motion/react";
@@ -25,7 +26,7 @@ const STOPS: Stop[] = [
   { id: "duelo", label: "Duelo", t: 0.18, x: 0.58, y: 0.22, scale: 1.14 },
   { id: "universidades", label: "Universidades", t: 0.36, x: 0.78, y: 0.48, scale: 1.04 },
   { id: "noticias", label: "Noticias", t: 0.52, x: 0.36, y: 0.64, scale: 1 },
-  { id: "mvp", label: "MVP", t: 0.68, x: 0.2, y: 0.78, scale: 1.1 },
+  { id: "mvp", label: "MVP", t: 0.68, x: 0.12, y: 0.86, scale: 1.1 },
   { id: "pass", label: "U Pass", t: 0.84, x: 0.58, y: 0.88, scale: 1.04 },
   { id: "marcas", label: "Marcas", t: 1, x: 0.32, y: 0.96, scale: 0.92 },
 ];
@@ -86,7 +87,7 @@ function Acrylic({
   children: React.ReactNode;
 }) {
   const classes = cn(
-    "block bg-white/80 backdrop-blur-xl border border-zinc-200/80 shadow-[0_15px_40px_rgba(0,0,0,0.06)] transition-[border-color,box-shadow] duration-300 hover:border-[#C8102E] hover:shadow-[0_0_0_1px_#C8102E,0_18px_44px_rgba(200,16,46,0.16)]",
+    "block bg-white/50 backdrop-blur-sm border border-white/80 shadow-[0_10px_28px_rgba(0,0,0,0.05)] transition-[border-color,box-shadow] duration-300 hover:border-[#C8102E] hover:shadow-[0_0_0_1px_#C8102E,0_14px_32px_rgba(200,16,46,0.12)]",
     className,
   );
   if (!href) return <div className={classes}>{children}</div>;
@@ -112,69 +113,11 @@ function Island({
   }
   return (
     <div
-      className={cn("absolute w-[min(84vw,420px)] -translate-x-1/2 -translate-y-1/2", className)}
+      className={cn("absolute w-[min(78vw,360px)] -translate-x-1/2 -translate-y-1/2", className)}
       style={{ left: `${stop.x * 100}%`, top: `${stop.y * 100}%` }}
     >
       {children}
     </div>
-  );
-}
-
-function PitchPlane() {
-  const pitches = [
-    [80, 70],
-    [1240, 70],
-    [80, 860],
-    [1240, 860],
-    [660, 460],
-    [80, 1640],
-    [1240, 1640],
-  ];
-  return (
-    <svg
-      aria-hidden
-      className="pointer-events-none absolute inset-0 h-full w-full text-zinc-300/50"
-      viewBox="0 0 2400 2400"
-      preserveAspectRatio="xMidYMid slice"
-      fill="none"
-    >
-      {Array.from({ length: 24 }, (_, index) => (
-        <line
-          key={`v-${index}`}
-          x1={index * 100}
-          y1="0"
-          x2={index * 100}
-          y2="2400"
-          stroke="currentColor"
-          strokeWidth="1"
-          vectorEffect="non-scaling-stroke"
-        />
-      ))}
-      {Array.from({ length: 24 }, (_, index) => (
-        <line
-          key={`h-${index}`}
-          x1="0"
-          y1={index * 100}
-          x2="2400"
-          y2={index * 100}
-          stroke="currentColor"
-          strokeWidth="1"
-          vectorEffect="non-scaling-stroke"
-        />
-      ))}
-      {pitches.map(([x, y]) => (
-        <g key={`${x}-${y}`} transform={`translate(${x} ${y})`} stroke="currentColor" strokeWidth="1">
-          <rect width="900" height="540" vectorEffect="non-scaling-stroke" />
-          <line x1="450" y1="0" x2="450" y2="540" vectorEffect="non-scaling-stroke" />
-          <circle cx="450" cy="270" r="72" vectorEffect="non-scaling-stroke" />
-          <circle cx="450" cy="270" r="2" fill="currentColor" />
-          <rect x="0" y="160" width="130" height="220" vectorEffect="non-scaling-stroke" />
-          <rect x="770" y="160" width="130" height="220" vectorEffect="non-scaling-stroke" />
-          <rect x="0" y="210" width="52" height="120" vectorEffect="non-scaling-stroke" />
-          <rect x="848" y="210" width="52" height="120" vectorEffect="non-scaling-stroke" />
-        </g>
-      ))}
-    </svg>
   );
 }
 
@@ -203,7 +146,7 @@ function PlaneStations({
 
   return (
     <>
-      <Island stop={origen} className="w-[min(88vw,640px)]">
+      <Island stop={origen} className="w-[min(82vw,460px)]">
         <Acrylic className="px-5 py-5 sm:px-8 sm:py-9">
           <LaserBadge>Caracas · 8 universidades · 9 deportes</LaserBadge>
           <h1 className="font-jersey mt-3 text-[2.15rem] leading-[0.88] font-black tracking-tight text-zinc-950 uppercase sm:mt-4 sm:text-6xl">
@@ -215,16 +158,10 @@ function PlaneStations({
         </Acrylic>
       </Island>
 
-      <Island stop={duelo} className="w-[min(88vw,520px)]">
-        <Acrylic href="/competicion" className="overflow-hidden">
-          <div
-            className="h-24 bg-cover bg-center sm:h-44"
-            style={{
-              backgroundImage: `url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=80')`,
-            }}
-          />
-          <div className="px-5 py-4 sm:px-6 sm:py-5">
-            <span className="mb-2 inline-block bg-[#C8102E] px-2.5 py-1 text-[10px] font-black tracking-wider text-white uppercase sm:mb-3">
+      <Island stop={duelo} className="w-[min(78vw,420px)]">
+        <Acrylic href="/competicion" className="px-5 py-4 sm:px-6 sm:py-5">
+          <div>
+            <span className="mb-2 inline-block bg-[#C8102E] px-2.5 py-1 text-[10px] font-black tracking-wider text-white uppercase">
               Próximo duelo
             </span>
             <h2 className="font-jersey text-4xl leading-none text-zinc-950 sm:text-6xl">
@@ -278,26 +215,14 @@ function PlaneStations({
       </Island>
 
       <Island stop={mvpStop}>
-        <Acrylic href="/competicion?tab=tabla" className="overflow-hidden">
-          {mvp?.athlete.photoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={mvp.athlete.photoUrl} alt="" className="h-28 w-full object-cover object-top sm:h-40" />
-          ) : (
-            <div className="grid h-24 place-items-center bg-zinc-950 sm:h-36">
-              <span className="font-jersey text-7xl text-[#C8102E]">
-                {mvp ? mvp.athlete.fullName.slice(0, 1) : "?"}
-              </span>
-            </div>
-          )}
-          <div className="px-6 py-5">
-            <p className="text-[10px] font-black tracking-[0.22em] text-[#C8102E] uppercase">MVP</p>
-            <h2 className="font-jersey mt-2 text-4xl leading-none text-zinc-950">
-              {mvp?.athlete.fullName ?? "De la semana"}
-            </h2>
-            <p className="mt-2 text-sm text-zinc-600">
-              {mvp ? `${mvp.team.label} · ${mvp.sportName}` : "Se revela al cerrar la jornada."}
-            </p>
-          </div>
+        <Acrylic href="/competicion?tab=tabla" className="px-5 py-4">
+          <p className="text-[10px] font-black tracking-[0.22em] text-[#C8102E] uppercase">MVP</p>
+          <h2 className="font-jersey mt-2 text-4xl leading-none text-zinc-950">
+            {mvp?.athlete.fullName ?? "De la semana"}
+          </h2>
+          <p className="mt-2 text-sm text-zinc-600">
+            {mvp ? `${mvp.team.label} · ${mvp.sportName}` : "Se revela al cerrar la jornada."}
+          </p>
         </Acrylic>
       </Island>
 
@@ -509,7 +434,7 @@ export function TacticalPlane({
           className="absolute top-0 left-0 h-[300vh] w-[300vw] origin-top-left will-change-transform"
           style={{ x, y, scale }}
         >
-          <PitchPlane />
+          <SportCourts />
           {stations}
         </motion.div>
         <p className="pointer-events-none absolute top-5 right-5 z-20 hidden text-[10px] font-semibold tracking-[0.18em] text-zinc-400 uppercase md:block">
