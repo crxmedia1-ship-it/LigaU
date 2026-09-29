@@ -1,13 +1,16 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export function MatchCountdown({
   date,
   live,
+  className,
 }: {
   date: string;
   live?: boolean;
+  className?: string;
 }) {
   const [label, setLabel] = useState(live ? "EN VIVO" : "—");
 
@@ -37,7 +40,7 @@ export function MatchCountdown({
   }, [date, live]);
 
   return (
-    <span className="font-mono text-xs tracking-[0.18em] text-white/80 uppercase">
+    <span className={cn("font-mono text-xs tracking-[0.18em] text-white/80 uppercase", className)}>
       {label}
     </span>
   );

@@ -81,7 +81,7 @@ export function Tile({
           you're looking through just fractured, right before we navigate. */}
       <div
         className={cn(
-          "ligau-scroll-card flex h-full w-full flex-col transition-[filter,transform] duration-150 ease-out",
+          "flex h-full w-full flex-col transition-[filter,transform] duration-150 ease-out",
           breaking && "scale-[1.03] blur-[2px] brightness-125 contrast-125",
         )}
       >
