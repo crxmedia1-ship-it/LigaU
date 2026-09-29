@@ -64,21 +64,23 @@ function GlassWarpDefs() {
 function PhotoLayer({ src }: { src: string }) {
   return (
     <>
-      {/* Primary photo — slow zoom on hover, that's the only hover animation */}
       <div
-        className="absolute inset-0 bg-cover bg-center contrast-[1.06] saturate-[1.12] transition-transform duration-700 ease-out group-hover:scale-110 group-data-[breaking=true]:scale-110"
+        className="absolute inset-0 bg-cover bg-center contrast-[1.08] saturate-[1.14] transition-transform duration-700 ease-out group-hover:scale-105 group-data-[breaking=true]:scale-110"
         style={{ backgroundImage: `url('${src}')` }}
       />
-      {/* Crystal sheen across the photo. No inset stroke — that traced the L. */}
+      {/* The whole pane is the crystal: sheen across the photo, not a plate behind the type. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(128deg,rgba(255,255,255,0.48)_0%,rgba(255,255,255,0.12)_8%,transparent_24%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,rgba(255,255,255,0.62)_0%,rgba(255,255,255,0.14)_12%,transparent_34%,transparent_62%,rgba(255,255,255,0.16)_100%)]"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(9,9,11,0.35)_0%,transparent_36%)]"
+        className="pointer-events-none absolute inset-0 bg-white/10"
       />
-      {/* Optical warp only on click (breaking state) — no hover distortion */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(9,9,11,0.72)_0%,rgba(9,9,11,0.18)_42%,transparent_68%)]"
+      />
       <div
         className="absolute inset-0 hidden bg-cover bg-center opacity-0 transition-[opacity,transform] duration-150 ease-out group-data-[breaking=true]:scale-110 group-data-[breaking=true]:opacity-100 md:block"
         style={{ backgroundImage: `url('${src}')`, filter: "url(#ligau-glass-warp)" }}
@@ -107,34 +109,36 @@ export function HomeBento({
   return (
     <section
       id="home-grids"
-      className="relative isolate w-full scroll-mt-[calc(3.25rem+env(safe-area-inset-top,0px))] px-3 pt-2 pb-6 sm:px-6 sm:pt-8 sm:pb-24 lg:px-12 xl:px-20 2xl:px-28"
+      className="relative isolate w-full scroll-mt-[calc(3.25rem+env(safe-area-inset-top,0px))] px-3 pb-6 sm:px-6 sm:pt-8 sm:pb-24 lg:px-12 xl:px-20 2xl:px-28"
     >
       <GlassWarpDefs />
-      <Tile href="/competicion" className="-mx-3 bg-zinc-950 sm:mx-0">
-        <div className="relative h-[68vw] min-h-[230px] max-h-[300px] sm:h-[380px] sm:max-h-none md:h-[460px]">
+      <Tile
+        href="/competicion"
+        className="-mx-3 border border-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_18px_40px_rgba(15,23,42,0.12)] sm:mx-0"
+      >
+        <div className="relative h-[72vw] min-h-[260px] max-h-[340px] sm:h-[400px] sm:max-h-none md:h-[460px]">
           <PhotoLayer src={duelPhoto(nextMatch?.sportName)} />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/10 to-black/75" />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent" />
-          <h2 className="relative z-10 grid h-full grid-cols-[1fr_auto_1fr] items-end gap-2 px-4 pb-4 sm:px-8 sm:pb-6">
-            <span className="font-jersey text-[4rem] leading-none text-white sm:text-8xl">{homeName}</span>
-            <span className="mb-2 self-center bg-[#C8102E] px-2 py-3 font-jersey text-lg leading-none text-white sm:mb-4 sm:px-3 sm:py-4 sm:text-2xl">
-              VS
-            </span>
-            <span className="text-right font-jersey text-[4rem] leading-none text-white sm:text-8xl">{awayName}</span>
-          </h2>
-        </div>
-        <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <p className="min-w-0 truncate text-[11px] font-semibold tracking-wide text-white/75 uppercase">
-            {nextMatch
-              ? [nextMatch.sportName, venue, kickoff].filter(Boolean).join(" · ")
-              : "Aún no hay un partido programado"}
-          </p>
-          {nextMatch ? <MatchCountdown date={nextMatch.matchDate} className="shrink-0 text-[11px]" /> : null}
+          <div className="relative z-10 flex h-full flex-col justify-end px-4 pb-4 sm:px-7 sm:pb-6">
+            <div className="flex items-baseline justify-between gap-3">
+              <p className="text-[11px] font-semibold tracking-[0.22em] text-white/80 uppercase">
+                {nextMatch?.sportName ?? "Próximo partido"}
+              </p>
+              {nextMatch ? <MatchCountdown date={nextMatch.matchDate} className="shrink-0 text-[11px] text-white" /> : null}
+            </div>
+            <h2 className="mt-2 grid grid-cols-[1fr_auto_1fr] items-end gap-3">
+              <span className="font-jersey text-[4.25rem] leading-none text-white sm:text-8xl">{homeName}</span>
+              <span className="mb-1 font-jersey text-xl leading-none text-[#ff4d6a] sm:mb-2 sm:text-3xl">VS</span>
+              <span className="text-right font-jersey text-[4.25rem] leading-none text-white sm:text-8xl">{awayName}</span>
+            </h2>
+            <p className="mt-2 text-sm font-medium text-white/85">
+              {nextMatch ? [venue, kickoff].filter(Boolean).join(" · ") : "Aún no hay un partido programado"}
+            </p>
+          </div>
         </div>
       </Tile>
 
       <div className="mt-4 sm:mt-5">
-        <p className="mb-2 text-[10px] font-black tracking-[0.22em] text-zinc-500 uppercase">La jornada</p>
+        <p className="mb-2.5 text-xs font-semibold tracking-[0.16em] text-zinc-700 uppercase">La jornada</p>
         <div className="-mx-3 flex snap-x snap-mandatory gap-2 overflow-x-auto px-3 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0 md:grid md:grid-cols-5 md:gap-3 md:overflow-visible [&::-webkit-scrollbar]:hidden">
           <RailCard href="/competicion?tab=tabla" src={mvpPhoto} kicker="MVP" title={mvp?.athlete.fullName ?? "De la semana"} />
           <RailCard
@@ -146,7 +150,7 @@ export function HomeBento({
           />
           <RailCard href="/universidades" src={MEDIA.squad} kicker="Rosters" title="Plantillas" />
           <RailCard href="/multimedia" src={MEDIA.broadcast} kicker="Multimedia" title="Clips" />
-          <RailCard href="/liga-u-pass" src={MEDIA.pass} kicker="Beneficios" title="U Pass" crimson />
+          <RailCard href="/liga-u-pass" src={MEDIA.pass} kicker="Beneficios" title="U Pass" />
         </div>
       </div>
     </section>
@@ -159,35 +163,26 @@ function RailCard({
   kicker,
   title,
   story,
-  crimson,
 }: {
   href: string;
   src: string;
   kicker: string;
   title: string;
   story?: boolean;
-  crimson?: boolean;
 }) {
   return (
     <Tile
       href={href}
-      className="h-[78vw] max-h-[390px] w-[74vw] shrink-0 snap-start sm:h-[340px] sm:w-[220px] md:h-[320px] md:w-auto"
+      className="h-[78vw] max-h-[390px] w-[74vw] shrink-0 snap-start border border-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_14px_32px_rgba(15,23,42,0.1)] sm:h-[340px] sm:w-[220px] md:h-[320px] md:w-auto"
     >
       <PhotoLayer src={src} />
-      <div
-        className={
-          crimson
-            ? "absolute inset-0 bg-gradient-to-t from-[#C8102E] via-[#C8102E]/55 to-black/25"
-            : "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/15"
-        }
-      />
-      <div className="relative z-10 flex h-full flex-col justify-between p-3.5">
-        <p className="text-[10px] font-black tracking-[0.2em] text-white/80 uppercase">{kicker}</p>
+      <div className="relative z-10 flex h-full flex-col justify-end p-4">
+        <p className="text-[11px] font-semibold tracking-[0.18em] text-[#ffb3c0] uppercase">{kicker}</p>
         <h3
           className={
             story
-              ? "line-clamp-4 text-lg leading-tight font-black text-white uppercase"
-              : "font-jersey line-clamp-2 text-4xl leading-[0.88] text-white uppercase"
+              ? "mt-1.5 line-clamp-3 text-[1.05rem] leading-snug font-semibold text-white normal-case"
+              : "font-jersey mt-1 line-clamp-2 text-[2.45rem] leading-none text-white"
           }
         >
           {title}
