@@ -52,6 +52,8 @@ export type MatchCard = {
   sportId: string;
   sportName: string;
   sportSlug: string;
+  /** Branch of the home team; both sides of a fixture share it. */
+  gender: TeamGender | null;
   homeTeamId: string;
   awayTeamId: string;
   homeLabel: string;

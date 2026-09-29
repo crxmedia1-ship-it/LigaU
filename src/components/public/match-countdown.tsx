@@ -5,21 +5,14 @@ import { useEffect, useState } from "react";
 
 export function MatchCountdown({
   date,
-  live,
   className,
 }: {
   date: string;
-  live?: boolean;
   className?: string;
 }) {
-  const [label, setLabel] = useState(live ? "EN VIVO" : "—");
+  const [label, setLabel] = useState("—");
 
   useEffect(() => {
-    if (live) {
-      setLabel("EN VIVO");
-      return;
-    }
-
     const tick = () => {
       const diff = +new Date(date) - Date.now();
       if (diff <= 0) {
@@ -37,7 +30,7 @@ export function MatchCountdown({
     tick();
     const timer = window.setInterval(tick, 30_000);
     return () => window.clearInterval(timer);
-  }, [date, live]);
+  }, [date]);
 
   return (
     <span className={cn("font-mono text-xs tracking-[0.18em] text-white/80 uppercase", className)}>

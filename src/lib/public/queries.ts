@@ -93,6 +93,7 @@ function mapMatch(
     sportId: match.sport_id,
     sportName: sport?.name ?? "Deporte",
     sportSlug: sport?.slug ?? "",
+    gender: home?.gender ?? away?.gender ?? null,
     homeTeamId: match.home_team_id,
     awayTeamId: match.away_team_id,
     homeLabel: home?.label ?? "Local",

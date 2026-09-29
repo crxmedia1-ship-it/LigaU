@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { motion } from "motion/react";
 import { GoalCelebration } from "@/components/ui/effects/GoalCelebration";
-import { LivePulseRadar } from "@/components/ui/effects/LivePulseRadar";
 import { RefereeCard } from "@/components/ui/effects/RefereeCard";
 import { ScorePair, ScoreboardTicker } from "@/components/ui/effects/ScoreboardTicker";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +27,7 @@ export function MatchDetailView({
   const kind = getSportFormKind(match.sportSlug);
   const details = parseMatchDetails(kind, match.matchDetails);
   const finished = match.status === "finished";
-  const hasScore = match.homeScore !== null && match.awayScore !== null;
+  const hasScore = finished && match.homeScore !== null && match.awayScore !== null;
 
   return (
     <motion.div
@@ -36,7 +36,7 @@ export function MatchDetailView({
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
       <GoalCelebration
-        enabled={finished && hasScore}
+        enabled={hasScore}
         matchId={match.id}
         colors={winnerColors}
       />
@@ -44,11 +44,7 @@ export function MatchDetailView({
         {match.sportName} · {match.roundName || "Jornada"}
       </p>
       <div className="mt-3 flex items-center gap-2">
-        {match.status === "live" ? (
-          <LivePulseRadar />
-        ) : (
-          <Badge variant="outline">{statusLabel(match.status)}</Badge>
-        )}
+        <Badge variant="outline">{statusLabel(match.status)}</Badge>
         <span className="text-sm text-muted-foreground">
           {formatMatchDate(match.matchDate)}
           {match.location ? ` · ${match.location}` : ""}
@@ -59,7 +55,9 @@ export function MatchDetailView({
         <JerseyMark number="VS" />
         <div className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-4">
           <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-end">
-            <UniversityCrest url={match.homeLogoUrl} label={match.homeShort} size="lg" glow="natural" />
+            <ViewTransition name={`crest-${match.id}-home`} share="morph" default="none">
+              <UniversityCrest url={match.homeLogoUrl} label={match.homeShort} size="lg" glow="natural" />
+            </ViewTransition>
             <h1 className="text-2xl font-semibold sm:text-4xl">{match.homeShort}</h1>
           </div>
           <p className="font-mono text-4xl font-black text-brand-silver sm:text-5xl">
@@ -71,7 +69,9 @@ export function MatchDetailView({
           </p>
           <div className="flex flex-col items-center gap-2 sm:flex-row">
             <h1 className="text-2xl font-semibold sm:text-4xl">{match.awayShort}</h1>
-            <UniversityCrest url={match.awayLogoUrl} label={match.awayShort} size="lg" glow="natural" />
+            <ViewTransition name={`crest-${match.id}-away`} share="morph" default="none">
+              <UniversityCrest url={match.awayLogoUrl} label={match.awayShort} size="lg" glow="natural" />
+            </ViewTransition>
           </div>
         </div>
         <p className="mt-3 text-sm text-muted-foreground">
@@ -79,7 +79,7 @@ export function MatchDetailView({
         </p>
       </section>
 
-      {details.kind === "basketball" ? (
+      {finished && details.kind === "basketball" ? (
         <section className="mt-8 grid grid-cols-4 gap-2">
           {(["q1", "q2", "q3", "q4"] as const).map((quarter) => (
             <div key={quarter} className="glass-card p-3 text-center">
@@ -94,7 +94,7 @@ export function MatchDetailView({
         </section>
       ) : null}
 
-      {details.kind === "sets" ? (
+      {finished && details.kind === "sets" ? (
         <section className="mt-8 grid gap-2 sm:grid-cols-3">
           {details.sets.map((set, index) => (
             <div key={index} className="glass-card p-3 text-center">

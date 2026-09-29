@@ -19,9 +19,8 @@ export function formatScore(home: number | null, away: number | null, status: Ma
 }
 
 export function statusLabel(status: MatchStatus) {
-  if (status === "live") return "EN VIVO";
   if (status === "finished") return "FINAL";
-  if (status === "scheduled") return "PRÓXIMO";
+  if (status === "scheduled" || status === "live") return "PRÓXIMO";
   if (status === "postponed") return "APLAZADO";
   return "CANCELADO";
 }

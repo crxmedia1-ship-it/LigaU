@@ -17,7 +17,8 @@ export default async function PartidoPage({
   const match = catalog.matches.find((item) => item.id === id);
   if (!match) notFound();
 
-  const events = catalog.events.filter((event) => event.matchId === match.id);
+  const events =
+    match.status === "finished" ? catalog.events.filter((event) => event.matchId === match.id) : [];
   const mvp = catalog.athletes.find((athlete) => athlete.id === match.mvpAthleteId) ?? null;
   const homeTeam = catalog.teams.find((team) => team.id === match.homeTeamId);
   const awayTeam = catalog.teams.find((team) => team.id === match.awayTeamId);

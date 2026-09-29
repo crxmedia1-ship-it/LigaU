@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-
 const stroke = {
   fill: "none" as const,
   stroke: "currentColor",
@@ -530,39 +528,28 @@ function StackCourt({
   );
 }
 
-/**
- * The whole home laid out as one upright pitch, drawn in hairlines just darker than the page.
- * Boxes hang off the top and bottom edges; the halfway line sits mid-page.
- */
-export function HomePitchLines() {
-  const line = "border-zinc-900/[0.07]";
-  const box = (edge: "top" | "bottom") => (
-    <div className={cn("absolute inset-x-0 flex justify-center", edge === "top" ? "top-0" : "bottom-0 rotate-180")}>
-      <div className={cn("relative h-32 w-[64%] max-w-xl border-x border-b sm:h-44", line)}>
-        <div className={cn("absolute top-0 left-1/2 h-12 w-[46%] -translate-x-1/2 border-x border-b sm:h-16", line)} />
-        <div className="absolute top-full left-1/2 h-10 w-28 -translate-x-1/2 overflow-hidden sm:h-12 sm:w-36">
-          <div className={cn("absolute bottom-0 left-0 size-28 rounded-full border sm:size-36", line)} />
-        </div>
-      </div>
-    </div>
-  );
+const MARKS: { match: string[]; ratio: number; draw: (box: { w: number; h: number }) => React.ReactNode }[] = [
+  { match: ["futsal", "sala"], ratio: 1.6, draw: (b) => <Futsal {...b} /> },
+  { match: ["balonc", "basket"], ratio: 1.87, draw: (b) => <Basketball {...b} /> },
+  { match: ["playa", "beach"], ratio: 1.5, draw: (b) => <Beach {...b} /> },
+  { match: ["voleib", "voley"], ratio: 2, draw: (b) => <Volleyball {...b} /> },
+  { match: ["mesa", "ping"], ratio: 1.75, draw: (b) => <TableTennis {...b} /> },
+  { match: ["tenis", "tennis"], ratio: 1.7, draw: (b) => <Tennis {...b} /> },
+  { match: ["rugby"], ratio: 1.5, draw: (b) => <Rugby {...b} /> },
+  { match: ["ajedrez", "chess"], ratio: 1, draw: (b) => <Chess {...b} /> },
+  { match: ["fútbol", "futbol"], ratio: 105 / 68, draw: (b) => <Football {...b} /> },
+];
+
+/** The court or board for a sport, by name, drawn in hairlines of the current color. */
+export function CourtMark({ sport, className }: { sport: string; className?: string }) {
+  const name = sport.toLowerCase();
+  const mark = MARKS.find((m) => m.match.some((key) => name.includes(key))) ?? MARKS[MARKS.length - 1];
+  const w = 1000;
+  const h = w / mark.ratio;
   return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-x-2.5 top-2.5 bottom-2.5 z-0 sm:inset-x-4 lg:inset-x-8"
-    >
-      <div className={cn("absolute inset-0 rounded-[1.75rem] border", line)} />
-      {box("top")}
-      <div className={cn("absolute inset-x-0 top-1/2 border-t", line)} />
-      <div
-        className={cn(
-          "absolute top-1/2 left-1/2 size-44 -translate-x-1/2 -translate-y-1/2 rounded-full border sm:size-64",
-          line,
-        )}
-      />
-      <div className="absolute top-1/2 left-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C8102E]/40" />
-      {box("bottom")}
-    </div>
+    <svg aria-hidden viewBox={`0 0 ${w} ${h}`} className={className} fill="none">
+      {mark.draw({ w, h })}
+    </svg>
   );
 }
 

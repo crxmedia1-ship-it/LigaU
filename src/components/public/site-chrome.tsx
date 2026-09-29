@@ -2,43 +2,38 @@
 
 import Link from "next/link";
 import { Suspense } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { motion } from "motion/react";
 import { HeaderKickBall } from "@/components/public/header-kick-ball";
+import { NAV_TABS, activeTabIndex, tabTransition } from "@/components/public/nav-tabs";
 import { cn } from "@/lib/utils";
 
-const NAV = [
-  { href: "/", label: "Inicio", id: "home" },
-  { href: "/competicion?tab=tabla", label: "Clasificación", id: "tabla" },
-  { href: "/competicion", label: "Calendario", id: "calendario" },
-  { href: "/liga-u-pass", label: "U Pass", id: "pass" },
-] as const;
-
 function DesktopNav() {
-  const pathname = usePathname();
-  const view = useSearchParams().get("tab");
+  const current = activeTabIndex(usePathname());
 
   return (
-    <nav className="flex items-center gap-1">
-      {NAV.map((item) => {
-        const active =
-          item.id === "home"
-            ? pathname === "/"
-            : item.id === "calendario"
-              ? pathname.startsWith("/competicion") && view !== "tabla"
-              : item.id === "tabla"
-                ? pathname.startsWith("/competicion") && view === "tabla"
-                : pathname.startsWith("/liga-u-pass");
+    <nav className="flex items-center gap-1 rounded-full bg-zinc-100 p-1">
+      {NAV_TABS.map((item, index) => {
+        const active = index === current;
         return (
           <Link
             key={item.id}
             href={item.href}
+            transitionTypes={tabTransition(current, index)}
+            aria-current={active ? "page" : undefined}
             className={cn(
-              "rounded-sm px-3 py-1.5 text-xs font-semibold tracking-[0.16em] text-zinc-500 uppercase transition-colors duration-150 hover:text-zinc-900",
-              active &&
-                "border border-[#C8102E]/40 bg-[#C8102E]/8 text-[#C8102E]",
+              "relative rounded-full px-4 py-1.5 text-xs font-semibold tracking-[0.14em] text-zinc-500 uppercase transition-colors duration-150 hover:text-zinc-900",
+              active && "text-white hover:text-white",
             )}
           >
-            {item.label}
+            {active ? (
+              <motion.span
+                layoutId="desktop-nav-pill"
+                transition={{ type: "spring", stiffness: 480, damping: 36 }}
+                className="absolute inset-0 rounded-full bg-[#C8102E]"
+              />
+            ) : null}
+            <span className="relative">{item.label}</span>
           </Link>
         );
       })}
@@ -48,7 +43,9 @@ function DesktopNav() {
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-200/80 bg-[#eef1f4] pt-safe md:border-zinc-200/80 md:bg-white/80 md:pt-0 md:backdrop-blur-xl">
+    <header
+      style={{ viewTransitionName: "site-header" }}
+      className="sticky top-0 z-40 border-b border-zinc-200/80 bg-[#eef1f4] pt-safe md:border-zinc-200/80 md:bg-white/80 md:pt-0 md:backdrop-blur-xl">
       <div className="flex h-12 items-center justify-between px-4 md:hidden">
         <Link href="/" className="flex min-h-11 items-center gap-2">
           <span
