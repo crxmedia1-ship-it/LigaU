@@ -1,6 +1,10 @@
-import { TacticalPlane } from "@/components/public/tactical-plane";
+import { HomeBento } from "@/components/public/home-bento";
+import { HeroPlayerHero } from "@/components/public/hero-media";
+import { SponsorMarquee } from "@/components/public/sponsor-marquee";
+import { TacticalPitchCanvas } from "@/components/public/tactical-pitch-canvas";
 import { getHomeSponsorLogos } from "@/lib/public/home-sponsors";
 import { getMvpHighlight, getPublicCatalog } from "@/lib/public/queries";
+import { LaserBadge } from "@/components/public/brand";
 
 export default async function HomePage() {
   const [catalog, homeSponsors] = await Promise.all([
@@ -19,13 +23,33 @@ export default async function HomePage() {
       .sort((a, b) => +new Date(a.matchDate) - +new Date(b.matchDate))[0] ?? null;
 
   return (
-    <main>
-      <TacticalPlane
-        news={catalog.news}
-        nextMatch={nextMatch}
-        mvp={mvp}
-        sponsors={homeSponsors}
-      />
+    <main className="relative overflow-x-clip">
+      <TacticalPitchCanvas />
+
+      <section className="relative z-10">
+        <div className="relative w-full px-4 pt-2 pb-2 sm:px-6 sm:pt-10 sm:pb-8 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8 lg:px-12 lg:pt-16 lg:pb-8 xl:px-20 2xl:px-28">
+          <div className="relative mx-auto h-[210px] w-full max-w-sm sm:h-[320px] sm:max-w-lg lg:order-2 lg:h-[600px] lg:max-w-none xl:h-[660px]">
+            <HeroPlayerHero />
+          </div>
+          <div className="relative z-10 flex flex-col gap-4 pt-1 sm:gap-8 sm:pt-0 lg:order-1">
+            <LaserBadge>Caracas · 8 universidades · 9 deportes</LaserBadge>
+            <h1 className="font-jersey max-w-3xl text-[2.65rem] leading-[0.9] font-black tracking-tight text-zinc-950 wrap-break-word uppercase sm:text-7xl lg:text-8xl">
+              El <span className="text-[#C8102E]">epicentro</span> del talento universitario.
+            </h1>
+            <p className="max-w-xl text-base text-zinc-600 sm:text-lg">
+              Resultados en vivo, fichas de atletas, noticias y el club de beneficios Liga U Pass.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div className="relative z-10 mt-2 sm:mt-8 md:-mt-12 lg:-mt-16">
+        <HomeBento news={catalog.news} nextMatch={nextMatch} mvp={mvp} />
+      </div>
+
+      <div className="relative z-10 w-full px-4 pb-8 sm:px-6 lg:px-12 xl:px-20 2xl:px-28">
+        <SponsorMarquee sponsors={homeSponsors} />
+      </div>
     </main>
   );
 }

@@ -22,6 +22,7 @@ const MEDIA = {
   squad:
     "https://images.unsplash.com/photo-1739694453275-a5326bbb37ea?auto=format&fit=crop&w=1200&q=80",
   pass: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
+  mvp: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=900&q=80",
 };
 
 function duelPhoto(sportName: string | undefined) {
@@ -47,27 +48,6 @@ function formatKickoff(value: string) {
 function TileBadge({ children }: { children: React.ReactNode }) {
   return (
     <span className="mb-3 w-fit bg-red-600 px-3 py-1 text-[10px] font-black tracking-wider text-white uppercase [clip-path:polygon(6px_0,100%_0,calc(100%-6px)_100%,0_100%)]">
-      {children}
-    </span>
-  );
-}
-
-/** Giant titanium-grey watermark glyph, sunk subtly into the tile's material. */
-function TileWatermark({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <span
-      aria-hidden
-      className={cn(
-        "font-jersey pointer-events-none absolute leading-none text-zinc-400/10 select-none",
-        className,
-      )}
-    >
       {children}
     </span>
   );
@@ -164,13 +144,12 @@ export function HomeBento({
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-500/6 via-transparent to-transparent md:h-80"
       />
       <GlassWarpDefs />
-      <div className="flex flex-col gap-2.5 md:grid md:grid-cols-12 md:gap-3">
-        {/* The match is the scoreboard. Everything else is a separate panel. */}
-        <Tile href="/competicion" className="h-[min(58vh,460px)] md:col-span-8 md:h-[440px] lg:h-[500px]">
+      <div className="flex flex-col gap-3">
+        <Tile href="/competicion" className="h-[300px] sm:h-[380px] md:h-[500px]">
           <PhotoLayer src={duelPhoto(nextMatch?.sportName)} />
-          <TileWatermark className="top-2 right-2 text-[7rem] text-white/15 sm:text-[9rem]">VS</TileWatermark>
+          <span aria-hidden className="absolute top-0 bottom-0 left-0 z-10 w-1.5 bg-[#C8102E]" />
           <TileContent className={PANEL}>
-            <TileBadge>Próximo duelo</TileBadge>
+            <TileBadge>Próximo duelo{nextMatch?.sportName ? ` · ${nextMatch.sportName}` : ""}</TileBadge>
             <h2 className="font-jersey flex flex-wrap items-baseline gap-x-3 text-[3.4rem] leading-[0.82] text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] sm:text-7xl lg:text-8xl">
               {nextMatch ? (
                 <>
@@ -199,122 +178,109 @@ export function HomeBento({
           </TileContent>
         </Tile>
 
-        {/*
-          MVP stays dark — a player cam beside the scoreboard, the way a
-          broadcast cuts from the pitch to the athlete.
-        */}
-        <Tile href="/competicion?tab=tabla" className="h-[250px] md:col-span-4 md:h-[440px] lg:h-[500px]">
-          <div className="carbon-fiber absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(200,16,46,0.32),transparent_45%),radial-gradient(circle_at_80%_88%,rgba(200,16,46,0.20),transparent_46%)]" />
-            <TileWatermark className="-right-1 -bottom-8 text-[7.5rem]">MVP</TileWatermark>
-            {mvp?.athlete.photoUrl ? (
-              <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={mvp.athlete.photoUrl}
-                  alt=""
-                  className="absolute inset-0 h-full w-full object-cover object-top contrast-[1.05] saturate-[1.08] opacity-95 transition-transform duration-700 group-hover:scale-110"
-                />
-                {/* Warped duplicate — optical warp only on click (breaking), not hover */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  aria-hidden
-                  src={mvp.athlete.photoUrl}
-                  alt=""
-                  className="absolute inset-0 hidden h-full w-full object-cover object-top opacity-0 transition-[opacity,transform] duration-150 ease-out group-data-[breaking=true]:scale-110 group-data-[breaking=true]:opacity-90 md:block"
-                  style={{ filter: "url(#ligau-glass-warp)" }}
-                />
-              </>
-            ) : (
-              <span className="font-jersey pointer-events-none absolute top-6 left-1/2 -translate-x-1/2 bg-gradient-to-b from-zinc-100 to-[#C8102E] bg-clip-text text-8xl leading-none text-transparent drop-shadow-[0_0_28px_rgba(200,16,46,0.50)] transition-transform duration-500 group-hover:scale-110">
-                {mvp ? mvp.athlete.fullName.slice(0, 1) : "?"}
-              </span>
-            )}
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-12">
+          <Tile href="/competicion?tab=tabla" className="h-[340px] md:col-span-4 md:h-[520px]">
+            <div className="absolute inset-0 overflow-hidden bg-zinc-950">
+              {mvp?.athlete.photoUrl ? (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={mvp.athlete.photoUrl}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover object-top contrast-[1.05] saturate-[1.08] transition-transform duration-700 group-hover:scale-110"
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    aria-hidden
+                    src={mvp.athlete.photoUrl}
+                    alt=""
+                    className="absolute inset-0 hidden h-full w-full object-cover object-top opacity-0 transition-[opacity,transform] duration-150 ease-out group-data-[breaking=true]:scale-110 group-data-[breaking=true]:opacity-90 md:block"
+                    style={{ filter: "url(#ligau-glass-warp)" }}
+                  />
+                </>
+              ) : (
+                <PhotoLayer src={MEDIA.mvp} />
+              )}
+            </div>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[linear-gradient(128deg,rgba(255,255,255,0.28)_0%,transparent_22%)]"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(to_top,#09090b_0%,rgba(9,9,11,0.45)_28%,transparent_58%)]" />
+            <TileContent className={PANEL}>
+              <TileBadge>MVP</TileBadge>
+              {mvp ? (
+                <>
+                  <h3 className="font-jersey text-4xl leading-none text-white uppercase md:text-5xl">
+                    {mvp.athlete.fullName}
+                  </h3>
+                  <p className="mt-1 text-sm text-zinc-200">
+                    {mvp.team.label} · {mvp.sportName}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h3 className="font-jersey text-4xl leading-[0.9] text-white uppercase md:text-5xl">
+                    De la semana
+                  </h3>
+                  <p className="mt-1 text-sm text-zinc-200">Se revela al cerrar la jornada.</p>
+                </>
+              )}
+            </TileContent>
+          </Tile>
+
+          <div className="flex flex-col gap-3 md:col-span-8">
+            <Tile
+              href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
+              className="h-[230px] md:h-[250px]"
+            >
+              <PhotoLayer src={featured?.coverImageUrl || MEDIA.news} />
+              <TileContent className={PANEL}>
+                <TileBadge>Noticias</TileBadge>
+                <h3 className="line-clamp-2 text-2xl font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] sm:text-3xl">
+                  {featured?.title ?? "La jornada en cancha"}
+                </h3>
+                {featured?.excerpt ? (
+                  <p className="mt-1 line-clamp-2 text-sm text-white/80">{featured.excerpt}</p>
+                ) : null}
+              </TileContent>
+            </Tile>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Tile href="/universidades" className="h-[210px]">
+                <PhotoLayer src={MEDIA.squad} />
+                <TileContent className={PANEL}>
+                  <TileBadge>Rosters</TileBadge>
+                  <h3 className="text-xl font-black tracking-tight text-white uppercase sm:text-2xl">
+                    Plantillas
+                  </h3>
+                  <p className="mt-1 line-clamp-2 text-sm text-white/80">Las 8 universidades.</p>
+                </TileContent>
+              </Tile>
+
+              <Tile href="/multimedia" className="h-[210px]">
+                <PhotoLayer src={MEDIA.broadcast} />
+                <TileContent className={PANEL}>
+                  <TileBadge>Multimedia</TileBadge>
+                  <h3 className="text-xl font-black text-white uppercase sm:text-2xl">En vivo y clips</h3>
+                  <p className="mt-1 text-sm text-white/80">Videos · Podcasts · Highlights</p>
+                </TileContent>
+              </Tile>
+            </div>
           </div>
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(118deg,rgba(255,255,255,0.22)_0%,transparent_28%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]"
-          />
-          <div className="absolute inset-0 bg-[linear-gradient(to_top,#09090b_0%,rgba(9,9,11,0.55)_20%,transparent_46%)]" />
-          <TileContent className={PANEL}>
-            <TileBadge>Destacado</TileBadge>
-            {mvp ? (
-              <>
-                <h3 className="font-jersey text-4xl leading-none text-white uppercase md:text-5xl">
-                  {mvp.athlete.fullName}
-                </h3>
-                <p className="mt-1 text-sm text-zinc-300">
-                  {mvp.team.label} · {mvp.sportName}
-                </p>
-              </>
-            ) : (
-              <>
-                <h3 className="font-jersey text-4xl leading-[0.9] text-white uppercase md:text-5xl">
-                  MVP de la semana
-                </h3>
-                <p className="mt-1 text-sm text-zinc-300">
-                  Identidad oculta. Se revela al cerrar la jornada.
-                </p>
-              </>
-            )}
-          </TileContent>
-        </Tile>
+        </div>
 
-        <Tile href="/universidades" className="h-[210px] md:col-span-3 md:h-[240px] lg:h-[270px]">
-          <PhotoLayer src={MEDIA.squad} />
-          <TileWatermark className="right-1 bottom-0 text-[5.5rem] text-white/20">U</TileWatermark>
-          <TileContent className={PANEL}>
-            <TileBadge>Rosters oficiales</TileBadge>
-            <h3 className="text-xl font-black tracking-tight text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] sm:text-2xl">
-              Plantillas y equipos
-            </h3>
-            <p className="mt-1 line-clamp-2 text-sm text-white/80">
-              Explora las alineaciones de las 8 universidades.
-            </p>
-          </TileContent>
-        </Tile>
-
-        <Tile
-          href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
-          className="h-[210px] md:col-span-3 md:h-[240px] lg:h-[270px]"
-        >
-          <PhotoLayer src={MEDIA.news} />
-          <TileWatermark className="top-0 -right-2 text-[5.5rem] text-white/20">N</TileWatermark>
-          <TileContent className={PANEL}>
-            <TileBadge>Noticias</TileBadge>
-            <h3 className="line-clamp-2 text-xl font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]">
-              {featured?.title ?? "La jornada en cancha"}
-            </h3>
-            {featured?.excerpt ? (
-              <p className="mt-1 line-clamp-1 text-sm text-white/80">{featured.excerpt}</p>
-            ) : null}
-          </TileContent>
-        </Tile>
-
-        <Tile href="/multimedia" className="h-[210px] md:col-span-3 md:h-[240px] lg:h-[270px]">
-          <PhotoLayer src={MEDIA.broadcast} />
-          <TileWatermark className="top-0 -right-2 text-[5.5rem] text-white/25">▶</TileWatermark>
-          <TileContent className={PANEL}>
-            <TileBadge>Multimedia</TileBadge>
-            <h3 className="text-xl font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] sm:text-2xl">
-              Centro de medios
-            </h3>
-            <p className="mt-1 text-sm text-white/80">Podcasts • Videos • Highlights</p>
-          </TileContent>
-        </Tile>
-
-        <Tile href="/liga-u-pass" className="h-[210px] md:col-span-3 md:h-[240px] lg:h-[270px]">
-          <PhotoLayer src={MEDIA.pass} />
-          <TileWatermark className="top-0 -right-1 text-[5rem] text-white/20">U+</TileWatermark>
-          <TileContent className={PANEL}>
+        <Tile href="/liga-u-pass" className="h-[200px] sm:h-[220px]">
+          <div className="absolute inset-y-0 right-0 w-[46%] overflow-hidden sm:w-[42%]">
+            <PhotoLayer src={MEDIA.pass} />
+          </div>
+          <div className="relative z-10 flex h-full w-[54%] flex-col justify-end bg-zinc-950 px-5 py-5 sm:w-[58%] sm:px-8">
             <TileBadge>Beneficios</TileBadge>
-            <h3 className="text-xl font-black text-white uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] sm:text-2xl">
-              U Pass
-            </h3>
-            <p className="mt-1 text-sm text-white/80">
-              Conoce y accede a los beneficios de Liga U.
+            <h3 className="font-jersey text-4xl leading-none text-white sm:text-6xl">U Pass</h3>
+            <p className="mt-2 max-w-sm text-sm text-zinc-300">
+              El club de beneficios de Liga U. Descuentos, accesos y marcas.
             </p>
-          </TileContent>
+          </div>
         </Tile>
       </div>
     </section>
