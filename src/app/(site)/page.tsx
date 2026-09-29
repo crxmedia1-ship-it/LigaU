@@ -1,7 +1,7 @@
 import { HomeBento } from "@/components/public/home-bento";
 import { HeroPlayerHero } from "@/components/public/hero-media";
 import { SponsorMarquee } from "@/components/public/sponsor-marquee";
-import { HomeFieldBackdrop } from "@/components/public/sport-courts";
+import { HeroPitch, HomeFieldBackdrop } from "@/components/public/sport-courts";
 import { getHomeSponsorLogos } from "@/lib/public/home-sponsors";
 import { getMvpHighlight, getPublicCatalog } from "@/lib/public/queries";
 import { LaserBadge } from "@/components/public/brand";
@@ -27,7 +27,8 @@ export default async function HomePage() {
       <HomeFieldBackdrop />
 
       <section className="relative z-10">
-        <div className="relative flex w-full flex-col px-4 pt-2 pb-2 max-md:min-h-[calc(100svh-3rem-env(safe-area-inset-top,0px))] max-md:justify-center max-md:gap-2 max-md:pb-[calc(5rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pt-10 md:block md:pb-8 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8 lg:px-12 lg:pt-16 lg:pb-8 xl:px-20 2xl:px-28">
+        <HeroPitch />
+        <div className="relative z-10 flex w-full flex-col px-4 pt-2 pb-2 max-md:min-h-[calc(100svh-3rem-env(safe-area-inset-top,0px))] max-md:justify-center max-md:gap-2 max-md:pb-[calc(5rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pt-10 md:block md:pb-8 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8 lg:px-12 lg:pt-16 lg:pb-8 xl:px-20 2xl:px-28">
           <div className="relative mx-auto h-[340px] w-full max-w-sm sm:h-[320px] sm:max-w-lg lg:order-2 lg:h-[600px] lg:max-w-none xl:h-[660px]">
             <HeroPlayerHero />
           </div>

@@ -1,5 +1,6 @@
 import { Tile } from "@/components/public/bento-tile";
 import { MatchCountdown } from "@/components/public/match-countdown";
+import { RailPitch } from "@/components/public/sport-courts";
 import type { MatchCard, MvpHighlight, NewsCard } from "@/lib/public/types";
 
 const MEDIA = {
@@ -109,37 +110,39 @@ export function HomeBento({
   return (
     <section
       id="home-grids"
-      className="relative isolate w-full scroll-mt-[calc(3.25rem+env(safe-area-inset-top,0px))] px-3 pb-6 sm:px-6 sm:pt-8 sm:pb-24 lg:px-12 xl:px-20 2xl:px-28"
+      className="relative isolate w-full scroll-mt-[calc(3.25rem+env(safe-area-inset-top,0px))] px-4 pb-8 sm:px-6 sm:pt-8 sm:pb-24 lg:px-12 xl:px-20 2xl:px-28"
     >
       <GlassWarpDefs />
       <Tile
         href="/competicion"
-        className="-mx-3 border border-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_18px_40px_rgba(15,23,42,0.12)] sm:mx-0"
+        className="border border-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_18px_40px_rgba(15,23,42,0.12)]"
       >
-        <div className="relative h-[72vw] min-h-[260px] max-h-[340px] sm:h-[400px] sm:max-h-none md:h-[460px]">
+        <div className="relative h-[64vw] min-h-[248px] max-h-[300px] sm:h-[400px] sm:max-h-none md:h-[460px]">
           <PhotoLayer src={duelPhoto(nextMatch?.sportName)} />
           <div className="relative z-10 flex h-full flex-col justify-end px-4 pb-4 sm:px-7 sm:pb-6">
             <div className="flex items-baseline justify-between gap-3">
-              <p className="text-[11px] font-semibold tracking-[0.22em] text-white/80 uppercase">
+              <p className="min-w-0 truncate text-[11px] font-semibold tracking-[0.22em] text-white/80 uppercase">
                 {nextMatch?.sportName ?? "Próximo partido"}
               </p>
               {nextMatch ? <MatchCountdown date={nextMatch.matchDate} className="shrink-0 text-[11px] text-white" /> : null}
             </div>
-            <h2 className="mt-2 grid grid-cols-[1fr_auto_1fr] items-end gap-3">
-              <span className="font-jersey text-[4.25rem] leading-none text-white sm:text-8xl">{homeName}</span>
-              <span className="mb-1 font-jersey text-xl leading-none text-[#ff4d6a] sm:mb-2 sm:text-3xl">VS</span>
-              <span className="text-right font-jersey text-[4.25rem] leading-none text-white sm:text-8xl">{awayName}</span>
+            <h2 className="mt-2 grid grid-cols-[1fr_auto_1fr] items-end gap-2 sm:gap-3">
+              <span className="font-jersey min-w-0 truncate text-[clamp(3rem,14vw,4.25rem)] leading-none text-white sm:text-8xl">{homeName}</span>
+              <span className="mb-1 shrink-0 font-jersey text-lg leading-none text-[#ff4d6a] sm:mb-2 sm:text-3xl">VS</span>
+              <span className="font-jersey min-w-0 truncate text-right text-[clamp(3rem,14vw,4.25rem)] leading-none text-white sm:text-8xl">{awayName}</span>
             </h2>
-            <p className="mt-2 text-sm font-medium text-white/85">
+            <p className="mt-2 truncate text-sm font-medium text-white/85">
               {nextMatch ? [venue, kickoff].filter(Boolean).join(" · ") : "Aún no hay un partido programado"}
             </p>
           </div>
         </div>
       </Tile>
 
-      <div className="mt-4 sm:mt-5">
-        <p className="mb-2.5 text-xs font-semibold tracking-[0.16em] text-zinc-700 uppercase">La jornada</p>
-        <div className="-mx-3 flex snap-x snap-mandatory gap-2 overflow-x-auto px-3 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0 md:grid md:grid-cols-5 md:gap-3 md:overflow-visible [&::-webkit-scrollbar]:hidden">
+      <div className="relative mt-5 sm:mt-6">
+        <p className="relative z-10 mb-3 text-xs font-semibold tracking-[0.16em] text-zinc-700 uppercase">La jornada</p>
+        <div className="relative">
+          <RailPitch />
+          <div className="relative left-1/2 flex w-screen -translate-x-1/2 snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 [mask-image:linear-gradient(to_right,black_calc(100%-2.5rem),transparent)] [scrollbar-width:none] md:left-0 md:w-auto md:translate-x-0 md:grid md:grid-cols-5 md:gap-3 md:overflow-visible md:px-0 md:[mask-image:none] [&::-webkit-scrollbar]:hidden">
           <RailCard href="/competicion?tab=tabla" src={mvpPhoto} kicker="MVP" title={mvp?.athlete.fullName ?? "De la semana"} />
           <RailCard
             href={featured ? `/noticias/${featured.slug}` : "/multimedia"}
@@ -151,6 +154,7 @@ export function HomeBento({
           <RailCard href="/universidades" src={MEDIA.squad} kicker="Rosters" title="Plantillas" />
           <RailCard href="/multimedia" src={MEDIA.broadcast} kicker="Multimedia" title="Clips" />
           <RailCard href="/liga-u-pass" src={MEDIA.pass} kicker="Beneficios" title="U Pass" />
+          </div>
         </div>
       </div>
     </section>
@@ -173,16 +177,16 @@ function RailCard({
   return (
     <Tile
       href={href}
-      className="h-[78vw] max-h-[390px] w-[74vw] shrink-0 snap-start border border-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_14px_32px_rgba(15,23,42,0.1)] sm:h-[340px] sm:w-[220px] md:h-[320px] md:w-auto"
+      className="h-[58vw] max-h-[280px] w-[calc(100vw-2.5rem)] shrink-0 snap-start border border-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_14px_32px_rgba(15,23,42,0.1)] md:h-[320px] md:max-h-none md:w-auto"
     >
       <PhotoLayer src={src} />
-      <div className="relative z-10 flex h-full flex-col justify-end p-4">
+      <div className="relative z-10 flex h-full min-w-0 flex-col justify-end p-4">
         <p className="text-[11px] font-semibold tracking-[0.18em] text-[#ffb3c0] uppercase">{kicker}</p>
         <h3
           className={
             story
-              ? "mt-1.5 line-clamp-3 text-[1.05rem] leading-snug font-semibold text-white normal-case"
-              : "font-jersey mt-1 line-clamp-2 text-[2.45rem] leading-none text-white"
+              ? "mt-1.5 line-clamp-3 text-[0.95rem] leading-snug font-semibold text-white normal-case"
+              : "font-jersey mt-1 line-clamp-2 text-[2rem] leading-[1.05] text-white"
           }
         >
           {title}

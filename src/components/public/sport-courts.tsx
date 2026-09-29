@@ -51,22 +51,56 @@ function Court({
   );
 }
 
-/** Courts behind the home. Fixed to the screen so the lines stay visible through the glass grids. */
-export function HomeFieldBackdrop() {
+function FramedCourt({
+  ratio,
+  className = "text-zinc-500",
+  children,
+}: {
+  ratio: number;
+  className?: string;
+  children: (box: { w: number; h: number }) => React.ReactNode;
+}) {
+  const w = 1000;
+  const h = 1000 / ratio;
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#f8fafc]">
-      <Court label="Fútbol" x={-22} y={6} width={146} ratio={105 / 68} className="text-zinc-600" showLabel={false}>
+    <svg
+      aria-hidden
+      viewBox={`0 0 ${w} ${h}`}
+      preserveAspectRatio="xMidYMax meet"
+      className={`h-full w-full overflow-visible ${className}`}
+      fill="none"
+    >
+      {children({ w, h })}
+    </svg>
+  );
+}
+
+/** Flat wash so the site graph paper does not show through the home. */
+export function HomeFieldBackdrop() {
+  return <div aria-hidden className="pointer-events-none fixed inset-0 z-0 bg-[#f8fafc]" />;
+}
+
+/** One full football pitch behind the player. It fades out before the headline. */
+export function HeroPitch() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 top-0 h-[min(50vh,440px)] overflow-hidden [mask-image:linear-gradient(to_bottom,black_62%,transparent)] lg:top-8 lg:right-[5%] lg:left-auto lg:h-[min(68vh,620px)] lg:w-[min(44vw,520px)] lg:[mask-image:linear-gradient(to_bottom,black_78%,transparent)]"
+    >
+      <FramedCourt ratio={105 / 68}>
         {({ w, h }) => <Football w={w} h={h} />}
-      </Court>
-      <Court label="Baloncesto" x={18} y={46} width={108} ratio={1.87} className="text-zinc-600" showLabel={false}>
+      </FramedCourt>
+    </div>
+  );
+}
+
+/** One basketball court behind the jornada rail. Nothing else is drawn on top of it. */
+export function RailPitch() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <FramedCourt ratio={1.87} className="text-zinc-400">
         {({ w, h }) => <Basketball w={w} h={h} />}
-      </Court>
-      <Court label="Voleibol" x={-28} y={68} width={96} ratio={2} className="text-zinc-600" showLabel={false}>
-        {({ w, h }) => <Volleyball w={w} h={h} />}
-      </Court>
-      <Court label="Tenis" x={58} y={74} width={52} ratio={1.7} className="text-zinc-600" showLabel={false}>
-        {({ w, h }) => <Tennis w={w} h={h} />}
-      </Court>
+      </FramedCourt>
     </div>
   );
 }
