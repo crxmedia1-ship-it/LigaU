@@ -36,63 +36,6 @@ type Option = { id: string; label: string; badge?: number };
 
 const SPRING = { type: "spring", stiffness: 420, damping: 34 } as const;
 
-/** Horizontally scrollable filter chips; the active pill slides between them. */
-export function ChipTabs({
-  options,
-  value,
-  onChange,
-  layoutId,
-  className,
-}: {
-  options: Option[];
-  value: string;
-  onChange: (id: string) => void;
-  layoutId: string;
-  className?: string;
-}) {
-  return (
-    <div
-      role="tablist"
-      className={cn(
-        "no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0",
-        className,
-      )}
-    >
-      {options.map((option) => {
-        const active = option.id === value;
-        return (
-          <button
-            key={option.id}
-            type="button"
-            role="tab"
-            aria-selected={active}
-            onClick={() => onChange(option.id)}
-            className={cn(
-              "relative inline-flex h-9 shrink-0 touch-manipulation items-center gap-1.5 rounded-full px-4 text-[13px] font-semibold transition-colors duration-200",
-              active ? "text-white" : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-zinc-400",
-            )}
-          >
-            {active ? (
-              <motion.span layoutId={layoutId} transition={SPRING} className="absolute inset-0 rounded-full bg-zinc-950" />
-            ) : null}
-            <span className="relative">{option.label}</span>
-            {option.badge ? (
-              <span
-                className={cn(
-                  "relative grid h-4 min-w-4 place-items-center rounded-full px-1 text-[10px] tabular-nums",
-                  active ? "bg-white/20" : "bg-zinc-100 text-zinc-500",
-                )}
-              >
-                {option.badge}
-              </span>
-            ) : null}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 /** iOS-style segmented control. */
 export function Segmented({
   options,

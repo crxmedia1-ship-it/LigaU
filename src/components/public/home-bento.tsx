@@ -4,7 +4,7 @@ import { Crest, StatusPill, hasScore, kickoff, matchDay } from "@/components/pub
 import { Reveal } from "@/components/public/reveal";
 import { CourtMark } from "@/components/public/sport-courts";
 import { SponsorMark } from "@/components/public/sponsor-slots";
-import type { MatchCard, MvpHighlight, NewsCard, SponsorCard, SportCard } from "@/lib/public/types";
+import type { MatchCard, MvpHighlight, NewsCard, SponsorCard } from "@/lib/public/types";
 
 const MEDIA = {
   news: "https://images.unsplash.com/photo-1523995462485-3d171b5c8fa9?auto=format&fit=crop&w=800&q=80",
@@ -271,14 +271,12 @@ function PassCard() {
 export function HomeBento({
   news = [],
   matches,
-  sports,
   mvp,
   sponsors = [],
 }: {
   news?: NewsCard[];
   /** Live first, then upcoming by kickoff. */
   matches: MatchCard[];
-  sports: SportCard[];
   mvp: MvpHighlight | null;
   /** The first one presents the hero; the next three fill the slots here. */
   sponsors?: SponsorCard[];
@@ -292,29 +290,6 @@ export function HomeBento({
       id="home-grids"
       className="relative w-full scroll-mt-[calc(3.25rem+env(safe-area-inset-top,0px))] space-y-10 px-4 pb-12 sm:px-6 sm:pt-8 sm:pb-24 lg:space-y-14 lg:px-12 xl:px-20 2xl:px-28"
     >
-      {sports.length ? (
-        <nav
-          aria-label="Deportes"
-          className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:mx-0 lg:flex-wrap lg:px-0 [&::-webkit-scrollbar]:hidden"
-        >
-          <Link
-            href="/calendario"
-            className="inline-flex h-9 shrink-0 items-center rounded-full bg-zinc-950 px-4 text-[13px] font-semibold text-white"
-          >
-            Todos
-          </Link>
-          {sports.map((sport) => (
-            <Link
-              key={sport.id}
-              href="/calendario"
-              className="inline-flex h-9 shrink-0 items-center rounded-full bg-white px-4 text-[13px] font-semibold text-zinc-700 ring-1 ring-zinc-200 transition-colors hover:ring-zinc-400"
-            >
-              {sport.name}
-            </Link>
-          ))}
-        </nav>
-      ) : null}
-
       <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-8">
         <Reveal>
           <SectionHead title="Partido destacado" href="/calendario" action="Calendario" />

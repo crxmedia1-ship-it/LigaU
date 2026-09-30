@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
+import { LigaULogo } from "@/components/public/brand";
 import { HeaderKickBall } from "@/components/public/header-kick-ball";
 import { NAV_TABS, activeTabIndex, tabTransition } from "@/components/public/nav-tabs";
 import { cn } from "@/lib/utils";
@@ -47,34 +48,14 @@ export function SiteHeader() {
       style={{ viewTransitionName: "site-header" }}
       className="sticky top-0 z-40 border-b border-zinc-200/80 bg-[#eef1f4] pt-safe md:border-zinc-200/80 md:bg-white/80 md:pt-0 md:backdrop-blur-xl">
       <div className="flex h-12 items-center justify-between px-4 md:hidden">
-        <Link href="/" className="flex min-h-11 items-center gap-2">
-          <span
-            className="grid size-7 place-items-center bg-[#C8102E] text-[11px] font-black text-white"
-            style={{
-              clipPath:
-                "polygon(18% 0, 100% 0, 100% 82%, 82% 100%, 0 100%, 0 18%)",
-            }}
-          >
-            U
-          </span>
-          <span className="text-sm font-semibold tracking-[0.18em] text-zinc-900 uppercase">
-            Liga U
-          </span>
+        <Link href="/" aria-label="Liga U — inicio" className="flex min-h-11 items-center">
+          <LigaULogo preload className="h-9" />
         </Link>
         <HeaderKickBall />
       </div>
       <div className="mx-auto hidden h-14 max-w-6xl items-center justify-between px-4 md:flex">
-        <Link href="/" className="flex min-h-11 items-center gap-2">
-          <span
-            className="grid size-8 place-items-center bg-[#C8102E] text-xs font-black text-white"
-            style={{
-              clipPath:
-                "polygon(18% 0, 100% 0, 100% 82%, 82% 100%, 0 100%, 0 18%)",
-            }}
-          >
-            U
-          </span>
-          <span className="font-semibold tracking-[0.18em] text-zinc-900 uppercase">Liga U</span>
+        <Link href="/" aria-label="Liga U — inicio" className="flex min-h-11 items-center">
+          <LigaULogo className="h-10" />
         </Link>
         <Suspense fallback={<nav className="flex items-center gap-1" />}>
           <DesktopNav />

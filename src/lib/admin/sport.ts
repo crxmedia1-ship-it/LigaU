@@ -51,19 +51,7 @@ export type MatchDetailsPayload =
   | ChessDetails
   | { kind: "football" };
 
-export function emptyBasketballDetails(): BasketballDetails {
-  return {
-    kind: "basketball",
-    quarters: {
-      q1: { home: 0, away: 0 },
-      q2: { home: 0, away: 0 },
-      q3: { home: 0, away: 0 },
-      q4: { home: 0, away: 0 },
-    },
-  };
-}
-
-export function emptySetsDetails(count = 3): SetsDetails {
+function emptySetsDetails(count = 3): SetsDetails {
   return {
     kind: "sets",
     sets: Array.from({ length: count }, () => ({ home: 0, away: 0 })),

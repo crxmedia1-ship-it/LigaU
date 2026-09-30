@@ -42,7 +42,7 @@ export function resolveCloudinaryRoot(folder: string): string | null {
   return ROOT_SET.has(aliased) ? aliased : null;
 }
 
-export function sanitizeCloudinarySubpath(value: string | null | undefined): string {
+function sanitizeCloudinarySubpath(value: string | null | undefined): string {
   if (!value) return "";
   return value
     .split("/")
@@ -58,7 +58,7 @@ export function sanitizeCloudinarySubpath(value: string | null | undefined): str
     .join("/");
 }
 
-export function genderFolder(gender: TeamGender) {
+function genderFolder(gender: TeamGender) {
   if (gender === "female") return "femenino";
   if (gender === "mixed") return "mixto";
   return "masculino";

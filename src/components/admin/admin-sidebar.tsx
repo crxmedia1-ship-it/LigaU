@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "@/app/admin/actions";
 import { ADMIN_NAV } from "@/components/admin/nav";
+import { LigaULogo } from "@/components/public/brand";
 import { roleLabel, type UserRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils";
 
@@ -75,15 +76,7 @@ export function AdminSidebar({
       )}
     >
       <div className="flex items-center gap-3 px-3 py-4">
-        <div
-          className="grid size-8 shrink-0 place-items-center bg-linear-to-br from-red-600 to-rose-800 text-xs font-black text-white shadow-[0_0_25px_rgba(200,16,46,0.35)]"
-          style={{
-            clipPath:
-              "polygon(18% 0, 100% 0, 100% 82%, 82% 100%, 0 100%, 0 18%)",
-          }}
-        >
-          U
-        </div>
+        <LigaULogo className="h-10 shrink-0" />
         {!collapsed ? (
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold tracking-[0.18em] uppercase">

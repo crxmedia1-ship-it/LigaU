@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { LigaULogo } from "@/components/public/brand";
 import { LoginForm } from "./login-form";
 
 export default function AdminLoginPage() {
@@ -13,9 +14,7 @@ export default function AdminLoginPage() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(200,16,46,0.18),_transparent_42%)]" />
       <Card className="relative w-full max-w-md border-zinc-800 bg-zinc-950">
         <CardHeader className="space-y-3 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
-            Liga U
-          </p>
+          <LigaULogo preload className="mx-auto h-20" />
           <CardTitle className="text-2xl">Backoffice</CardTitle>
           <CardDescription>
             Ingresa con tu cuenta de Superadmin o Coordinador de Liga.

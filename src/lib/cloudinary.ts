@@ -106,7 +106,7 @@ async function requireStaffRole(): Promise<
   return { ok: true, role: profile.role };
 }
 
-export async function createSignedUploadParams(input: {
+async function createSignedUploadParams(input: {
   folder: CloudinaryFolder;
   path?: string | null;
   publicId?: string;

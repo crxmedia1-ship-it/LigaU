@@ -1,5 +1,4 @@
-import { GENDER_LABELS } from "@/lib/admin/labels";
-import type { MatchStatus, TeamGender } from "@/lib/public/types";
+import type { MatchStatus } from "@/lib/public/types";
 
 export function formatMatchDate(iso: string) {
   return new Date(iso).toLocaleString("es-VE", {
@@ -25,10 +24,6 @@ export function statusLabel(status: MatchStatus) {
   return "CANCELADO";
 }
 
-export function genderShort(gender: TeamGender) {
-  return GENDER_LABELS[gender];
-}
-
 export function eventLabel(type: string) {
   if (type === "goal") return "Gol";
   if (type === "yellow_card") return "Amarilla";
@@ -44,10 +39,4 @@ export function youtubeEmbed(url: string | null) {
   const id = watch?.[1] ?? short?.[1];
   if (!id || id === "demo") return null;
   return `https://www.youtube.com/embed/${id}`;
-}
-
-export function spotifyEmbed(url: string | null) {
-  if (!url || url.includes("/demo")) return null;
-  if (url.includes("/embed/")) return url;
-  return url.replace("open.spotify.com/", "open.spotify.com/embed/");
 }

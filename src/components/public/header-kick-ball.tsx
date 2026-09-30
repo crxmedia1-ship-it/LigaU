@@ -46,12 +46,8 @@ export function HeaderKickBall() {
     landY: number;
   } | null>(null);
   const [flying, setFlying] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    return () => cancelAnimationFrame(frameRef.current);
-  }, []);
+  useEffect(() => () => cancelAnimationFrame(frameRef.current), []);
 
   useEffect(() => {
     if (!flying) return;
@@ -146,7 +142,7 @@ export function HeaderKickBall() {
           }
         />
       </button>
-      {mounted && flying
+      {flying
         ? createPortal(
             <div
               ref={flyerRef}

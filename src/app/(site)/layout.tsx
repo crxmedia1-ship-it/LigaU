@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Bebas_Neue } from "next/font/google";
+import { INTRO_BOOT_SCRIPT, INTRO_ONCE_PER_SESSION } from "@/components/public/intro-boot";
 import { MobileBottomNav } from "@/components/public/mobile-bottom-nav";
 import { SiteFooter, SiteHeader } from "@/components/public/site-chrome";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,9 @@ export default function SiteLayout({
         jersey.variable,
       )}
     >
+      {INTRO_ONCE_PER_SESSION ? (
+        <script dangerouslySetInnerHTML={{ __html: INTRO_BOOT_SCRIPT }} />
+      ) : null}
       <SiteHeader />
       <div className="pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
         {children}

@@ -8,9 +8,24 @@ import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
+
 export const metadata: Metadata = {
+  metadataBase: APP_URL ? new URL(APP_URL) : undefined,
   title: "Liga U",
   description: "Portal deportivo universitario de Caracas",
+  applicationName: "Liga U",
+  openGraph: {
+    type: "website",
+    siteName: "Liga U",
+    locale: "es_VE",
+    title: "Liga U · Torneo universitario de Caracas",
+    description:
+      "Calendario, clasificación, resultados y beneficios Liga U Pass en un solo lugar.",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export const viewport: Viewport = {

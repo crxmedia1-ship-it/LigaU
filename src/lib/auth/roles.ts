@@ -3,8 +3,8 @@ import type { Database } from "@/types/database.types";
 export type UserRole = Database["public"]["Enums"]["user_role"];
 
 /** Coordinador de Liga / Mesa Técnica en el enum de Supabase. */
-export const COORDINATOR_ROLE = "mesa_tecnica" as const satisfies UserRole;
-export const SUPERADMIN_ROLE = "superadmin" as const satisfies UserRole;
+const COORDINATOR_ROLE = "mesa_tecnica" as const satisfies UserRole;
+const SUPERADMIN_ROLE = "superadmin" as const satisfies UserRole;
 
 export const STAFF_ROLES = [SUPERADMIN_ROLE, COORDINATOR_ROLE] as const;
 

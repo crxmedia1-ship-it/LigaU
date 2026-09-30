@@ -263,9 +263,12 @@ body:has(.ligau-admin) {
 .ligau-public {
   color: #0f172a;
   overflow-x: clip;
-  /* Platinum titanium canvas — pitch chalk lives in TacticalPitchCanvas on Home */
   background-color: #f8fafc;
   background-image: none;
+}
+
+.ligau-intro-seen .ligau-intro {
+  display: none;
 }
 
 /* Keep root body light when the public portal is mounted (prevents dark
@@ -274,13 +277,6 @@ body:has(.ligau-public) {
   background-color: #f8fafc;
   color: #0f172a;
   background-image: none;
-}
-
-.grid-pattern {
-  background-image:
-    linear-gradient(to right, #1f1f2315 1px, transparent 1px),
-    linear-gradient(to bottom, #1f1f2315 1px, transparent 1px);
-  background-size: 32px 32px;
 }
 
 .drop-shadow-glow-red {
@@ -323,12 +319,6 @@ html .ligau-public .glass-card,
   background-image: linear-gradient(180deg, #0f172a 0%, #334155 78%);
 }
 
-.ligau-public .laser-badge {
-  background: rgb(255 255 255 / 80%);
-  color: #18181b;
-  border-color: rgb(200 16 46 / 50%);
-}
-
 /* Static pitch wash. No blur, no fixed attachment — those repaint every scroll frame on mobile. */
 .ligau-canvas {
   background-color: #eef1f4;
@@ -351,14 +341,6 @@ html .ligau-public .glass-card,
   background-image:
     repeating-linear-gradient(45deg, #111113 0 2px, #1c1c20 2px 4px),
     repeating-linear-gradient(-45deg, #09090b 0 2px, #17171b 2px 4px);
-}
-
-.ligau-public .podium-glass {
-  background-color: rgb(255 255 255 / 72%);
-  border-color: rgb(226 232 240 / 80%);
-  box-shadow:
-    inset 0 1px 1px rgb(255 255 255 / 90%),
-    0 16px 40px rgb(0 0 0 / 8%);
 }
 
 .glass-card.glass-card-uncut {
@@ -417,126 +399,11 @@ html.dark .ligau-public .glass-card {
   filter: drop-shadow(0 0 18px rgb(186 12 47 / 35%));
 }
 
-.btn-liga {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  color: #ffffff;
-  background-color: #ba0c2f;
-  background-image: linear-gradient(to right, #ba0c2f, #9e1b28);
-  box-shadow: 0 0 25px rgb(186 12 47 / 28%);
-  border-radius: 0.75rem;
-  clip-path: none;
-}
-
-@media (min-width: 768px) {
-  .btn-liga {
-    animation: ligau-neon-pulse 2.4s ease-in-out infinite;
-    border-radius: 0;
-    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-  }
-}
-
-.btn-liga::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  background: conic-gradient(from var(--ligau-angle, 0deg), transparent 0%, #e2e8f0 18%, transparent 32%, #ba0c2f 58%, transparent 72%);
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: ligau-glow-spin 3.2s linear infinite;
-  pointer-events: none;
-}
-
-@media (hover: none) {
-  .btn-liga::before,
-  .laser-badge::after {
-    animation: none;
-  }
-}
-
-.btn-liga:hover {
-  box-shadow: 0 0 38px rgb(186 12 47 / 45%);
-}
-
-@keyframes ligau-neon-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 18px rgb(186 12 47 / 22%);
-  }
-  50% {
-    box-shadow: 0 0 32px rgb(186 12 47 / 42%);
-  }
-}
-
-.laser-badge {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgb(186 12 47 / 70%);
-  background: rgb(255 255 255 / 80%);
-  color: #18181b;
-  letter-spacing: 0.28em;
-}
-
-.dark .laser-badge {
-  background: rgb(9 9 11 / 70%);
-  color: #e2e8f0;
-}
-
-/* Public portal always light — override dark-html context with higher order */
-html.dark .ligau-public .laser-badge {
-  background: rgb(255 255 255 / 80%);
-  color: #18181b;
-  border-color: rgb(200 16 46 / 70%);
-}
-
-.laser-badge::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgb(186 12 47 / 70%), transparent);
-  transform: translateX(-100%);
-  animation: ligau-shimmer 2.4s linear infinite;
-}
-
 .carbon-fiber {
   background-color: #0a0a0c;
   background-image:
     repeating-linear-gradient(45deg, #111113 0 2px, #1c1c20 2px 4px),
     repeating-linear-gradient(-45deg, #09090b 0 2px, #17171b 2px 4px);
-}
-
-.podium-glass {
-  background-color: rgb(255 255 255 / 42%);
-  border: 1px solid rgb(255 255 255 / 72%);
-  box-shadow:
-    0 16px 40px rgb(228 228 231 / 50%),
-    inset 0 1px 0 rgb(255 255 255 / 80%);
-  backdrop-filter: blur(18px) saturate(160%);
-}
-
-.dark .podium-glass {
-  background-color: rgb(9 9 11 / 62%);
-  border-color: rgb(226 232 240 / 12%);
-  box-shadow:
-    inset 0 1px 0 rgb(226 232 240 / 10%),
-    0 16px 40px rgb(0 0 0 / 45%);
-}
-
-/* Public portal: podium glass stays bright/light */
-html.dark .ligau-public .podium-glass {
-  background-color: rgb(255 255 255 / 72%);
-  border-color: rgb(226 232 240 / 80%);
-  box-shadow:
-    inset 0 1px 1px rgb(255 255 255 / 90%),
-    0 16px 40px rgb(0 0 0 / 8%);
 }
 
 @keyframes ligau-marquee {
@@ -548,54 +415,8 @@ html.dark .ligau-public .podium-glass {
   }
 }
 
-@keyframes ligau-glow-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes ligau-shimmer {
-  100% {
-    transform: translateX(100%);
-  }
-}
-
 @utility animate-ligau-marquee {
   animation: ligau-marquee var(--marquee-duration, 32s) linear infinite;
-}
-
-@utility animate-ligau-glow {
-  animation: ligau-glow-spin 8s linear infinite;
-}
-
-@keyframes ligau-shard-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-@utility animate-ligau-float {
-  animation: ligau-shard-float 7s ease-in-out infinite;
-}
-
-@keyframes ligau-shatter-flash {
-  0% {
-    opacity: 0;
-  }
-  18% {
-    opacity: 0.85;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@utility animate-ligau-shatter-flash {
-  animation: ligau-shatter-flash 380ms ease-out forwards;
 }
 
 @keyframes ligau-ball-bob {
@@ -615,13 +436,6 @@ html.dark .ligau-public .podium-glass {
 @media (prefers-reduced-motion: reduce) {
   .animate-ligau-ball-bob {
     animation: none;
-  }
-}
-
-/* The home tactic boards run on SMIL; without motion the pieces step off. */
-@media (prefers-reduced-motion: reduce) {
-  .ligau-tactics {
-    display: none;
   }
 }
 

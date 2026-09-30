@@ -1,6 +1,25 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { ArrowRightIcon } from "lucide-react";
+
+export function LigaULogo({
+  className,
+  preload,
+}: {
+  className?: string;
+  preload?: boolean;
+}) {
+  return (
+    <Image
+      src="/brand/liga-u-logo.svg"
+      alt="Liga U"
+      width={868}
+      height={950}
+      preload={preload}
+      className={cn("h-auto w-auto select-none", className)}
+      draggable={false}
+    />
+  );
+}
 
 export function GlassCard({
   className,
@@ -32,20 +51,12 @@ export function JerseyMark({ number = "U" }: { number?: string }) {
   );
 }
 
-export function TitleGlow() {
+function TitleGlow() {
   return (
     <div
       aria-hidden
       className="pointer-events-none absolute top-0 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-[#BA0C2F]/20 blur-3xl"
     />
-  );
-}
-
-export function LaserBadge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="laser-badge inline-flex max-w-full items-center px-3 py-1 text-[10px] font-semibold whitespace-normal uppercase">
-      {children}
-    </span>
   );
 }
 
@@ -80,30 +91,5 @@ export function PageHero({
         <p className="relative mt-2 max-w-2xl text-sm text-zinc-600">{description}</p>
       ) : null}
     </header>
-  );
-}
-
-export function LaserCta({
-  href,
-  children,
-  className,
-}: {
-  href: string;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "btn-liga inline-flex h-11 min-h-11 w-full items-center justify-center gap-2 bg-[#BA0C2F] px-5 text-sm font-semibold text-white sm:w-auto",
-        className,
-      )}
-    >
-      <span className="relative z-10 inline-flex items-center gap-2">
-        {children}
-        <ArrowRightIcon className="size-4" />
-      </span>
-    </Link>
   );
 }
