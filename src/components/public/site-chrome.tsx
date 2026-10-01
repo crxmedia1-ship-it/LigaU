@@ -1,19 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { LigaULogo } from "@/components/public/brand";
-import { HeaderKickBall } from "@/components/public/header-kick-ball";
 import { NAV_TABS, activeTabIndex, tabTransition } from "@/components/public/nav-tabs";
 import { cn } from "@/lib/utils";
 
-function DesktopNav() {
+function DesktopNav({ overlay }: { overlay: boolean }) {
   const current = activeTabIndex(usePathname());
 
   return (
-    <nav className="flex items-center gap-1 rounded-full bg-zinc-100 p-1">
+    <nav
+      className={cn(
+        "flex items-center gap-1 rounded-full p-1 transition-colors duration-300",
+        overlay ? "bg-white/55 ring-1 ring-zinc-900/10 backdrop-blur-md" : "bg-zinc-100",
+      )}
+    >
       {NAV_TABS.map((item, index) => {
         const active = index === current;
         return (
@@ -42,23 +46,44 @@ function DesktopNav() {
   );
 }
 
+function subscribeScroll(onChange: () => void) {
+  window.addEventListener("scroll", onChange, { passive: true });
+  return () => window.removeEventListener("scroll", onChange);
+}
+
+/**
+ * Mobile has no top bar (the tab bar lives at the bottom), only the logo, which scrolls with the page.
+ * On desktop the home hero runs under the header, so it floats transparent until the page scrolls past the top.
+ */
 export function SiteHeader() {
+  const home = usePathname() === "/";
+  const scrolled = useSyncExternalStore(
+    subscribeScroll,
+    () => window.scrollY > 24,
+    () => false,
+  );
+  const overlay = home && !scrolled;
+
   return (
     <header
       style={{ viewTransitionName: "site-header" }}
-      className="sticky top-0 z-40 border-b border-zinc-200/80 bg-[#eef1f4] pt-safe md:border-zinc-200/80 md:bg-white/80 md:pt-0 md:backdrop-blur-xl">
-      <div className="flex h-12 items-center justify-between px-4 md:hidden">
+      className={cn(
+        "top-0 z-40 pt-safe transition-colors duration-300 md:pt-0",
+        home ? "absolute inset-x-0 md:fixed" : "relative md:sticky",
+        !overlay && "md:border-b md:border-zinc-200/80 md:bg-white/80 md:backdrop-blur-xl",
+      )}
+    >
+      <div className="flex px-4 pt-3 md:hidden">
         <Link href="/" aria-label="Liga U — inicio" className="flex min-h-11 items-center">
-          <LigaULogo preload className="h-9" />
+          <LigaULogo preload className="h-14 drop-shadow-[0_4px_10px_rgba(9,9,11,0.18)]" />
         </Link>
-        <HeaderKickBall />
       </div>
       <div className="mx-auto hidden h-14 max-w-6xl items-center justify-between px-4 md:flex">
         <Link href="/" aria-label="Liga U — inicio" className="flex min-h-11 items-center">
           <LigaULogo className="h-10" />
         </Link>
         <Suspense fallback={<nav className="flex items-center gap-1" />}>
-          <DesktopNav />
+          <DesktopNav overlay={overlay} />
         </Suspense>
       </div>
     </header>
@@ -92,15 +117,15 @@ const SOCIAL_LINKS = [
 export function SiteFooter() {
   return (
     <footer className="mt-8 border-t border-zinc-200 md:mt-16">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-4 py-10 text-center sm:flex-row sm:justify-between sm:text-left">
-        <div className="flex items-center gap-3">
-          <LigaULogo className="h-10 w-auto" />
-          <p className="text-sm leading-snug text-zinc-500">
-            <span className="block font-semibold text-zinc-900">Liga U</span>
-            Venezuela · Torneo universitario oficial
-          </p>
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-10 text-center md:flex-row md:justify-between md:text-left">
+        <div className="flex flex-col items-center gap-2.5 md:flex-row md:gap-3">
+          <LigaULogo className="h-12 w-auto md:h-10" />
+          <div>
+            <p className="font-jersey text-2xl leading-none tracking-wide text-zinc-950 uppercase md:text-xl">Liga U</p>
+            <p className="mt-1 text-[13px] text-zinc-500">Venezuela · Torneo universitario oficial</p>
+          </div>
         </div>
-        <div className="flex flex-col items-center gap-2 sm:items-end">
+        <div className="flex flex-col items-center gap-2 md:items-end">
           <ul className="flex items-center gap-2.5">
             {SOCIAL_LINKS.map((social) => (
               <li key={social.name}>

@@ -267,10 +267,6 @@ body:has(.ligau-admin) {
   background-image: none;
 }
 
-.ligau-intro-seen .ligau-intro {
-  display: none;
-}
-
 /* Keep root body light when the public portal is mounted (prevents dark
    peek-through during mobile rubber-band scroll) */
 body:has(.ligau-public) {
@@ -404,26 +400,6 @@ html.dark .ligau-public .glass-card {
   animation: ligau-marquee var(--marquee-duration, 32s) linear infinite;
 }
 
-@keyframes ligau-ball-bob {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-10deg);
-  }
-  50% {
-    transform: translateY(-4px) rotate(10deg);
-  }
-}
-
-@utility animate-ligau-ball-bob {
-  animation: ligau-ball-bob 1.5s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-ligau-ball-bob {
-    animation: none;
-  }
-}
-
 /* Sponsor CTA: a light sweep every few seconds to draw the eye without looping constantly. */
 @keyframes ligau-shine {
   0%,
@@ -450,8 +426,22 @@ html.dark .ligau-public .glass-card {
   }
 }
 
+@keyframes ligau-hero {
+  from {
+    scale: 1.08;
+  }
+  to {
+    scale: 1;
+  }
+}
+
+@utility animate-ligau-hero {
+  animation: ligau-hero 2.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-ligau-shine {
+  .animate-ligau-shine,
+  .animate-ligau-hero {
     animation: none;
   }
 }

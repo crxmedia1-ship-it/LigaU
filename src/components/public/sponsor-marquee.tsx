@@ -37,13 +37,13 @@ export function SponsorMarquee({ sponsors }: { sponsors: SponsorCard[] }) {
             return (
               <div
                 key={sponsor.id}
-                className="flex h-16 min-w-32 items-center justify-center px-5 sm:h-20 sm:min-w-40 sm:px-6"
+                className="flex h-20 min-w-36 items-center justify-center px-5 sm:min-w-40 sm:px-6"
               >
                 {logo ? (
                   <img
                     src={logo}
                     alt={sponsor.name}
-                    className="h-9 max-w-28 object-contain sm:h-12 sm:max-w-36"
+                    className="h-12 max-w-32 object-contain sm:max-w-36"
                   />
                 ) : (
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">

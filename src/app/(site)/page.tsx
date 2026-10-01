@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, ChevronRight, Crown, Mic, Play, Trophy, Wifi } from "lucide-react";
-import { IntroSplash } from "@/components/public/intro-splash";
 import { kickoff } from "@/components/public/match-ui";
 import { MvpCarousel, type MvpSlide } from "@/components/public/mvp-carousel";
 import { SponsorMarquee } from "@/components/public/sponsor-marquee";
@@ -25,8 +24,6 @@ const RAIL = "h-[360px] w-[78vw] max-w-[320px] shrink-0 snap-start md:h-[400px] 
 const RAIL_FOOTER = "flex h-14 shrink-0 items-end justify-between gap-2 border-t border-white/15";
 
 const CLUB_ORDER = ["UCV", "UCAB", "UNIMET", "UNE", "USB", "USM", "UAH", "UMA"] as const;
-
-const HERO_PHOTO = "https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&q=70";
 
 const MEDIA = {
   press: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=1600&q=75",
@@ -56,14 +53,9 @@ const MATCH_DAY = new Intl.DateTimeFormat("es-VE", {
   month: "short",
 });
 
-function Badge({ children, tone = "red" }: { children: ReactNode; tone?: "red" | "gold" }) {
+function Badge({ children }: { children: ReactNode }) {
   return (
-    <span
-      className={cn(
-        "inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-black tracking-wide uppercase",
-        tone === "red" ? "bg-[#C8102E] text-white" : "bg-gradient-to-r from-amber-200 to-amber-400 text-[#09090B]",
-      )}
-    >
+    <span className="inline-flex w-fit items-center gap-1 rounded-full bg-gradient-to-r from-amber-200 to-amber-400 px-2.5 py-1 text-[10px] font-black tracking-wide text-[#09090B] uppercase">
       {children}
     </span>
   );
@@ -129,8 +121,8 @@ function RostersTile({ clubs }: { clubs: number }) {
         "flex min-h-[280px] flex-col justify-end bg-zinc-950 shadow-[0_30px_60px_-24px_rgba(9,9,11,0.55),0_12px_24px_-12px_rgba(9,9,11,0.35)] md:min-h-[300px]",
       )}
     >
-      <div className="absolute inset-0 [&>img]:object-[50%_30%]">
-        <Photo src="/home/plantillas.webp" />
+      <div className="absolute inset-0 [&>img]:object-[50%_15%]">
+        <Photo src="/home/plantillas-dia.webp" />
       </div>
       <div
         aria-hidden
@@ -224,7 +216,7 @@ function MatchTile({ match }: { match: MatchCard | undefined }) {
       <div className="relative flex flex-1 flex-col p-4">
         {match?.status === "live" ? (
           <div className="mb-2">
-            <Badge tone="gold">En vivo</Badge>
+            <Badge>En vivo</Badge>
           </div>
         ) : null}
         {stage ? <p className="text-[10px] font-black tracking-[0.16em] text-white/85 uppercase">{stage}</p> : null}
@@ -376,7 +368,7 @@ function MvpPending() {
       )}
     >
       <div aria-hidden className="absolute inset-1.5 rounded-xl border border-amber-300/30" />
-      <Badge tone="gold">
+      <Badge>
         <Trophy className="size-3" strokeWidth={2.5} />
         MVP de la semana
       </Badge>
@@ -639,17 +631,9 @@ function StandingsTile({ table }: { table: StandingsPreview | null }) {
       <div aria-hidden className="absolute inset-1.5 -z-10 rounded-xl border border-white/10" />
 
       <div className="flex items-start justify-between gap-2">
-        <span className="relative inline-flex h-8 items-center gap-2 overflow-hidden rounded-full bg-zinc-950/65 pr-3.5 pl-1 shadow-[0_10px_28px_-10px_rgba(251,191,36,0.7),inset_0_1px_0_rgba(255,255,255,0.14)] ring-1 ring-amber-300/45 backdrop-blur-md">
-          <span className="grid size-6 place-items-center rounded-full bg-[linear-gradient(140deg,#fef3c7_0%,#fbbf24_45%,#92400e_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_0_12px_rgba(251,191,36,0.6)]">
-            <Crown className="size-3.5 fill-zinc-950 text-zinc-950" strokeWidth={1.5} />
-          </span>
-          <span className="bg-[linear-gradient(180deg,#fffbeb_0%,#fcd34d_50%,#d97706_100%)] bg-clip-text text-[10px] font-black tracking-[0.3em] text-transparent uppercase">
-            Líder
-          </span>
-          <span
-            aria-hidden
-            className="animate-ligau-shine absolute inset-y-0 -left-1/2 w-1/4 skew-x-[-20deg] bg-white/15"
-          />
+        <span className="inline-flex shrink-0 items-center gap-1.5 text-amber-200">
+          <Crown className="size-3.5" strokeWidth={1.75} />
+          <span className="text-[10px] leading-tight font-semibold tracking-[0.32em] uppercase">Líder</span>
         </span>
         {table ? (
           <span className="text-right text-[10px] leading-tight font-black tracking-wide text-white/75 uppercase">
@@ -782,7 +766,7 @@ function SponsorFlyer({ sponsor }: { sponsor?: SponsorCard }) {
 /** Brushed-platinum member card in the spirit of Apple Card; the whole block opens /liga-u-pass. */
 function PassTile() {
   return (
-    <div className="mx-auto mt-6 grid w-full max-w-md items-center gap-4 md:max-w-none md:grid-cols-[minmax(0,26rem)_1fr] md:gap-10">
+    <div className="mx-auto grid w-full max-w-md items-center gap-4 md:max-w-none md:grid-cols-[minmax(0,26rem)_1fr] md:gap-10">
       <Link
         href="/liga-u-pass"
         aria-label="U Pass: ver los beneficios de las marcas aliadas"
@@ -886,80 +870,66 @@ export default async function HomePage() {
   const universities = catalog.universities.length || CLUB_ORDER.length;
   const disciplines = catalog.sports.length || 9;
   return (
-    <>
-      <IntroSplash />
-      <TabTransition>
-        <style>{`.ligau-canvas{visibility:hidden}`}</style>
-        <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white" />
-        <main className="overflow-x-hidden bg-white">
-          <section
-            aria-labelledby="hero-title"
-            className="relative isolate flex h-[calc(100svh-8.5rem-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))] max-h-[820px] min-h-[500px] w-full flex-col justify-end overflow-hidden bg-zinc-900 md:h-[min(78vh,760px)]"
-          >
-            <picture className="absolute inset-0 -z-20">
-              <source media="(min-width: 768px)" srcSet={`${HERO_PHOTO}&w=2400&h=1300`} />
-              <img
-                src={`${HERO_PHOTO}&w=900&h=1400`}
-                alt="Jugador de Liga U rematando un balón"
-                fetchPriority="high"
-                className="h-full w-full object-cover object-[50%_20%]"
-              />
-            </picture>
-            <div
-              aria-hidden
-              className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgba(9,9,11,0.92)_0%,rgba(9,9,11,0.55)_32%,rgba(9,9,11,0)_58%)]"
+    <TabTransition>
+      <style>{`.ligau-canvas{visibility:hidden}`}</style>
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white" />
+      <main className="overflow-x-hidden bg-white">
+        <section
+          aria-labelledby="hero-title"
+          className="relative isolate flex h-[calc(100svh-5rem-env(safe-area-inset-bottom,0px))] max-h-[900px] min-h-[560px] w-full flex-col justify-end overflow-hidden bg-zinc-100 md:h-[min(100svh,880px)]"
+        >
+          <picture className="absolute inset-0 -z-20">
+            <source media="(min-width: 768px)" srcSet="/home/hero-platino-desktop.webp" />
+            <img
+              src="/home/hero-platino-mobile.webp"
+              alt="Jugador de Liga U ejecutando una chilena"
+              fetchPriority="high"
+              className="animate-ligau-hero h-full w-full object-cover object-[50%_30%] md:object-[70%_40%]"
             />
-            <div
-              aria-hidden
-              className="absolute -bottom-24 -left-24 -z-10 size-80 rounded-full bg-[#C8102E]/40 blur-3xl"
-            />
+          </picture>
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,#fff_0%,rgba(255,255,255,0.9)_22%,rgba(255,255,255,0)_55%)] md:bg-[linear-gradient(to_top,#fff_0%,rgba(255,255,255,0)_45%),linear-gradient(to_right,rgba(255,255,255,0.85)_0%,rgba(255,255,255,0)_50%)]"
+          />
 
-            <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 pb-6 md:flex-row md:items-end md:justify-between md:gap-10 md:pb-10">
-              <h1
-                id="hero-title"
-                className="font-jersey max-w-3xl text-[3.25rem] leading-[0.86] text-white uppercase sm:text-7xl lg:text-[7.5rem]"
-              >
-                El <span className="text-[#ff3b5c]">epicentro</span> del talento universitario
-              </h1>
-              <dl className="grid shrink-0 grid-cols-3 divide-x divide-white/15 rounded-2xl bg-white/10 py-3 ring-1 ring-white/15 backdrop-blur-md md:w-[26rem]">
-                {[
-                  { label: "Universidades", value: universities },
-                  { label: "Deportes", value: disciplines },
-                  { label: "Temporada", value: 2026 },
-                ].map(({ label, value }) => (
-                  <div key={label} className="flex flex-col-reverse items-center gap-1 px-2">
-                    <dt className="text-[9px] font-semibold tracking-[0.2em] text-white/60 uppercase lg:text-[10px]">
-                      {label}
-                    </dt>
-                    <dd className="font-jersey text-3xl leading-none text-white tabular-nums lg:text-4xl">{value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </section>
-
-          <section aria-label="Lo destacado de la liga" className="mx-auto mt-6 max-w-7xl md:mt-10">
-            <div className="grid px-3 md:px-4">
-              <RostersTile clubs={universities} />
-            </div>
-            <div className="flex snap-x snap-mandatory scroll-px-3 gap-3 overflow-x-auto px-3 pt-4 pb-6 [scrollbar-width:none] md:scroll-px-4 md:gap-5 md:px-4 md:pt-5 md:[scrollbar-width:thin]">
-              <MatchTile match={match} />
-              <StandingsTile table={standingsPreview(catalog, match)} />
-              {mvps.length ? <MvpCarousel slides={mvps} className={RAIL} /> : <MvpPending />}
-              <NewsTile item={lead} count={catalog.news.length} photo={newsPhoto(lead, catalog.sports)} />
-              <SponsorFlyer sponsor={topSponsor(sponsors)} />
-              <MediaTile />
-            </div>
-            <div className="grid px-3 md:px-4">
-              <PassTile />
-            </div>
-          </section>
-
-          <div className="mx-auto max-w-7xl px-4 pt-20 pb-8 md:pt-28">
-            <SponsorMarquee sponsors={sponsors} />
+          <div className="mx-auto w-full max-w-7xl px-5 pb-10 md:px-8 md:pb-16">
+            <h1
+              id="hero-title"
+              className="font-jersey max-w-4xl text-[3.75rem] leading-[0.84] text-zinc-950 uppercase sm:text-8xl lg:text-[8.5rem]"
+            >
+              El <span className="text-[#C8102E]">epicentro</span> del talento universitario
+            </h1>
+            <p className="mt-5 inline-flex items-center gap-2.5 rounded-full bg-white/80 py-1.5 pr-3.5 pl-2.5 text-[11px] font-bold tracking-[0.24em] text-zinc-900 uppercase shadow-[0_8px_24px_-12px_rgba(9,9,11,0.35)] ring-1 ring-zinc-900/10 backdrop-blur-md">
+              <span aria-hidden className="size-2 rounded-full bg-[#C8102E] shadow-[0_0_0_3px_rgba(200,16,46,0.18)]" />
+              Temporada 2026 · Liga U
+            </p>
+            <p className="mt-3 max-w-md text-[15px] leading-relaxed text-zinc-600 md:text-lg">
+              {universities} universidades. {disciplines} deportes. Una sola pasión. Sigue cada partido, cada jugada y cada campeón.
+            </p>
           </div>
-        </main>
-      </TabTransition>
-    </>
+        </section>
+
+        <section aria-label="Lo destacado de la liga" className="mx-auto mt-6 max-w-7xl md:mt-10">
+          <div className="grid px-3 md:px-4">
+            <RostersTile clubs={universities} />
+          </div>
+          <div className="flex snap-x snap-mandatory scroll-px-3 gap-3 overflow-x-auto px-3 pt-4 pb-6 [scrollbar-width:none] md:scroll-px-4 md:gap-5 md:px-4 md:pt-6 md:[scrollbar-width:thin]">
+            <MatchTile match={match} />
+            <StandingsTile table={standingsPreview(catalog, match)} />
+            {mvps.length ? <MvpCarousel slides={mvps} className={RAIL} /> : <MvpPending />}
+            <NewsTile item={lead} count={catalog.news.length} photo={newsPhoto(lead, catalog.sports)} />
+            <SponsorFlyer sponsor={topSponsor(sponsors)} />
+            <MediaTile />
+          </div>
+          <div className="mt-4 grid px-3 md:mt-8 md:px-4">
+            <PassTile />
+          </div>
+        </section>
+
+        <div className="mx-auto mt-8 max-w-7xl px-4 pb-8 md:mt-12">
+          <SponsorMarquee sponsors={sponsors} />
+        </div>
+      </main>
+    </TabTransition>
   );
 }
