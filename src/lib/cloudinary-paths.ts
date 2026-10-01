@@ -5,6 +5,7 @@ export const CLOUDINARY_ROOT = "ligau";
 export const CLOUDINARY_FOLDER_ALIASES = {
   athletes: "jugadores",
   sponsors: "logo patrocinadores",
+  passBrands: "logos u pass",
   news: "noticias",
   podcasts: "podcasts",
   banners: "banners",
@@ -12,6 +13,7 @@ export const CLOUDINARY_FOLDER_ALIASES = {
 
 export const CLOUDINARY_FOLDER_ROOTS = [
   "logo patrocinadores",
+  "logos u pass",
   "jugadores",
   "noticias",
   "podcasts",
@@ -25,6 +27,8 @@ export type CloudinaryFolder =
 export const SUPERADMIN_FOLDERS: CloudinaryFolder[] = [
   "sponsors",
   "logo patrocinadores",
+  "passBrands",
+  "logos u pass",
 ];
 
 const ROOT_SET = new Set<string>(CLOUDINARY_FOLDER_ROOTS);

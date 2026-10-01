@@ -3,9 +3,7 @@ import { unstable_cache } from "next/cache";
 import { CLOUDINARY_FOLDER_ALIASES, CLOUDINARY_ROOT } from "@/lib/cloudinary-paths";
 import type { SponsorCard } from "@/lib/public/types";
 
-const FOLDER = `${CLOUDINARY_ROOT}/${CLOUDINARY_FOLDER_ALIASES.sponsors}`;
-
-async function fetchHomeSponsorLogos(): Promise<SponsorCard[]> {
+async function fetchFolderLogos(alias: keyof typeof CLOUDINARY_FOLDER_ALIASES): Promise<SponsorCard[]> {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
   const apiKey = process.env.CLOUDINARY_API_KEY;
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
@@ -20,7 +18,7 @@ async function fetchHomeSponsorLogos(): Promise<SponsorCard[]> {
   try {
     const res = await cloudinary.api.resources({
       type: "upload",
-      prefix: FOLDER,
+      prefix: `${CLOUDINARY_ROOT}/${CLOUDINARY_FOLDER_ALIASES[alias]}/`,
       max_results: 80,
     });
     return (res.resources ?? []).map(
@@ -40,8 +38,16 @@ async function fetchHomeSponsorLogos(): Promise<SponsorCard[]> {
   }
 }
 
+/** Official sponsors shown on the home marquee. */
 export const getHomeSponsorLogos = unstable_cache(
-  fetchHomeSponsorLogos,
+  () => fetchFolderLogos("sponsors"),
   ["home-sponsor-logos"],
+  { revalidate: 3600 },
+);
+
+/** U Pass partner brands; some overlap with the sponsors but they are managed in their own folder. */
+export const getPassBrandLogos = unstable_cache(
+  () => fetchFolderLogos("passBrands"),
+  ["pass-brand-logos"],
   { revalidate: 3600 },
 );
