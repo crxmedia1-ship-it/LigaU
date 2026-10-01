@@ -8,8 +8,7 @@ export const metadata: Metadata = {
   title: "Noticias",
 };
 
-const FALLBACK_COVER =
-  "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=1200&q=75";
+const FALLBACK_COVER = "/news/futbol-campo.webp";
 
 function publishedOn(value: string | null) {
   if (!value) return null;

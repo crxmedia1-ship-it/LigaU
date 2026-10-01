@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Trophy } from "lucide-react";
 import { CountUp, Segmented } from "@/components/public/app-motion";
 import { Crest } from "@/components/public/match-ui";
@@ -23,11 +22,8 @@ export type StandingGroup = {
 
 type View = "tablas" | "medallero";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
-
-
-function celebrate(colors: UniversityColors, reduce: boolean | null) {
-  if (reduce) return;
+function celebrate(colors: UniversityColors) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   void import("canvas-confetti").then(({ default: confetti }) => {
     confetti({
       particleCount: 90,
@@ -53,7 +49,6 @@ function Podium({
   rows: StandingGroup["rows"];
   leaderSponsor?: SponsorCard;
 }) {
-  const reduce = useReducedMotion();
   const slots = PODIUM.filter((slot) => rows[slot.place - 1]);
 
   return (
@@ -63,30 +58,21 @@ function Podium({
         className="absolute inset-x-0 top-0 -z-10 h-40 bg-[radial-gradient(ellipse_at_top,rgba(212,175,55,0.22),transparent_70%)]"
       />
       <div className="flex items-end justify-center gap-3 sm:gap-6">
-        {slots.map((slot, i) => {
+        {slots.map((slot) => {
           const row = rows[slot.place - 1];
           const leader = slot.place === 1;
           return (
             <div key={row.teamId} className="flex w-full max-w-36 flex-col items-center">
-              <motion.button
+              <button
                 type="button"
-                onClick={() => leader && celebrate(row.colors, reduce)}
-                initial={{ opacity: 0, y: 24, scale: 0.8 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.25 + i * 0.12, type: "spring", stiffness: 260, damping: 18 }}
-                whileTap={{ scale: 0.92 }}
+                onClick={() => leader && celebrate(row.colors)}
                 aria-label={leader ? `Celebrar al líder ${row.universityShort}` : row.universityShort}
-                className={cn("relative flex flex-col items-center", !leader && "cursor-default")}
+                className={cn("relative flex flex-col items-center active:scale-95", !leader && "cursor-default")}
               >
                 {leader ? (
-                  <motion.span
-                    animate={reduce ? undefined : { y: [0, -4, 0], rotate: [0, -6, 0] }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                    className="mb-1 text-amber-500"
-                  >
+                  <span className="mb-1 text-amber-500">
                     <Trophy className="size-6" strokeWidth={2.25} />
-                  </motion.span>
+                  </span>
                 ) : null}
                 <span
                   className={cn("rounded-full p-1", leader && "shadow-[0_0_0_3px_rgba(212,175,55,0.5),0_12px_30px_-8px_rgba(212,175,55,0.8)]")}
@@ -100,17 +86,12 @@ function Podium({
                 <span className="mt-0.5 text-[11px] font-semibold text-zinc-500">
                   <CountUp value={row.points} className="font-jersey text-base text-zinc-950" /> pts
                 </span>
-              </motion.button>
-              <motion.div
-                initial={{ scaleY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 + i * 0.12, duration: 0.7, ease: EASE }}
-                style={{ transformOrigin: "bottom" }}
+              </button>
+              <div
                 className={cn("mt-3 grid w-full place-items-start justify-center rounded-t-2xl bg-gradient-to-b pt-2", slot.height, slot.tone)}
               >
                 <span className={cn("font-jersey text-4xl leading-none", slot.label)}>{slot.place}</span>
-              </motion.div>
+              </div>
             </div>
           );
         })}
@@ -140,17 +121,10 @@ function Table({ group }: { group: StandingGroup }) {
         <span className="text-center">DG</span>
         <span className="text-right">Pts</span>
       </div>
-      <motion.ol
-        initial="hidden"
-        whileInView="shown"
-        viewport={{ once: true }}
-        variants={{ shown: { transition: { staggerChildren: 0.07 } } }}
-      >
+      <ol>
         {group.rows.map((row, index) => (
-          <motion.li
+          <li
             key={row.teamId}
-            variants={{ hidden: { opacity: 0, x: -16 }, shown: { opacity: 1, x: 0 } }}
-            transition={{ duration: 0.45, ease: EASE }}
             className={cn("relative grid items-center gap-2 border-b border-zinc-100 px-4 py-3.5 last:border-b-0", cols)}
           >
             {index === 0 ? <span aria-hidden className="absolute inset-y-2 left-0 w-1 rounded-r-full bg-amber-400" /> : null}
@@ -162,11 +136,7 @@ function Table({ group }: { group: StandingGroup }) {
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[15px] font-semibold text-zinc-900">{row.universityShort}</p>
                 <div className="mt-1 h-1 overflow-hidden rounded-full bg-zinc-100">
-                  <motion.div
-                    initial={{ scaleX: 0 }}
-                    whileInView={{ scaleX: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.9, delay: 0.2 + index * 0.07, ease: EASE }}
+                  <div
                     className="h-full origin-left rounded-full"
                     style={{ width: `${Math.max(6, (row.points / top) * 100)}%`, backgroundColor: row.colors.primary }}
                   />
@@ -181,9 +151,9 @@ function Table({ group }: { group: StandingGroup }) {
               {row.goalDiff > 0 ? `+${row.goalDiff}` : row.goalDiff}
             </span>
             <CountUp value={row.points} className="font-jersey text-right text-2xl leading-none text-zinc-950" />
-          </motion.li>
+          </li>
         ))}
-      </motion.ol>
+      </ol>
     </div>
   );
 }
@@ -196,18 +166,10 @@ const MEDALS = [
 
 function MedalBoard({ medals }: { medals: MedalTally[] }) {
   return (
-    <motion.ol
-      initial="hidden"
-      whileInView="shown"
-      viewport={{ once: true }}
-      variants={{ shown: { transition: { staggerChildren: 0.06 } } }}
-      className="overflow-hidden rounded-[1.6rem] bg-white shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] ring-1 ring-zinc-200/80"
-    >
+    <ol className="overflow-hidden rounded-[1.6rem] bg-white shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] ring-1 ring-zinc-200/80">
       {medals.map((row, index) => (
-        <motion.li
+        <li
           key={row.universityId}
-          variants={{ hidden: { opacity: 0, y: 12 }, shown: { opacity: 1, y: 0 } }}
-          transition={{ duration: 0.4, ease: EASE }}
           className="flex items-center gap-3 border-b border-zinc-100 px-4 py-3.5 last:border-b-0"
         >
           <span className={cn("font-jersey w-6 text-xl leading-none", index < 3 && row.total ? "text-amber-600" : "text-zinc-400")}>
@@ -230,20 +192,17 @@ function MedalBoard({ medals }: { medals: MedalTally[] }) {
               </span>
             ))}
           </div>
-        </motion.li>
+        </li>
       ))}
-    </motion.ol>
+    </ol>
   );
 }
 
 function EmptySport({ name }: { name: string }) {
   const theme = sportTheme(name);
   return (
-    <motion.div
+    <div
       key={name}
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: EASE }}
       className="relative isolate overflow-hidden rounded-[1.9rem] px-6 py-12 text-center text-white"
       style={{ background: `linear-gradient(160deg, ${theme.from}, ${theme.to})` }}
     >
@@ -253,7 +212,7 @@ function EmptySport({ name }: { name: string }) {
       <p className="mx-auto mt-3 max-w-xs text-sm text-white/80">
         La tabla aparece en cuanto se inscriban los equipos de esta disciplina.
       </p>
-    </motion.div>
+    </div>
   );
 }
 
@@ -310,7 +269,6 @@ export function StandingsView({
       </header>
 
       <Segmented
-        layoutId="std-view"
         value={view}
         onChange={(id) => changeView(id as View)}
         options={[
@@ -320,19 +278,10 @@ export function StandingsView({
         className="sm:max-w-sm"
       />
 
-      <AnimatePresence mode="popLayout" initial={false}>
         {view === "tablas" ? (
-          <motion.div
-            key="tablas"
-            initial={{ opacity: 0, x: -24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24 }}
-            transition={{ duration: 0.3, ease: EASE }}
-            className="space-y-5"
-          >
+          <div className="space-y-5">
             <section aria-label="Elegir deporte y rama" className="space-y-3">
               <SportPicker
-                layoutId="std-sport"
                 sports={sports.map((sport) => ({
                   id: sport.id,
                   name: sport.name,
@@ -343,7 +292,6 @@ export function StandingsView({
                 countLabel={(n) => `${n} ${n === 1 ? "equipo" : "equipos"}`}
               />
               <GenderSwitch
-                layoutId="std-gender"
                 value={group?.gender ?? gender}
                 onChange={setGender}
                 available={sportGroups.map((item) => item.gender)}
@@ -352,13 +300,7 @@ export function StandingsView({
             </section>
 
             {group ? (
-              <motion.div
-                key={group.id}
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, ease: EASE }}
-                className="space-y-5"
-              >
+              <div key={group.id} className="space-y-5">
                 <SelectionTitle
                   title={group.sportName}
                   suffix={group.genderLabel}
@@ -373,20 +315,13 @@ export function StandingsView({
                   <Podium rows={group.rows} leaderSponsor={leaderSponsor} />
                   <Table group={group} />
                 </div>
-              </motion.div>
+              </div>
             ) : (
               <EmptySport name={selectedSport?.name ?? "este deporte"} />
             )}
-          </motion.div>
+          </div>
         ) : (
-          <motion.div
-            key="medallero"
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 24 }}
-            transition={{ duration: 0.3, ease: EASE }}
-            className="space-y-5"
-          >
+          <div className="space-y-5">
             <div className="flex items-baseline justify-between gap-3">
               <h2 className="font-jersey text-[1.75rem] leading-none text-zinc-950 uppercase sm:text-4xl">Medallero general</h2>
               <span className="shrink-0 text-[11px] font-semibold tracking-[0.14em] text-zinc-400 uppercase">
@@ -399,9 +334,8 @@ export function StandingsView({
               </p>
             ) : null}
             <MedalBoard medals={medals} />
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
 
       {feedSponsor ? <SponsorOffer sponsor={feedSponsor} offer={feedOffer} context="Aliado de la clasificación" /> : null}
     </div>

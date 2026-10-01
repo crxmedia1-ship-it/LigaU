@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NAV_TABS, activeTabIndex, tabTransition } from "@/components/public/nav-tabs";
+import { NAV_TABS, activeTabIndex } from "@/components/public/nav-tabs";
 import { cn } from "@/lib/utils";
 
 export function MobileBottomNav() {
@@ -12,8 +12,7 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label="Navegación principal"
-      style={{ viewTransitionName: "bottom-nav" }}
-      className="fixed right-0 bottom-0 left-0 z-50 border-t border-zinc-200/80 bg-[#eef1f4]/90 pb-safe backdrop-blur-xl md:hidden"
+      className="fixed right-0 bottom-0 left-0 z-50 border-t border-zinc-200/80 bg-[#eef1f4] pb-safe md:hidden"
     >
       <ul className="grid grid-cols-4">
         {NAV_TABS.map((tab, index) => {
@@ -23,8 +22,6 @@ export function MobileBottomNav() {
             <li key={tab.id}>
               <Link
                 href={tab.href}
-                prefetch={true}
-                transitionTypes={tabTransition(current, index)}
                 aria-current={active ? "page" : undefined}
                 className="flex min-h-11 touch-manipulation flex-col items-center justify-center gap-1 px-1 pt-2 pb-1.5 text-zinc-400 select-none transition-transform duration-75 hover:text-zinc-700 active:scale-90"
               >
@@ -32,7 +29,7 @@ export function MobileBottomNav() {
                   <span
                     aria-hidden
                     className={cn(
-                      "absolute inset-0 rounded-full bg-[#BA0C2F] shadow-[0_0_18px_rgba(186,12,47,0.35)] transition-opacity duration-75",
+                      "absolute inset-0 rounded-full bg-[#BA0C2F]",
                       active ? "opacity-100" : "opacity-0",
                     )}
                   />

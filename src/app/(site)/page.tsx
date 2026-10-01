@@ -25,27 +25,6 @@ const RAIL_FOOTER = "flex h-14 shrink-0 items-end justify-between gap-2 border-t
 
 const CLUB_ORDER = ["UCV", "UCAB", "UNIMET", "UNE", "USB", "USM", "UAH", "UMA"] as const;
 
-const MEDIA = {
-  press: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=1600&q=75",
-} as const;
-
-const SPORT_BACKDROP: Record<string, string> = {
-  ajedrez: "1528819622765-d6bcf132f793",
-  baloncesto: "1546519638-68e109498ffc",
-  "futbol-campo": "1522778119026-d647f0596c20",
-  futsal: "1504450758481-7338eba7524a",
-  rugby: "1480099225005-2513c8947aec",
-  "tenis-campo": "1554068865-24cecd4e34b8",
-  "tenis-de-mesa": "1534158914592-062992fbe900",
-  "voleibol-cancha": "1547347298-4074fc3086f0",
-  "voley-playa": "1592656094267-764a45160876",
-};
-
-function sportBackdrop(slug: string | undefined) {
-  const id = (slug && SPORT_BACKDROP[slug]) || SPORT_BACKDROP["futbol-campo"];
-  return `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=900&q=70`;
-}
-
 const MATCH_DAY = new Intl.DateTimeFormat("es-VE", {
   timeZone: "America/Caracas",
   weekday: "short",
@@ -170,7 +149,6 @@ function MatchTile({ match }: { match: MatchCard | undefined }) {
         "group relative isolate flex flex-col overflow-hidden rounded-2xl bg-zinc-950 text-white shadow-[0_24px_50px_-24px_rgba(9,9,11,0.6)] transition-transform duration-300 hover:-translate-y-0.5",
       )}
     >
-      <Photo src={sportBackdrop(match?.sportSlug)} />
       <div
         aria-hidden
         style={{ backgroundColor: homeTone }}
@@ -411,7 +389,7 @@ const NEWS_PHOTO: Record<string, string> = {
 function newsPhoto(item: NewsCard | undefined, sports: SportCard[]) {
   if (item?.coverImageUrl) return item.coverImageUrl;
   const slug = sports.find((sport) => sport.id === item?.sportId)?.slug;
-  return (slug && NEWS_PHOTO[slug]) || (slug ? sportBackdrop(slug) : MEDIA.press);
+  return (slug && NEWS_PHOTO[slug]) || "/news/futbol-campo.webp";
 }
 
 function storyText(item?: NewsCard) {
@@ -482,7 +460,7 @@ type Reel = { label: string; meta: string; photo: string; audio?: boolean };
 
 const REELS: Reel[] = [
   { label: "Entrevista", meta: "15K", photo: "/reels/entrevista.webp" },
-  { label: "Clavada", meta: "28K", photo: sportBackdrop("baloncesto") },
+  { label: "Clavada", meta: "28K", photo: "/mvp-demo/baloncesto.webp" },
   {
     label: "Podcast",
     meta: "Nuevo ep.",

@@ -1,15 +1,9 @@
-import { ViewTransition } from "react";
-
-const SLIDES = { "tab-next": "tab-next", "tab-prev": "tab-prev", default: "none" };
-
 /**
- * Slides a tab screen in the direction of the bottom-nav move. Must wrap each
- * page, not the layout: layouts persist, so enter/exit never fire there.
+ * The tab pages used to slide with a React ViewTransition. On a phone that
+ * snapshots the whole screen before painting the next tab, and a second tap
+ * aborts the transition into the error screen. The wrapper stays so each page
+ * can keep its marker without paying that cost.
  */
 export function TabTransition({ children }: { children: React.ReactNode }) {
-  return (
-    <ViewTransition enter={SLIDES} exit={SLIDES} default="none">
-      {children}
-    </ViewTransition>
-  );
+  return children;
 }

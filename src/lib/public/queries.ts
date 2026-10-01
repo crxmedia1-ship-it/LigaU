@@ -1,7 +1,10 @@
+import { unstable_cache } from "next/cache";
+import { connection } from "next/server";
+import { createClient as createSupabaseClient, type SupabaseClient } from "@supabase/supabase-js";
 import { teamLabel } from "@/lib/admin/labels";
 import { createClient } from "@/lib/supabase/server";
 import { applyUniversityMarks, getUniversityMarks } from "@/lib/public/university-marks";
-import type { Json } from "@/types/database.types";
+import type { Database, Json } from "@/types/database.types";
 import {
   one,
   parseUniversityColors,
@@ -145,12 +148,22 @@ function mapNews(item: {
   };
 }
 
-export async function getPublicCatalog(options?: { staff?: boolean }) {
-  const supabase = await createClient();
-  const marks = await getUniversityMarks();
+function createPublicClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("Faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  }
+  return createSupabaseClient<Database>(supabaseUrl, supabaseAnonKey, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
+}
+
+async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
+  const marks = getUniversityMarks();
   const benefitsSelect =
     "id, sponsor_id, discount_title, status, redemption_type, promo_code, instructions, external_url, click_count, pass_sponsors(name, logo_url, category, location_tag)";
-  const benefitsQuery = options?.staff
+  const benefitsQuery = staff
     ? supabase.from("pass_benefits").select(benefitsSelect).order("created_at", { ascending: false })
     : supabase
         .from("pass_benefits")
@@ -200,7 +213,7 @@ export async function getPublicCatalog(options?: { staff?: boolean }) {
       .from("podcast_episodes")
       .select("id, title, description, episode_number, cover_url, spotify_url, youtube_url, published_at")
       .order("episode_number", { ascending: false }),
-    options?.staff
+    staff
       ? supabase.from("pass_sponsors").select("id, name, category, location_tag, logo_url").order("name")
       : supabase
           .from("pass_sponsors")
@@ -296,6 +309,16 @@ export async function getPublicCatalog(options?: { staff?: boolean }) {
     sponsors,
     benefits,
   };
+}
+
+const getCachedPublicCatalog = unstable_cache(() => loadCatalog(createPublicClient(), false), ["public-catalog"], {
+  revalidate: 30,
+});
+
+export async function getPublicCatalog(options?: { staff?: boolean }) {
+  if (options?.staff) return loadCatalog(await createClient(), true);
+  await connection();
+  return getCachedPublicCatalog();
 }
 
 export function getMvpHighlight(

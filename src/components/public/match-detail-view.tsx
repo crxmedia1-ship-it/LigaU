@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ViewTransition } from "react";
 import { motion } from "motion/react";
 import { GoalCelebration } from "@/components/ui/effects/GoalCelebration";
 import { RefereeCard } from "@/components/ui/effects/RefereeCard";
@@ -55,9 +54,7 @@ export function MatchDetailView({
         <JerseyMark number="VS" />
         <div className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-4">
           <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-end">
-            <ViewTransition name={`crest-${match.id}-home`} share="morph" default="none">
-              <UniversityCrest url={match.homeLogoUrl} label={match.homeShort} size="lg" glow="natural" />
-            </ViewTransition>
+            <UniversityCrest url={match.homeLogoUrl} label={match.homeShort} size="lg" glow="natural" />
             <h1 className="text-2xl font-semibold sm:text-4xl">{match.homeShort}</h1>
           </div>
           <p className="font-mono text-4xl font-black text-brand-silver sm:text-5xl">
@@ -69,9 +66,7 @@ export function MatchDetailView({
           </p>
           <div className="flex flex-col items-center gap-2 sm:flex-row">
             <h1 className="text-2xl font-semibold sm:text-4xl">{match.awayShort}</h1>
-            <ViewTransition name={`crest-${match.id}-away`} share="morph" default="none">
-              <UniversityCrest url={match.awayLogoUrl} label={match.awayShort} size="lg" glow="natural" />
-            </ViewTransition>
+            <UniversityCrest url={match.awayLogoUrl} label={match.awayShort} size="lg" glow="natural" />
           </div>
         </div>
         <p className="mt-3 text-sm text-muted-foreground">

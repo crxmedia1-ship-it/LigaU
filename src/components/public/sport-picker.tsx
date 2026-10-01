@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { AnimatePresence, motion } from "motion/react";
 import { Check, Mars, Users, Venus } from "lucide-react";
 import { CourtMark } from "@/components/public/sport-courts";
 import { cn } from "@/lib/utils";
@@ -38,7 +37,6 @@ export function SportPicker({
   onChange,
   countLabel,
   allOption,
-  layoutId,
 }: {
   sports: PickerSport[];
   value: string;
@@ -46,7 +44,6 @@ export function SportPicker({
   countLabel: (count: number) => string;
   /** Adds a leading "Todos" tile with this total. */
   allOption?: { count: number };
-  layoutId: string;
 }) {
   const rail = useRef<HTMLDivElement>(null);
   const tiles = useRef(new Map<string, HTMLButtonElement>());
@@ -75,7 +72,7 @@ export function SportPicker({
         const all = sport.id === "all";
         const theme = all ? { from: "#7f0a1f", to: "#e8193c" } : sportTheme(sport.name);
         return (
-          <motion.button
+          <button
             key={sport.id}
             ref={(node) => {
               if (node) tiles.current.set(sport.id, node);
@@ -85,12 +82,9 @@ export function SportPicker({
             role="tab"
             aria-selected={active}
             onClick={() => onChange(sport.id)}
-            animate={{ scale: active ? 1 : 0.93, y: active ? -4 : 0 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 380, damping: 26 }}
             className={cn(
-              "relative isolate flex h-44 w-36 shrink-0 touch-manipulation snap-center flex-col justify-between overflow-hidden rounded-[1.6rem] p-3 text-left text-white transition-[filter,opacity] duration-300 lg:w-auto",
-              !active && "opacity-80 saturate-[0.4] hover:opacity-100 hover:saturate-100",
+              "relative isolate flex h-44 w-36 shrink-0 touch-manipulation snap-center flex-col justify-between overflow-hidden rounded-[1.6rem] p-3 text-left text-white active:scale-95 lg:w-auto",
+              active ? "-translate-y-1" : "scale-[0.93] opacity-80 saturate-[0.4]",
             )}
             style={{
               background: `linear-gradient(160deg, ${theme.from} 0%, ${theme.to} 100%)`,
@@ -118,19 +112,18 @@ export function SportPicker({
                 {sport.count ? countLabel(sport.count) : "Pronto"}
               </span>
               {active ? (
-                <motion.span
-                  layoutId={`${layoutId}-check`}
+                <span
                   className="grid size-5 shrink-0 place-items-center rounded-full bg-white"
                   style={{ color: theme.from }}
                 >
                   <Check className="size-3" strokeWidth={3.5} />
-                </motion.span>
+                </span>
               ) : null}
             </span>
             <span className="font-jersey text-[1.45rem] leading-[0.9] break-words uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)] lg:text-[1.3rem]">
               {sport.name}
             </span>
-          </motion.button>
+          </button>
         );
       })}
     </div>
@@ -152,13 +145,11 @@ export function GenderSwitch({
   onChange,
   available,
   includeAll = true,
-  layoutId,
 }: {
   value: GenderValue;
   onChange: (value: GenderValue) => void;
   available: GenderValue[];
   includeAll?: boolean;
-  layoutId: string;
 }) {
   const options = GENDERS.filter(
     (g) => (g.id === "all" ? includeAll : g.id !== "mixed" || available.includes("mixed")),
@@ -183,11 +174,7 @@ export function GenderSwitch({
             )}
           >
             {active ? (
-              <motion.span
-                layoutId={layoutId}
-                transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                className="absolute inset-0 rounded-xl bg-zinc-950 shadow-[0_10px_24px_-12px_rgba(15,23,42,0.8)]"
-              />
+              <span className="absolute inset-0 rounded-xl bg-zinc-950 shadow-[0_10px_24px_-12px_rgba(15,23,42,0.8)]" />
             ) : null}
             <Icon className={cn("relative size-4", active ? "text-white" : g.tint)} strokeWidth={2.5} />
             <span className="relative">{g.label}</span>
@@ -202,18 +189,9 @@ export function GenderSwitch({
 export function SelectionTitle({ title, suffix, meta }: { title: string; suffix?: string; meta?: string }) {
   return (
     <div className="flex items-end justify-between gap-3 overflow-hidden">
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.h2
-          key={`${title}-${suffix}`}
-          initial={{ y: "100%", opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: "-100%", opacity: 0 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="font-jersey min-w-0 text-[2rem] leading-none text-zinc-950 uppercase sm:text-5xl"
-        >
-          {title} {suffix ? <span className="text-zinc-400">{suffix}</span> : null}
-        </motion.h2>
-      </AnimatePresence>
+      <h2 className="font-jersey min-w-0 text-[2rem] leading-none text-zinc-950 uppercase sm:text-5xl">
+        {title} {suffix ? <span className="text-zinc-400">{suffix}</span> : null}
+      </h2>
       {meta ? (
         <span className="mb-1 shrink-0 text-[11px] font-semibold tracking-[0.14em] text-zinc-400 uppercase">{meta}</span>
       ) : null}

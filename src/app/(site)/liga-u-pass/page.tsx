@@ -31,20 +31,20 @@ const STEPS: { icon: LucideIcon; title: string; text: string }[] = [
   },
 ];
 
-const SAMPLE_BENEFITS: { icon: LucideIcon; category: string; offer: string; detail: string; photo: string }[] = [
+const SAMPLE_BENEFITS: { icon: LucideIcon; category: string; offer: string; detail: string; tone: string }[] = [
   {
     icon: Plane,
     category: "Avior Airlines",
     offer: "20% OFF",
     detail: "En boletos nacionales para viajar con tu equipo.",
-    photo: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=900&q=70",
+    tone: "bg-[linear-gradient(160deg,#0c4a6e,#09090b_70%)]",
   },
   {
     icon: UtensilsCrossed,
     category: "Gastronomía",
     offer: "2x1",
     detail: "En combos seleccionados después de cada jornada.",
-    photo: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=70",
+    tone: "bg-[linear-gradient(160deg,#7f1d1d,#09090b_70%)]",
   },
 ];
 
@@ -163,13 +163,11 @@ export default async function LigaUPassPage() {
           ) : null}
 
           <div className="mx-auto mt-8 grid max-w-6xl gap-3 px-4 md:mt-10 md:grid-cols-3 md:gap-5">
-            {SAMPLE_BENEFITS.map(({ icon: Icon, category, offer, detail, photo }) => (
+            {SAMPLE_BENEFITS.map(({ icon: Icon, category, offer, detail, tone }) => (
               <article
                 key={category}
-                className="relative isolate flex min-h-60 flex-col justify-end overflow-hidden rounded-2xl bg-zinc-950 p-5 text-white shadow-[0_24px_50px_-24px_rgba(9,9,11,0.6)]"
+                className={`relative isolate flex min-h-60 flex-col justify-end overflow-hidden rounded-2xl p-5 text-white shadow-[0_24px_50px_-24px_rgba(9,9,11,0.6)] ${tone}`}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={photo} alt="" className="absolute inset-0 -z-10 size-full object-cover" />
                 <div
                   aria-hidden
                   className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgba(9,9,11,0.92)_0%,rgba(9,9,11,0.45)_55%,rgba(9,9,11,0.15)_100%)]"

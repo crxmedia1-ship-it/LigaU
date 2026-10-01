@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, ViewTransition, useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRight, MapPin } from "lucide-react";
 import { CountUp, Segmented } from "@/components/public/app-motion";
 import { Crest, dayKey, dayParts, hasScore, kickoff } from "@/components/public/match-ui";
@@ -23,9 +22,7 @@ const STATUS_MATCH: Record<StatusFilter, (m: MatchCard) => boolean> = {
 function CrestMorph({ match, side, size }: { match: MatchCard; side: "home" | "away"; size: "sm" | "md" }) {
   const home = side === "home";
   return (
-    <ViewTransition name={`crest-${match.id}-${side}`} share="morph" default="none">
-      <Crest label={home ? match.homeShort : match.awayShort} logo={home ? match.homeLogoUrl : match.awayLogoUrl} size={size} />
-    </ViewTransition>
+    <Crest label={home ? match.homeShort : match.awayShort} logo={home ? match.homeLogoUrl : match.awayLogoUrl} size={size} />
   );
 }
 
@@ -198,7 +195,6 @@ export function CalendarView({
 
       <section aria-label="Filtrar por deporte y rama" className="space-y-3">
         <SportPicker
-          layoutId="cal-sport"
           sports={pickerSports}
           value={sportId}
           onChange={(id) => {
@@ -209,12 +205,11 @@ export function CalendarView({
           allOption={{ count: inGender.length }}
           countLabel={(n) => `${n} ${n === 1 ? "partido" : "partidos"}`}
         />
-        <GenderSwitch layoutId="cal-gender" value={gender} onChange={setGender} available={genders} />
+        <GenderSwitch value={gender} onChange={setGender} available={genders} />
       </section>
 
-      <div className="sticky top-[calc(3rem+env(safe-area-inset-top,0px))] z-30 -mx-4 space-y-3 bg-[#eef1f4]/90 px-4 py-3 backdrop-blur-xl md:top-14 md:mx-0 md:rounded-b-3xl md:px-0">
+      <div className="sticky top-[calc(3rem+env(safe-area-inset-top,0px))] z-30 -mx-4 space-y-3 bg-[#eef1f4] px-4 py-3 md:top-14 md:mx-0 md:rounded-b-3xl md:px-0">
         <Segmented
-          layoutId="cal-status"
           value={status}
           onChange={(id) => setStatus(id as StatusFilter)}
           options={[
@@ -235,17 +230,10 @@ export function CalendarView({
                   type="button"
                   onClick={() => jumpTo(key)}
                   className={cn(
-                    "relative flex w-14 shrink-0 touch-manipulation flex-col items-center rounded-2xl py-2 transition-colors",
-                    active ? "text-white" : "bg-white text-zinc-700 ring-1 ring-zinc-200",
+                    "relative flex w-14 shrink-0 touch-manipulation flex-col items-center rounded-2xl py-2",
+                    active ? "bg-zinc-950 text-white" : "bg-white text-zinc-700 ring-1 ring-zinc-200",
                   )}
                 >
-                  {active ? (
-                    <motion.span
-                      layoutId="cal-day"
-                      transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                      className="absolute inset-0 rounded-2xl bg-zinc-950"
-                    />
-                  ) : null}
                   <span className="relative text-[10px] font-semibold tracking-wider uppercase opacity-70">{parts.weekday}</span>
                   <span className="font-jersey relative text-2xl leading-none">{parts.day}</span>
                   <span className="relative mt-1 flex gap-0.5">
@@ -266,15 +254,7 @@ export function CalendarView({
         meta={`${filtered.length} ${filtered.length === 1 ? "partido" : "partidos"}`}
       />
 
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={`${status}-${sportId}-${gender}`}
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8, transition: { duration: 0.14 } }}
-          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-          className="space-y-8"
-        >
+        <div key={`${status}-${sportId}-${gender}`} className="space-y-8">
           {days.map(([key, list], index) => {
             const parts = dayParts(list[0].matchDate);
             return (
@@ -301,23 +281,13 @@ export function CalendarView({
                       <SponsorMark sponsor={daySponsor} className="h-5 max-w-16" />
                     </p>
                   ) : null}
-                  <motion.ul
-                    initial="hidden"
-                    whileInView="shown"
-                    viewport={{ once: true, margin: "-8% 0px" }}
-                    variants={{ shown: { transition: { staggerChildren: 0.06 } } }}
-                    className="grid gap-3 lg:grid-cols-2"
-                  >
+                  <ul className="grid gap-3 lg:grid-cols-2">
                     {list.map((m) => (
-                      <motion.li
-                        key={m.id}
-                        variants={{ hidden: { opacity: 0, y: 18 }, shown: { opacity: 1, y: 0 } }}
-                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                      >
+                      <li key={m.id}>
                         <MatchRow match={m} />
-                      </motion.li>
+                      </li>
                     ))}
-                  </motion.ul>
+                  </ul>
                 </section>
                 {index === 0 && feedSponsor ? (
                   <SponsorOffer sponsor={feedSponsor} offer={feedOffer} context="Aliado del calendario" />
@@ -344,8 +314,7 @@ export function CalendarView({
               </button>
             </div>
           ) : null}
-        </motion.div>
-      </AnimatePresence>
+        </div>
     </div>
   );
 }

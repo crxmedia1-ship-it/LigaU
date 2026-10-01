@@ -10,9 +10,3 @@ export const NAV_TABS = [
 export function activeTabIndex(pathname: string) {
   return NAV_TABS.findIndex((tab) => (tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href)));
 }
-
-/** View-transition type for moving between tabs, so screens slide the way the tab bar moves. */
-export function tabTransition(from: number, to: number): string[] | undefined {
-  if (from === -1 || from === to) return undefined;
-  return [to > from ? "tab-next" : "tab-prev"];
-}

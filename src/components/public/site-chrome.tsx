@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { Suspense, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
-import { motion } from "motion/react";
 import { LigaULogo } from "@/components/public/brand";
-import { NAV_TABS, activeTabIndex, tabTransition } from "@/components/public/nav-tabs";
+import { NAV_TABS, activeTabIndex } from "@/components/public/nav-tabs";
 import { cn } from "@/lib/utils";
 
 function DesktopNav({ overlay }: { overlay: boolean }) {
@@ -24,21 +23,13 @@ function DesktopNav({ overlay }: { overlay: boolean }) {
           <Link
             key={item.id}
             href={item.href}
-            transitionTypes={tabTransition(current, index)}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "relative rounded-full px-4 py-1.5 text-xs font-semibold tracking-[0.14em] text-zinc-500 uppercase transition-colors duration-150 hover:text-zinc-900",
-              active && "text-white hover:text-white",
+              "relative rounded-full px-4 py-1.5 text-xs font-semibold tracking-[0.14em] text-zinc-500 uppercase hover:text-zinc-900",
+              active && "bg-[#C8102E] text-white hover:text-white",
             )}
           >
-            {active ? (
-              <motion.span
-                layoutId="desktop-nav-pill"
-                transition={{ type: "spring", stiffness: 480, damping: 36 }}
-                className="absolute inset-0 rounded-full bg-[#C8102E]"
-              />
-            ) : null}
-            <span className="relative">{item.label}</span>
+            {item.label}
           </Link>
         );
       })}
@@ -47,8 +38,16 @@ function DesktopNav({ overlay }: { overlay: boolean }) {
 }
 
 function subscribeScroll(onChange: () => void) {
-  window.addEventListener("scroll", onChange, { passive: true });
-  return () => window.removeEventListener("scroll", onChange);
+  const desktop = window.matchMedia("(min-width: 768px)");
+  const onScroll = () => {
+    if (desktop.matches) onChange();
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  desktop.addEventListener("change", onChange);
+  return () => {
+    window.removeEventListener("scroll", onScroll);
+    desktop.removeEventListener("change", onChange);
+  };
 }
 
 /**
@@ -59,14 +58,13 @@ export function SiteHeader() {
   const home = usePathname() === "/";
   const scrolled = useSyncExternalStore(
     subscribeScroll,
-    () => window.scrollY > 24,
+    () => window.matchMedia("(min-width: 768px)").matches && window.scrollY > 24,
     () => false,
   );
   const overlay = home && !scrolled;
 
   return (
     <header
-      style={{ viewTransitionName: "site-header" }}
       className={cn(
         "top-0 z-40 pt-safe transition-colors duration-300 md:pt-0",
         home ? "absolute inset-x-0 md:fixed" : "relative md:sticky",
