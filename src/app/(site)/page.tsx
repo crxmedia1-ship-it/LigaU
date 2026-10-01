@@ -275,7 +275,10 @@ function MatchTile({ match }: { match: MatchCard | undefined }) {
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-/** Invented players so the carousel can be reviewed locally before real MVPs are loaded. */
+/** Turn off once real MVPs are loaded so an empty week shows the "Por anunciar" card instead. */
+const SHOW_DEMO_MVPS = true;
+
+/** Invented players so the carousel can be reviewed before real MVPs are loaded. */
 const DEMO_MVPS: MvpSlide[] = [
   {
     id: "demo-baloncesto",
@@ -355,7 +358,7 @@ function weeklyMvps(catalog: Awaited<ReturnType<typeof getPublicCatalog>>): MvpS
   });
 
   if (slides.length) return slides;
-  return process.env.NODE_ENV === "production" ? [] : DEMO_MVPS;
+  return SHOW_DEMO_MVPS ? DEMO_MVPS : [];
 }
 
 function MvpPending() {
@@ -459,7 +462,7 @@ function NewsTile({ item, count, photo }: { item?: NewsCard; count: number; phot
             className="absolute inset-0 size-full object-cover contrast-125 grayscale transition-transform duration-700 group-hover:scale-105"
           />
         </figure>
-        <p className="line-clamp-6 self-start border-l border-zinc-950/15 pl-2.5 font-serif text-xs leading-relaxed text-zinc-700 hyphens-auto md:line-clamp-8 first-letter:float-left first-letter:mr-1 first-letter:text-[2.6rem] first-letter:leading-[0.8] first-letter:font-black first-letter:text-[#C8102E]">
+        <p className="max-h-[7.5rem] min-w-0 self-start overflow-hidden border-l border-zinc-950/15 pl-2.5 font-serif text-xs leading-[1.25rem] break-words text-zinc-700 hyphens-auto [mask-image:linear-gradient(to_bottom,black_75%,transparent)] md:max-h-[10rem] first-letter:float-left first-letter:mr-1 first-letter:text-[2.6rem] first-letter:leading-[0.8] first-letter:font-black first-letter:text-[#C8102E]">
           {storyText(item)}
         </p>
       </div>
@@ -921,12 +924,12 @@ export default async function HomePage() {
             <SponsorFlyer sponsor={topSponsor(sponsors)} />
             <MediaTile />
           </div>
-          <div className="mt-4 grid px-3 md:mt-8 md:px-4">
+          <div className="mt-10 grid px-3 md:mt-8 md:px-4">
             <PassTile />
           </div>
         </section>
 
-        <div className="mx-auto mt-8 max-w-7xl px-4 pb-8 md:mt-12">
+        <div className="mx-auto mt-16 max-w-7xl px-4 pb-8 md:mt-12">
           <SponsorMarquee sponsors={sponsors} />
         </div>
       </main>
