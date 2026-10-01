@@ -3,7 +3,6 @@ import type { TeamGender } from "@/lib/public/types";
 export const CLOUDINARY_ROOT = "ligau";
 
 export const CLOUDINARY_FOLDER_ALIASES = {
-  universities: "logo universidad",
   athletes: "jugadores",
   sponsors: "logo patrocinadores",
   news: "noticias",
@@ -12,15 +11,11 @@ export const CLOUDINARY_FOLDER_ALIASES = {
 } as const;
 
 export const CLOUDINARY_FOLDER_ROOTS = [
-  "logo universidad",
-  "logo equipos",
   "logo patrocinadores",
   "jugadores",
-  "videos-publicidad",
   "noticias",
   "podcasts",
   "banners",
-  "marca",
 ] as const;
 
 export type CloudinaryFolder =

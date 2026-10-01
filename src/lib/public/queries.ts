@@ -35,7 +35,7 @@ function mapUniversity(
     id: row.id,
     name: row.name,
     shortName: row.short_name,
-    logoUrl: row.logo_url,
+    logoUrl: brand.mascotUrl ?? brand.crestUrl,
     crestUrl: brand.crestUrl,
     mascotUrl: brand.mascotUrl,
     colors: parseUniversityColors(row.colors as Json),

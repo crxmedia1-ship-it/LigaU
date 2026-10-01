@@ -1,3 +1,4 @@
+import { universityLogoUrl } from "@/lib/public/university-marks";
 import { createClient } from "@/lib/supabase/server";
 import {
   EquiposBoard,
@@ -11,7 +12,7 @@ export default async function AdminEquiposPage() {
     await Promise.all([
       supabase
         .from("universities")
-        .select("id, name, short_name, logo_url")
+        .select("id, name, short_name")
         .order("short_name"),
       supabase.from("sports").select("id, name, slug").order("name"),
       supabase
@@ -57,7 +58,7 @@ export default async function AdminEquiposPage() {
         id: university.id,
         name: university.name,
         shortName: university.short_name,
-        logoUrl: university.logo_url,
+        logoUrl: universityLogoUrl(university.short_name),
       }))}
       sports={sports ?? []}
       teams={teamRows}
