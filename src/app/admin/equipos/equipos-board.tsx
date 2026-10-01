@@ -119,7 +119,7 @@ function Crest({
         src={url}
         alt=""
         className={cn(
-          "size-7 shrink-0 rounded-full bg-zinc-900 object-contain ring-1 ring-zinc-700",
+          "size-7 shrink-0 rounded-full bg-white object-contain p-1 ring-1 ring-zinc-700",
           className,
         )}
       />

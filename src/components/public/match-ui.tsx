@@ -47,6 +47,14 @@ const CREST_SIZE = {
   xl: "size-20 text-2xl",
 } as const;
 
+/** ~15% inset keeps the square corners of a mark inside the circle. */
+const CREST_INSET = {
+  sm: "p-1",
+  md: "p-1.5",
+  lg: "p-2.5",
+  xl: "p-3",
+} as const;
+
 export function Crest({
   label,
   logo,
@@ -63,8 +71,9 @@ export function Crest({
       <span
         aria-hidden
         className={cn(
-          "block shrink-0 rounded-full bg-white bg-contain bg-center bg-no-repeat ring-1 ring-zinc-200",
+          "block shrink-0 rounded-full bg-white bg-contain bg-center bg-no-repeat bg-origin-content ring-1 ring-zinc-200",
           CREST_SIZE[size],
+          CREST_INSET[size],
           className,
         )}
         style={{ backgroundImage: `url('${logo}')` }}

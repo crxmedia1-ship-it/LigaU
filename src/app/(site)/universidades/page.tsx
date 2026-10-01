@@ -32,11 +32,11 @@ export default async function UniversidadesPage() {
               }}
             />
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-5">
-              <div className="flex items-center justify-center gap-3">
+              <div className="flex h-20 items-center justify-center gap-3 rounded-xl bg-white px-3">
                 <SafeLogo
                   url={university.crestUrl}
                   label={university.shortName}
-                  className="h-12 w-12"
+                  className="h-12 w-24"
                   fallback={false}
                 />
                 <SafeLogo

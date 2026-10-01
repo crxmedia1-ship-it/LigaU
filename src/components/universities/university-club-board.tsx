@@ -65,11 +65,11 @@ export function UniversityClubBoard({
         }}
       >
         <div className="flex flex-col gap-5 px-5 py-8 sm:flex-row sm:items-center sm:px-8">
-          <div className="flex items-center gap-4">
+          <div className="flex h-24 shrink-0 items-center gap-4 self-start rounded-2xl bg-white px-4">
             <SafeLogo
               url={university.crestUrl}
               label={university.shortName}
-              className="h-16 w-16"
+              className="h-16 w-32"
               fallback={false}
             />
             <SafeLogo
