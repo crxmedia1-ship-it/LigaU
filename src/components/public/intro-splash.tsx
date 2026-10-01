@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
+  INTRO_ENABLED,
   INTRO_KEY,
   INTRO_ONCE_PER_SESSION,
   INTRO_SEEN_CLASS,
@@ -59,7 +60,13 @@ function preload(src: string) {
   return img.decode().catch(() => undefined);
 }
 
+/** Brand entrance. Mounts nothing while `INTRO_ENABLED` is false. */
 export function IntroSplash() {
+  if (!INTRO_ENABLED) return null;
+  return <IntroSplashSequence />;
+}
+
+function IntroSplashSequence() {
   const seen = useSyncExternalStore(noopSubscribe, readSeen, () => false);
   const reduced = useReducedMotion();
   const [phase, setPhase] = useState<Phase>("load");

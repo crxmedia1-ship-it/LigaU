@@ -30,11 +30,6 @@ export function CourtMark({ sport, className }: { sport: string; className?: str
   );
 }
 
-/** Flat wash so the site graph paper does not show through the home. */
-export function HomeFieldBackdrop() {
-  return <div aria-hidden className="pointer-events-none fixed inset-0 z-0 bg-[#f8fafc]" />;
-}
-
 function Football({ w, h }: { w: number; h: number }) {
   const mid = h / 2;
   const boxD = w * 0.157;

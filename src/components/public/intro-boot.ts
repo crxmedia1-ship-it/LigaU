@@ -1,3 +1,9 @@
+/**
+ * Master switch for the entrance animation.
+ * Keep false while the site is in progress; set true when it is ready to ship.
+ */
+export const INTRO_ENABLED = false;
+
 /** Set to true to show the intro only once per browser session. */
 export const INTRO_ONCE_PER_SESSION = false;
 
