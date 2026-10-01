@@ -28,7 +28,7 @@ export function SponsorMarquee({ sponsors }: { sponsors: SponsorCard[] }) {
     <section>
       <div className="flex items-end justify-between gap-4">
         <h2 className="font-jersey text-[1.75rem] leading-none text-zinc-950 uppercase sm:text-4xl">Patrocinantes oficiales</h2>
-        <p className="mb-0.5 text-[10px] font-semibold tracking-[0.2em] text-zinc-400 uppercase">Temporada 2026</p>
+        <p className="mb-0.5 hidden text-[10px] md:block font-semibold tracking-[0.2em] text-zinc-400 uppercase">Temporada 2026</p>
       </div>
       <div className="py-4 [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
         <Marquee duration="28s">

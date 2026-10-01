@@ -907,7 +907,7 @@ export default async function HomePage() {
               Temporada 2026 · Liga U
             </p>
             <p className="mt-3 max-w-md text-[15px] leading-relaxed text-zinc-600 md:text-lg">
-              {universities} universidades. {disciplines} deportes. Una sola pasión. Sigue cada partido, cada jugada y cada campeón.
+              {universities} universidades. {disciplines} deportes. Una sola pasión. Vive los partidos, las jugadas y los campeones de la temporada.
             </p>
           </div>
         </section>
@@ -924,12 +924,12 @@ export default async function HomePage() {
             <SponsorFlyer sponsor={topSponsor(sponsors)} />
             <MediaTile />
           </div>
-          <div className="mt-10 grid px-3 md:mt-8 md:px-4">
+          <div className="mt-20 grid px-3 md:mt-8 md:px-4">
             <PassTile />
           </div>
         </section>
 
-        <div className="mx-auto mt-16 max-w-7xl px-4 pb-8 md:mt-12">
+        <div className="mx-auto mt-28 max-w-7xl px-4 pb-8 md:mt-12">
           <SponsorMarquee sponsors={sponsors} />
         </div>
       </main>
