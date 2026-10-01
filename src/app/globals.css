@@ -296,7 +296,7 @@ body:has(.ligau-public) {
 }
 
 @media (min-width: 768px) {
-  .glass-card:not(.glass-card-uncut) {
+  .glass-card {
     border-radius: 0;
     clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
   }
@@ -343,12 +343,6 @@ html .ligau-public .glass-card,
     repeating-linear-gradient(-45deg, #09090b 0 2px, #17171b 2px 4px);
 }
 
-.glass-card.glass-card-uncut {
-  overflow: visible;
-  clip-path: none;
-  border-radius: 1rem;
-}
-
 .dark .glass-card {
   border: 1px solid rgb(39 39 42 / 80%);
   background-color: rgb(24 24 27 / 60%);
@@ -388,15 +382,6 @@ html.dark .ligau-public .glass-card {
 
 .dark .chrome-text {
   background-image: linear-gradient(180deg, #ffffff 0%, #cbd5e1 78%);
-}
-
-.chrome-text .accent-red {
-  background: none;
-  -webkit-background-clip: border-box;
-  background-clip: border-box;
-  color: #ba0c2f;
-  -webkit-text-fill-color: #ba0c2f;
-  filter: drop-shadow(0 0 18px rgb(186 12 47 / 35%));
 }
 
 .carbon-fiber {
