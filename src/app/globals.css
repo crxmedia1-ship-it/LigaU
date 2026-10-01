@@ -501,11 +501,21 @@ html.dark .ligau-public .glass-card {
 @keyframes ligau-vt-fade {
   from {
     opacity: 0;
-    filter: blur(3px);
   }
   to {
     opacity: 1;
-    filter: blur(0);
+  }
+}
+
+/* Named chrome is not hit-testable while a view transition runs. Keep the
+   mobile tab slide short so the bottom dock accepts the next tap quickly. */
+@media (max-width: 767px) {
+  ::view-transition-old(.tab-next),
+  ::view-transition-new(.tab-next),
+  ::view-transition-old(.tab-prev),
+  ::view-transition-new(.tab-prev) {
+    animation-duration: 140ms;
+    animation-delay: 0ms;
   }
 }
 @keyframes ligau-vt-slide {

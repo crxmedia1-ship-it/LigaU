@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "motion/react";
 import { NAV_TABS, activeTabIndex, tabTransition } from "@/components/public/nav-tabs";
 import { cn } from "@/lib/utils";
 
@@ -24,18 +23,19 @@ export function MobileBottomNav() {
             <li key={tab.id}>
               <Link
                 href={tab.href}
+                prefetch={true}
                 transitionTypes={tabTransition(current, index)}
                 aria-current={active ? "page" : undefined}
-                className="flex min-h-11 touch-manipulation flex-col items-center justify-center gap-1 px-1 pt-2 pb-1.5 text-zinc-400 transition-colors duration-150 hover:text-zinc-700 active:scale-95"
+                className="flex min-h-11 touch-manipulation flex-col items-center justify-center gap-1 px-1 pt-2 pb-1.5 text-zinc-400 select-none transition-transform duration-75 hover:text-zinc-700 active:scale-90"
               >
                 <span className="relative inline-flex h-8 min-w-11 items-center justify-center px-3">
-                  {active ? (
-                    <motion.span
-                      layoutId="bottom-nav-pill"
-                      transition={{ type: "spring", stiffness: 480, damping: 36 }}
-                      className="absolute inset-0 rounded-full bg-[#BA0C2F] shadow-[0_0_18px_rgba(186,12,47,0.35)]"
-                    />
-                  ) : null}
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "absolute inset-0 rounded-full bg-[#BA0C2F] shadow-[0_0_18px_rgba(186,12,47,0.35)] transition-opacity duration-75",
+                      active ? "opacity-100" : "opacity-0",
+                    )}
+                  />
                   <Icon className={cn("relative size-5", active && "text-white")} strokeWidth={active ? 2.4 : 1.8} />
                 </span>
                 <span
