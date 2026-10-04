@@ -45,6 +45,7 @@ const CREST_SIZE = {
   md: "size-10 text-xs",
   lg: "size-16 text-xl",
   xl: "size-20 text-2xl",
+  poster: "size-28 text-3xl md:size-32",
 } as const;
 
 /** ~15% inset keeps the square corners of a mark inside the circle. */
@@ -53,6 +54,7 @@ const CREST_INSET = {
   md: "p-1.5",
   lg: "p-2.5",
   xl: "p-3",
+  poster: "p-3.5 md:p-4",
 } as const;
 
 export function Crest({

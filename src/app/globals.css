@@ -439,9 +439,51 @@ html.dark .ligau-public .glass-card {
   animation: ligau-hero 2.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* U Pass credential: lift through the thin edge, then settle on the other face. */
+@keyframes ligau-pass-to-back {
+  0% {
+    transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+  }
+  46% {
+    transform: translate3d(0, -8px, 36px) rotateY(-90deg) scale(1.024);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotateY(-180deg) scale(1);
+  }
+}
+
+@keyframes ligau-pass-to-front {
+  0% {
+    transform: translate3d(0, 0, 0) rotateY(-180deg) scale(1);
+  }
+  46% {
+    transform: translate3d(0, -8px, 36px) rotateY(-90deg) scale(1.024);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+  }
+}
+
+@utility animate-ligau-pass-to-back {
+  animation: ligau-pass-to-back 0.92s cubic-bezier(0.45, 0.02, 0.18, 1) both;
+}
+
+@utility animate-ligau-pass-to-front {
+  animation: ligau-pass-to-front 0.92s cubic-bezier(0.45, 0.02, 0.18, 1) both;
+}
+
+@media (max-width: 767px) {
+  .animate-ligau-pass-to-back,
+  .animate-ligau-pass-to-front {
+    animation-duration: 0.76s;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-ligau-shine,
-  .animate-ligau-hero {
+  .animate-ligau-hero,
+  .animate-ligau-pass-to-back,
+  .animate-ligau-pass-to-front {
     animation: none;
   }
 }

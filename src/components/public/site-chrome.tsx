@@ -55,7 +55,9 @@ function subscribeScroll(onChange: () => void) {
  * On desktop the home hero runs under the header, so it floats transparent until the page scrolls past the top.
  */
 export function SiteHeader() {
-  const home = usePathname() === "/";
+  const pathname = usePathname();
+  const home = pathname === "/";
+  const calendar = pathname === "/calendario";
   const scrolled = useSyncExternalStore(
     subscribeScroll,
     () => window.matchMedia("(min-width: 768px)").matches && window.scrollY > 24,
@@ -66,12 +68,13 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "top-0 z-40 pt-safe transition-colors duration-300 md:pt-0",
-        home ? "absolute inset-x-0 md:fixed" : "relative md:sticky",
+        "top-0 z-40 transition-colors duration-300",
+        calendar ? "hidden md:sticky md:block" : "pt-safe md:pt-0",
+        home ? "absolute inset-x-0 md:fixed" : calendar ? "" : "relative md:sticky",
         !overlay && "md:border-b md:border-zinc-200/80 md:bg-white/80 md:backdrop-blur-xl",
       )}
     >
-      <div className="flex px-4 pt-3 md:hidden">
+      <div className={cn("flex px-4 pt-3 md:hidden", calendar && "hidden")}>
         <Link href="/" aria-label="Liga U — inicio" className="flex min-h-11 items-center">
           <LigaULogo preload className="h-14 drop-shadow-[0_4px_10px_rgba(9,9,11,0.18)]" />
         </Link>

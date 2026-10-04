@@ -17,14 +17,15 @@ const MARKS: { match: string[]; ratio: number; draw: (box: { w: number; h: numbe
   { match: ["fútbol", "futbol"], ratio: 105 / 68, draw: (b) => <Football {...b} /> },
 ];
 
-/** The court or board for a sport, by name, drawn in hairlines of the current color. */
-export function CourtMark({ sport, className }: { sport: string; className?: string }) {
+/** The court or board for a sport, by name, drawn in hairlines of the current color over an optional court fill. */
+export function CourtMark({ sport, className, court }: { sport: string; className?: string; court?: string }) {
   const name = sport.toLowerCase();
   const mark = MARKS.find((m) => m.match.some((key) => name.includes(key))) ?? MARKS[MARKS.length - 1];
   const w = 1000;
   const h = w / mark.ratio;
   return (
     <svg aria-hidden viewBox={`0 0 ${w} ${h}`} className={className} fill="none">
+      {court ? <rect width={w} height={h} fill={court} /> : null}
       {mark.draw({ w, h })}
     </svg>
   );

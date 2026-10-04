@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { LucideIcon } from "lucide-react";
-import { Gift, Lock, Plane, Smartphone, Sparkles, UtensilsCrossed } from "lucide-react";
+import { Gift, Plane, Smartphone, Sparkles, UtensilsCrossed } from "lucide-react";
 import { Marquee } from "@/components/magic/marquee";
 import { PassCard, ShineLink } from "@/components/public/pass-landing";
 import { sponsorLogo } from "@/components/public/sponsor-marquee";
@@ -31,20 +31,19 @@ const STEPS: { icon: LucideIcon; title: string; text: string }[] = [
   },
 ];
 
-const SAMPLE_BENEFITS: { icon: LucideIcon; category: string; offer: string; detail: string; tone: string }[] = [
+/** Illustrative offers. Real discounts come from each partner once the pass is active. */
+const SAMPLE_BENEFITS: { icon: LucideIcon; category: string; offer: string; detail: string }[] = [
   {
     icon: Plane,
-    category: "Avior Airlines",
-    offer: "20% OFF",
-    detail: "En boletos nacionales para viajar con tu equipo.",
-    tone: "bg-[linear-gradient(160deg,#0c4a6e,#09090b_70%)]",
+    category: "Viajes",
+    offer: "Hasta 20%",
+    detail: "En boletos de aerolíneas aliadas.",
   },
   {
     icon: UtensilsCrossed,
-    category: "Gastronomía",
+    category: "Comida",
     offer: "2x1",
-    detail: "En combos seleccionados después de cada jornada.",
-    tone: "bg-[linear-gradient(160deg,#7f1d1d,#09090b_70%)]",
+    detail: "En combos de locales aliados.",
   },
 ];
 
@@ -162,36 +161,54 @@ export default async function LigaUPassPage() {
             </div>
           ) : null}
 
-          <div className="mx-auto mt-8 grid max-w-6xl gap-3 px-4 md:mt-10 md:grid-cols-3 md:gap-5">
-            {SAMPLE_BENEFITS.map(({ icon: Icon, category, offer, detail, tone }) => (
+          <p className="mx-auto mt-8 max-w-lg px-4 text-center text-[15px] leading-relaxed text-zinc-500 md:mt-10">
+            Así pueden verse los descuentos cuando activas tu membresía. Cada marca define el suyo.
+          </p>
+
+          <div className="mx-auto mt-5 grid max-w-6xl gap-3 px-4 md:mt-6 md:grid-cols-3 md:gap-5">
+            {SAMPLE_BENEFITS.map(({ icon: Icon, category, offer, detail }) => (
               <article
                 key={category}
-                className={`relative isolate flex min-h-60 flex-col justify-end overflow-hidden rounded-2xl p-5 text-white shadow-[0_24px_50px_-24px_rgba(9,9,11,0.6)] ${tone}`}
+                className="relative flex min-h-56 flex-col overflow-hidden rounded-[28px] bg-[linear-gradient(165deg,#1c1c1f_0%,#09090b_62%)] p-5 text-white shadow-[0_24px_50px_-28px_rgba(9,9,11,0.7)] ring-1 ring-[#D4AF37]/35 md:min-h-64 md:p-6"
               >
-                <div
+                <Icon
                   aria-hidden
-                  className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgba(9,9,11,0.92)_0%,rgba(9,9,11,0.45)_55%,rgba(9,9,11,0.15)_100%)]"
+                  className="pointer-events-none absolute -top-6 -right-5 size-36 text-white/[0.045]"
+                  strokeWidth={1.25}
                 />
-                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] uppercase ring-1 ring-white/25 backdrop-blur">
-                  <Icon className="size-3.5" strokeWidth={2.25} />
-                  {category}
-                </span>
-                <p className="font-jersey mt-3 text-6xl leading-none text-[#D4AF37]">{offer}</p>
-                <p className="mt-1 text-sm text-white/75">{detail}</p>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] uppercase ring-1 ring-white/15">
+                    <Icon className="size-3.5" strokeWidth={2.25} />
+                    {category}
+                  </span>
+                  <span className="text-[10px] font-semibold tracking-[0.16em] text-[#D4AF37] uppercase">Ejemplo</span>
+                </div>
+                <p className="font-jersey mt-auto pt-8 text-[4.5rem] leading-none text-[#D4AF37]">{offer}</p>
+                <p className="mt-2 text-sm leading-snug text-white/70">{detail}</p>
+                <p className="mt-4 border-t border-white/10 pt-3 text-[11px] font-medium tracking-wide text-white/45">
+                  Se desbloquea con tu U Pass
+                </p>
               </article>
             ))}
 
-            <article className="relative isolate flex min-h-60 flex-col items-center justify-center overflow-hidden rounded-2xl border border-zinc-200/80 bg-[linear-gradient(160deg,rgba(255,255,255,0.9),rgba(228,228,231,0.75))] p-6 text-center backdrop-blur-xl">
+            <article className="relative flex min-h-56 flex-col overflow-hidden rounded-[28px] bg-[linear-gradient(165deg,#fafafa_0%,#e4e4e7_48%,#d4d4d8_100%)] p-5 text-zinc-950 shadow-[0_24px_50px_-28px_rgba(9,9,11,0.35)] ring-1 ring-zinc-200 md:min-h-64 md:p-6">
               <div
                 aria-hidden
-                className="absolute inset-0 -z-10 opacity-60 [background-image:repeating-linear-gradient(135deg,rgba(9,9,11,0.04)_0_10px,transparent_10px_20px)]"
+                className="pointer-events-none absolute inset-0 opacity-50 [background-image:repeating-linear-gradient(115deg,rgba(255,255,255,0.7)_0_1px,transparent_1px_8px)]"
               />
-              <span className="grid size-16 place-items-center rounded-full bg-[linear-gradient(145deg,#fafafa,#a1a1aa_55%,#52525b)] shadow-[0_14px_30px_-12px_rgba(9,9,11,0.55),inset_0_1px_1px_rgba(255,255,255,0.9)] ring-1 ring-white/70">
-                <Lock className="size-7 text-zinc-800" strokeWidth={2} />
-              </span>
-              <p className="font-jersey mt-4 text-5xl leading-none text-zinc-950">+30</p>
-              <p className="mt-2 max-w-[15rem] text-[15px] leading-snug font-medium text-zinc-600">
-                beneficios exclusivos. Obtén tu carnet y desbloquéalos todos.
+              <div className="relative flex items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] text-zinc-700 uppercase ring-1 ring-zinc-200">
+                  <Sparkles className="size-3.5" strokeWidth={2.25} />
+                  Temporada
+                </span>
+                <span className="text-[10px] font-semibold tracking-[0.16em] text-[#C8102E] uppercase">En camino</span>
+              </div>
+              <p className="font-jersey relative mt-auto pt-8 text-[4.5rem] leading-none">Más</p>
+              <p className="relative mt-2 text-sm leading-snug text-zinc-600">
+                Nuevas marcas se suman durante la temporada.
+              </p>
+              <p className="relative mt-4 border-t border-zinc-900/10 pt-3 text-[11px] font-medium tracking-wide text-zinc-500">
+                Tu U Pass las incluye
               </p>
             </article>
           </div>
