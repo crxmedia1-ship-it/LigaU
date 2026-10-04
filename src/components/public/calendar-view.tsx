@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { LigaULogo } from "@/components/public/brand";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRight, MapPin } from "lucide-react";
 import { CountUp, Segmented } from "@/components/public/app-motion";
@@ -19,10 +20,46 @@ const STATUS_MATCH: Record<StatusFilter, (m: MatchCard) => boolean> = {
   results: (m) => m.status === "finished",
 };
 
-function CrestMorph({ match, side, size }: { match: MatchCard; side: "home" | "away"; size: "sm" | "md" }) {
-  const home = side === "home";
+/** Mascot colors, same family as the home match tile, so each side of the clash reads as that club. */
+const TEAM_TONES: Record<string, string> = {
+  UAH: "#472812",
+  UCAB: "#00293f",
+  UCV: "#5c0606",
+  UMA: "#114a04",
+  UNE: "#014450",
+  UNIMET: "#3d2406",
+  USB: "#4a3307",
+  USM: "#0a1145",
+};
+
+function teamTone(short: string) {
+  return TEAM_TONES[short.toUpperCase()] ?? "#18181b";
+}
+
+function ClashSide({
+  short,
+  logo,
+  score,
+  dim,
+}: {
+  short: string;
+  logo: string | null;
+  score: number | null;
+  dim: boolean;
+}) {
   return (
-    <Crest label={home ? match.homeShort : match.awayShort} logo={home ? match.homeLogoUrl : match.awayLogoUrl} size={size} />
+    <div className={cn("flex min-w-0 flex-col items-center gap-1.5", dim && "opacity-40")}>
+      <Crest
+        label={short}
+        logo={logo}
+        size="poster"
+        className="shadow-[0_14px_28px_-14px_rgba(0,0,0,0.75)] ring-2 ring-white/85"
+      />
+      <span className="font-jersey max-w-full truncate text-[2.35rem] leading-none tracking-wide uppercase md:text-5xl">
+        {short}
+      </span>
+      {score !== null ? <span className="font-jersey text-[2.75rem] leading-none tabular-nums md:text-6xl">{score}</span> : null}
+    </div>
   );
 }
 
@@ -31,58 +68,70 @@ function MatchRow({ match }: { match: MatchCard }) {
   const scored = hasScore(match);
   const homeWins = scored && (match.homeScore ?? 0) > (match.awayScore ?? 0);
   const awayWins = scored && (match.awayScore ?? 0) > (match.homeScore ?? 0);
-  const side = (s: "home" | "away") => {
-    const home = s === "home";
-    const dim = match.status === "finished" && (home ? awayWins : homeWins);
-    return (
-      <div className={cn("flex items-center gap-2.5", dim && "opacity-45")}>
-        <CrestMorph match={match} side={s} size="sm" />
-        <span className="min-w-0 flex-1 truncate text-[15px] font-semibold text-zinc-900">
-          {home ? match.homeShort : match.awayShort}
-        </span>
-        {scored ? (
-          <span className="font-jersey text-xl leading-none text-zinc-950 tabular-nums">
-            {(home ? match.homeScore : match.awayScore) ?? 0}
-          </span>
-        ) : null}
-      </div>
-    );
-  };
+  const closed = match.status === "finished" || match.status === "postponed" || match.status === "cancelled";
+  const statusLabel =
+    match.status === "finished" ? "Final" : match.status === "postponed" ? "Aplazado" : match.status === "cancelled" ? "Cancelado" : null;
 
   return (
     <Link
       href={`/partidos/${match.id}`}
-      className="group grid grid-cols-[4rem_1fr_auto] items-center gap-3 rounded-[1.4rem] bg-white px-4 py-4 shadow-[0_14px_34px_-28px_rgba(15,23,42,0.6)] ring-1 ring-zinc-200/80 transition-transform duration-200 active:scale-[0.985]"
+      className="group relative isolate block overflow-hidden rounded-[1.75rem] text-white shadow-[0_22px_44px_-26px_rgba(9,9,11,0.65)] ring-1 ring-black/20 transition-transform duration-200 active:scale-[0.985] md:hover:-translate-y-0.5"
     >
-      <div className="text-center">
-        {match.status === "finished" ? (
-          <p className="text-[11px] font-bold tracking-wider text-zinc-400">FINAL</p>
-        ) : (
-          <p className="font-jersey text-2xl leading-none text-zinc-950 tabular-nums">
-            {clock}
-            <span className="ml-0.5 text-[10px] text-zinc-400">{period}</span>
-          </p>
-        )}
-        <p className="mt-1 line-clamp-2 text-[9px] leading-tight font-semibold tracking-wide text-zinc-400 uppercase">
+      <div aria-hidden className="absolute inset-0" style={{ backgroundColor: teamTone(match.homeShort) }} />
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{ backgroundColor: teamTone(match.awayShort), clipPath: "polygon(58% 0, 100% 0, 100% 100%, 42% 100%)" }}
+      />
+      <svg aria-hidden viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 size-full">
+        <line x1="58" y1="0" x2="42" y2="100" stroke="white" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.28)_100%)]" />
+
+      <div className="relative flex items-center justify-between gap-3 px-4 pt-3.5">
+        <p className="min-w-0 truncate text-[10px] font-bold tracking-[0.18em] text-white/75 uppercase">
           {match.roundName ?? "Jornada"}
         </p>
-      </div>
-      <div className="min-w-0 space-y-2.5 border-l border-zinc-100 pl-3">
-        {side("home")}
-        {side("away")}
-      </div>
-      <div className="flex flex-col items-end gap-2">
-        <span className="max-w-24 truncate rounded-full bg-zinc-100 px-2 py-1 text-[10px] font-semibold text-zinc-600">
+        <p className="max-w-[48%] truncate text-right text-[10px] font-bold tracking-[0.16em] text-white/75 uppercase">
           {match.sportName}
-        </span>
-        <ChevronRight className="size-4 text-zinc-300 transition-transform group-hover:translate-x-0.5" />
-      </div>
-      {match.location ? (
-        <p className="col-span-3 -mt-1 flex items-center gap-1.5 border-t border-zinc-100 pt-2.5 text-[12px] text-zinc-500">
-          <MapPin className="size-3 shrink-0 text-[#C8102E]" strokeWidth={2.25} />
-          <span className="truncate">{match.location}</span>
         </p>
-      ) : null}
+      </div>
+
+      <div className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-1 px-3 pt-2 pb-4">
+        <ClashSide short={match.homeShort} logo={match.homeLogoUrl} score={scored ? match.homeScore : null} dim={awayWins} />
+        <span className="relative z-10 -rotate-[12deg]">
+          <span aria-hidden className="absolute inset-0 translate-x-1 translate-y-1 -skew-x-12 bg-zinc-950/80" />
+          <span className="relative block -skew-x-12 bg-white px-2.5 py-1 shadow-[0_0_24px_rgba(255,255,255,0.35)]">
+            <span className="font-jersey block skew-x-12 text-[1.65rem] leading-none tracking-wide text-zinc-950 italic md:text-3xl">
+              VS
+            </span>
+          </span>
+        </span>
+        <ClashSide short={match.awayShort} logo={match.awayLogoUrl} score={scored ? match.awayScore : null} dim={homeWins} />
+      </div>
+
+      <div className="relative flex items-center justify-between gap-3 border-t border-white/15 bg-black/30 px-4 py-3">
+        <p className="flex shrink-0 items-baseline gap-2 leading-none">
+          {statusLabel ? (
+            <span className="text-[11px] font-bold tracking-[0.18em] text-white/70 uppercase">{statusLabel}</span>
+          ) : null}
+          <span className={cn("font-jersey tabular-nums", closed ? "text-xl text-white/80" : "text-[2rem]")}>
+            {clock}
+            <span className={cn("ml-1", closed ? "text-xs text-white/50" : "text-sm text-white/60")}>{period}</span>
+          </span>
+        </p>
+        <p className="flex min-w-0 items-center gap-1.5 text-[13px] font-medium text-white/80">
+          {match.location ? (
+            <>
+              <MapPin className="size-3.5 shrink-0 text-[#ff8fa3]" strokeWidth={2.25} />
+              <span className="truncate">{match.location}</span>
+            </>
+          ) : (
+            <span className="text-white/50">Sede por confirmar</span>
+          )}
+          <ChevronRight className="size-4 shrink-0 text-white/50 transition-transform group-hover:translate-x-0.5" />
+        </p>
+      </div>
     </Link>
   );
 }
@@ -172,9 +221,16 @@ export function CalendarView({
   return (
     <div className="space-y-6">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[11px] font-semibold tracking-[0.3em] text-[#C8102E] uppercase">Temporada 2026</p>
-          <h1 className="font-jersey mt-1 text-[4.25rem] leading-[0.82] text-zinc-950 uppercase sm:text-8xl">Calendario</h1>
+        <div className="min-w-0">
+          <div className="relative">
+            <Link href="/" aria-label="Liga U — inicio" className="absolute right-0 bottom-0 z-0 md:hidden">
+              <LigaULogo className="h-[5.75rem] w-auto [mask-image:linear-gradient(to_right,transparent,black_22%)]" />
+            </Link>
+            <p className="relative z-10 text-[11px] font-semibold tracking-[0.3em] text-[#C8102E] uppercase">Temporada 2026</p>
+            <h1 className="font-jersey relative z-10 mt-0.5 text-[4.25rem] leading-[0.78] text-zinc-950 uppercase sm:mt-1 sm:text-8xl sm:leading-[0.82]">
+              Calendario
+            </h1>
+          </div>
           <dl className="mt-3 flex gap-5 text-zinc-500">
             {[
               { label: "Partidos", value: matches.length },
@@ -208,7 +264,7 @@ export function CalendarView({
         <GenderSwitch value={gender} onChange={setGender} available={genders} />
       </section>
 
-      <div className="sticky top-[calc(3rem+env(safe-area-inset-top,0px))] z-30 -mx-4 space-y-3 bg-[#eef1f4] px-4 py-3 md:top-14 md:mx-0 md:rounded-b-3xl md:px-0">
+      <div className="sticky top-[env(safe-area-inset-top,0px)] z-30 -mx-4 space-y-3 bg-[#eef1f4] px-4 py-3 md:top-14 md:mx-0 md:rounded-b-3xl md:px-0">
         <Segmented
           value={status}
           onChange={(id) => setStatus(id as StatusFilter)}
@@ -281,7 +337,7 @@ export function CalendarView({
                       <SponsorMark sponsor={daySponsor} className="h-5 max-w-16" />
                     </p>
                   ) : null}
-                  <ul className="grid gap-3 lg:grid-cols-2">
+                  <ul className="grid gap-4 lg:grid-cols-2">
                     {list.map((m) => (
                       <li key={m.id}>
                         <MatchRow match={m} />

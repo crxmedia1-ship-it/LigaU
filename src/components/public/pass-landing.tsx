@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type AnimationEvent, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
@@ -139,28 +139,40 @@ function CardBack() {
   );
 }
 
-/** Elbow line from a point on the card out past its edge and down to the label row. */
+const DRAW = "ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none";
+
+/** Elbow from the caption up the margin, then in to the point on the card. */
 function CalloutLine({ side, x, y, show }: Callout & { show: boolean }) {
   const edge = side === "left" ? { left: -OUTSET } : { right: -OUTSET };
   const run = side === "left" ? `calc(${x}% + ${OUTSET}px)` : `calc(${100 - x}% + ${OUTSET}px)`;
+  const outward = side === "left" ? "origin-left" : "origin-right";
   return (
-    <div
-      aria-hidden
-      className={cn(
-        "pointer-events-none absolute inset-0 transition-opacity duration-500",
-        show ? "opacity-100 delay-500" : "opacity-0",
-      )}
-    >
+    <div aria-hidden className="pointer-events-none absolute inset-0">
       <span
-        className="absolute h-px bg-[#C8102E]"
-        style={{ ...edge, top: `${y}%`, width: run }}
-      />
-      <span
-        className="absolute w-px bg-[#C8102E]"
+        className={cn(
+          "absolute w-px origin-bottom bg-[#C8102E] transition-transform",
+          DRAW,
+          show ? "scale-y-100 delay-75 duration-500 md:duration-700" : "scale-y-0 duration-200",
+        )}
         style={{ ...edge, top: `${y}%`, height: `calc(${100 - y}% + ${DROP}px)` }}
       />
       <span
-        className="absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C8102E] shadow-[0_0_0_4px_rgba(200,16,46,0.25)]"
+        className={cn(
+          "absolute h-px bg-[#C8102E] transition-transform",
+          outward,
+          DRAW,
+          show ? "scale-x-100 delay-200 duration-450 md:delay-240 md:duration-500" : "scale-x-0 duration-180",
+        )}
+        style={{ ...edge, top: `${y}%`, width: run }}
+      />
+      <span
+        className={cn(
+          "absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C8102E] transition-[transform,opacity,box-shadow]",
+          DRAW,
+          show
+            ? "scale-100 opacity-100 shadow-[0_0_0_5px_rgba(200,16,46,0.18)] delay-380 duration-300 md:delay-460"
+            : "scale-50 opacity-0 shadow-none duration-150",
+        )}
         style={{ left: `${x}%`, top: `${y}%` }}
       />
     </div>
@@ -169,23 +181,87 @@ function CalloutLine({ side, x, y, show }: Callout & { show: boolean }) {
 
 /** Vertical black & gold credential; tapping flips it to the QR on the back. */
 export function PassCard() {
-  const [flipped, setFlipped] = useState(false);
-  const face = flipped ? "back" : "front";
+  const [face, setFace] = useState<"front" | "back">("front");
+  const [lines, setLines] = useState(false);
+  const [spin, setSpin] = useState<"to-back" | "to-front" | null>(null);
+  const busy = useRef(false);
+  const pending = useRef<"front" | "back" | null>(null);
+  const timers = useRef<number[]>([]);
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setLines(true);
+      return;
+    }
+    const id = window.setTimeout(() => setLines(true), 280);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  useEffect(() => {
+    const pendingTimers = timers.current;
+    return () => {
+      for (const id of pendingTimers) window.clearTimeout(id);
+    };
+  }, []);
+
+  function later(ms: number, run: () => void) {
+    const id = window.setTimeout(run, ms);
+    timers.current.push(id);
+  }
+
+  function flip() {
+    if (busy.current) return;
+    const next = face === "front" ? "back" : "front";
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setFace(next);
+      setLines(true);
+      return;
+    }
+    busy.current = true;
+    pending.current = next;
+    setLines(false);
+    later(120, () => setSpin(next === "back" ? "to-back" : "to-front"));
+  }
+
+  function onFlipEnd(event: AnimationEvent<HTMLDivElement>) {
+    if (event.target !== event.currentTarget) return;
+    if (!event.animationName.startsWith("ligau-pass")) return;
+    const next = pending.current;
+    if (!next) return;
+    pending.current = null;
+    setFace(next);
+    setSpin(null);
+    later(30, () => {
+      setLines(true);
+      busy.current = false;
+    });
+  }
 
   return (
     <div className="mx-auto w-full max-w-[16rem]">
       <div className="relative">
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-x-[12%] top-[10%] -bottom-1 rounded-[26px] bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.32),rgba(9,9,11,0.16)_58%,transparent_74%)] blur-2xl transition-all duration-700 ease-out",
+            spin ? "top-[4%] -bottom-6 scale-105 opacity-70" : "opacity-100",
+          )}
+        />
         <button
           type="button"
-          onClick={() => setFlipped((value) => !value)}
-          aria-pressed={flipped}
-          aria-label={flipped ? "Ver el frente del carnet" : "Girar el carnet para ver el código QR"}
-          className="group block w-full touch-manipulation [perspective:1400px] [-webkit-tap-highlight-color:transparent] focus-visible:outline-none"
+          onClick={flip}
+          aria-pressed={face === "back"}
+          aria-label={face === "back" ? "Ver el frente del carnet" : "Girar el carnet para ver el código QR"}
+          className="group relative z-10 block w-full touch-manipulation [perspective:1100px] [-webkit-tap-highlight-color:transparent] focus-visible:outline-none"
         >
           <div
+            onAnimationEnd={onFlipEnd}
             className={cn(
-              "relative aspect-[1/1.586] w-full rounded-[26px] shadow-[0_40px_70px_-28px_rgba(9,9,11,0.7),0_0_60px_-20px_rgba(212,175,55,0.45)] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] transform-3d group-focus-visible:ring-2 group-focus-visible:ring-[#C8102E] group-focus-visible:ring-offset-4 motion-reduce:duration-0",
-              flipped && "rotate-y-180",
+              "relative aspect-[1/1.586] w-full rounded-[26px] transform-3d group-focus-visible:ring-2 group-focus-visible:ring-[#C8102E] group-focus-visible:ring-offset-4",
+              spin === "to-back" && "animate-ligau-pass-to-back",
+              spin === "to-front" && "animate-ligau-pass-to-front",
+              !spin && face === "back" && "rotate-y-180",
             )}
           >
             <CardFront />
@@ -194,7 +270,7 @@ export function PassCard() {
         </button>
         {(["front", "back"] as const).flatMap((side) =>
           CALLOUTS[side].map((callout) => (
-            <CalloutLine key={`${side}-${callout.side}`} {...callout} show={face === side} />
+            <CalloutLine key={`${side}-${callout.side}`} {...callout} show={lines && face === side} />
           )),
         )}
       </div>
@@ -203,10 +279,10 @@ export function PassCard() {
         {(["front", "back"] as const).map((side) => (
           <div
             key={side}
-            aria-hidden={face !== side}
+            aria-hidden={!(lines && face === side)}
             className={cn(
-              "absolute inset-0 grid grid-cols-2 gap-6 transition-opacity duration-500",
-              face === side ? "opacity-100 delay-500" : "opacity-0",
+              "absolute inset-0 grid grid-cols-2 gap-6 transition-[opacity,translate] duration-300 ease-out motion-reduce:transition-none",
+              lines && face === side ? "translate-y-0 opacity-100 delay-150" : "translate-y-1.5 opacity-0 duration-200",
             )}
           >
             {CALLOUTS[side].map((callout) => (
@@ -225,8 +301,12 @@ export function PassCard() {
       </div>
 
       <p className="mt-2 flex items-center justify-center gap-1.5 text-xs font-medium text-zinc-400">
-        <RotateCw aria-hidden className="size-3.5" strokeWidth={2.25} />
-        {flipped ? "Toca para ver el frente" : "Toca el carnet para ver tu QR"}
+        <RotateCw
+          aria-hidden
+          className={cn("size-3.5 transition-transform duration-700 ease-out", face === "back" && "rotate-180")}
+          strokeWidth={2.25}
+        />
+        {face === "back" ? "Toca para ver el frente" : "Toca el carnet para ver tu QR"}
       </p>
     </div>
   );

@@ -16,7 +16,7 @@ export default async function CalendarioPage() {
 
   return (
     <TabTransition>
-      <main className="relative mx-auto max-w-6xl px-4 pt-5 pb-10 md:pt-10">
+      <main className="relative mx-auto max-w-6xl px-4 pt-[max(0.75rem,env(safe-area-inset-top,0px))] pb-10 md:pt-10">
         <CalendarView
           matches={matches}
           sports={catalog.sports}

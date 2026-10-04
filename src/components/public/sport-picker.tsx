@@ -5,17 +5,79 @@ import { Check, Mars, Users, Venus } from "lucide-react";
 import { CourtMark } from "@/components/public/sport-courts";
 import { cn } from "@/lib/utils";
 
-/** Surface colour of each sport's playing area, so every tile reads as its own venue. */
-const THEMES: { match: string[]; from: string; to: string }[] = [
-  { match: ["futsal", "sala"], from: "#0369a1", to: "#0ea5e9" },
-  { match: ["balonc", "basket"], from: "#9a3412", to: "#ea8a2c" },
-  { match: ["playa", "beach"], from: "#b7791f", to: "#e9c46a" },
-  { match: ["voleib", "voley"], from: "#9f1239", to: "#f43f5e" },
-  { match: ["mesa", "ping"], from: "#115e59", to: "#14b8a6" },
-  { match: ["tenis", "tennis"], from: "#3730a3", to: "#6d6af0" },
-  { match: ["rugby"], from: "#3f6212", to: "#84cc16" },
-  { match: ["ajedrez", "chess"], from: "#18181b", to: "#52525b" },
-  { match: ["fútbol", "futbol"], from: "#14532d", to: "#22a355" },
+const GRASS =
+  "repeating-linear-gradient(90deg, rgba(255,255,255,0.07) 0 16px, rgba(0,0,0,0.06) 16px 32px), linear-gradient(170deg, #2f8f3e 0%, #1f6b2c 100%)";
+
+/**
+ * Each sport's real venue: `surface` is the floor around the field, `court` paints the area inside the lines.
+ * `from`/`to` stay as the accent pair for shadows, the check badge and the standings banner.
+ */
+const THEMES: { match: string[]; from: string; to: string; surface: string; court?: string; line: string }[] = [
+  {
+    match: ["futsal", "sala"],
+    from: "#0b4f8a",
+    to: "#2b86cf",
+    surface: "linear-gradient(165deg, #c2410c 0%, #9a3412 100%)",
+    court: "#2477c2",
+    line: "rgba(255,255,255,0.92)",
+  },
+  {
+    match: ["balonc", "basket"],
+    from: "#8a4b1c",
+    to: "#d9964f",
+    surface:
+      "repeating-linear-gradient(90deg, rgba(60,30,8,0.16) 0 1px, transparent 1px 14px), repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 9px), linear-gradient(165deg, #dca064 0%, #c27f40 55%, #a8662d 100%)",
+    line: "rgba(255,255,255,0.92)",
+  },
+  {
+    match: ["playa", "beach"],
+    from: "#a87a3a",
+    to: "#ecd09a",
+    surface:
+      "radial-gradient(rgba(120,82,34,0.22) 0.8px, transparent 1.3px) 0 0 / 5px 5px, radial-gradient(rgba(255,255,255,0.35) 0.8px, transparent 1.3px) 2px 3px / 7px 7px, linear-gradient(165deg, #efd49e 0%, #dcb676 60%, #c99d5c 100%)",
+    line: "rgba(29,78,216,0.85)",
+  },
+  {
+    match: ["voleib", "voley"],
+    from: "#a5461a",
+    to: "#ee8a4a",
+    surface: "linear-gradient(165deg, #2457a0 0%, #173d70 100%)",
+    court: "#e3773a",
+    line: "rgba(255,255,255,0.95)",
+  },
+  {
+    match: ["mesa", "ping"],
+    from: "#123766",
+    to: "#2a5c9e",
+    surface: "linear-gradient(165deg, #3f3f46 0%, #18181b 100%)",
+    court: "#1f4f8c",
+    line: "rgba(255,255,255,0.95)",
+  },
+  {
+    match: ["tenis", "tennis"],
+    from: "#1f4e8c",
+    to: "#3f7cc8",
+    surface: "linear-gradient(165deg, #3f8a4a 0%, #2a6233 100%)",
+    court: "#2f63aa",
+    line: "rgba(255,255,255,0.95)",
+  },
+  {
+    match: ["rugby"],
+    from: "#1d5e2a",
+    to: "#3aa04c",
+    surface:
+      "repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 22px, rgba(0,0,0,0.07) 22px 44px), linear-gradient(170deg, #36993f 0%, #22702c 100%)",
+    line: "rgba(255,255,255,0.9)",
+  },
+  {
+    match: ["ajedrez", "chess"],
+    from: "#3b2416",
+    to: "#8b5a2b",
+    surface:
+      "linear-gradient(rgba(20,12,6,0.35), rgba(20,12,6,0.35)), conic-gradient(#f0d9b5 25%, #b58863 0 50%, #f0d9b5 0 75%, #b58863 0) 0 0 / 18px 18px",
+    line: "transparent",
+  },
+  { match: ["fútbol", "futbol"], from: "#14532d", to: "#2f8f3e", surface: GRASS, line: "rgba(255,255,255,0.9)" },
 ];
 
 export function sportTheme(name: string) {
@@ -70,7 +132,9 @@ export function SportPicker({
       {items.map((sport) => {
         const active = sport.id === value;
         const all = sport.id === "all";
-        const theme = all ? { from: "#7f0a1f", to: "#e8193c" } : sportTheme(sport.name);
+        const theme = all
+          ? { from: "#7f0a1f", to: "#e8193c", surface: "linear-gradient(160deg, #7f0a1f 0%, #e8193c 100%)", line: "" }
+          : sportTheme(sport.name);
         return (
           <button
             key={sport.id}
@@ -84,29 +148,36 @@ export function SportPicker({
             onClick={() => onChange(sport.id)}
             className={cn(
               "relative isolate flex h-44 w-36 shrink-0 touch-manipulation snap-center flex-col justify-between overflow-hidden rounded-[1.6rem] p-3 text-left text-white active:scale-95 lg:w-auto",
-              active ? "-translate-y-1" : "scale-[0.93] opacity-80 saturate-[0.4]",
+              active ? "-translate-y-1" : "scale-[0.93] opacity-85 saturate-[0.6]",
             )}
             style={{
-              background: `linear-gradient(160deg, ${theme.from} 0%, ${theme.to} 100%)`,
+              background: theme.surface,
               boxShadow: active ? `0 20px 40px -18px ${theme.from}, 0 0 0 3px #fff, 0 0 0 5px ${theme.from}` : undefined,
             }}
           >
             <span
               aria-hidden
-              className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(255,255,255,0.18),transparent_45%)]"
+              className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),transparent_40%)]"
             />
             {all ? (
-              <span aria-hidden className="absolute inset-x-4 top-11 -z-10 grid grid-cols-3 gap-1.5 opacity-40">
+              <span aria-hidden className="absolute inset-x-4 top-11 -z-10 grid grid-cols-3 gap-1.5 opacity-55">
                 {THEMES.map((t) => (
-                  <span key={t.from} className="aspect-square rounded-md" style={{ background: t.to }} />
+                  <span key={t.from} className="aspect-square rounded-md" style={{ background: t.court ?? t.surface }} />
                 ))}
               </span>
             ) : (
-              <CourtMark
-                sport={sport.name}
-                className="absolute inset-x-3 top-1/2 -z-10 w-[calc(100%-1.5rem)] -translate-y-[40%] text-white/40"
-              />
+              <span aria-hidden className="absolute inset-0 -z-10" style={{ color: theme.line }}>
+                <CourtMark
+                  sport={sport.name}
+                  court={theme.court}
+                  className="absolute inset-x-3 top-1/2 w-[calc(100%-1.5rem)] -translate-y-[40%] drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]"
+                />
+              </span>
             )}
+            <span
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-[linear-gradient(to_top,rgba(0,0,0,0.45),transparent)]"
+            />
             <span className="flex items-start justify-between gap-1">
               <span className="rounded-full bg-black/25 px-2 py-0.5 text-[9px] font-semibold tracking-[0.12em] whitespace-nowrap uppercase backdrop-blur-sm">
                 {sport.count ? countLabel(sport.count) : "Pronto"}
