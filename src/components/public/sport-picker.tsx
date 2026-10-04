@@ -133,7 +133,13 @@ export function SportPicker({
         const active = sport.id === value;
         const all = sport.id === "all";
         const theme = all
-          ? { from: "#7f0a1f", to: "#e8193c", surface: "linear-gradient(160deg, #7f0a1f 0%, #e8193c 100%)", line: "" }
+          ? {
+              from: "#7f0a1f",
+              to: "#e8193c",
+              surface: "linear-gradient(160deg, #7f0a1f 0%, #e8193c 100%)",
+              line: "",
+              court: undefined,
+            }
           : sportTheme(sport.name);
         return (
           <button
