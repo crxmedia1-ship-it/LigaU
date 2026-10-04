@@ -8,7 +8,7 @@ import { CountUp, Segmented } from "@/components/public/app-motion";
 import { Crest, dayKey, dayParts, hasScore, kickoff } from "@/components/public/match-ui";
 import { CourtMark } from "@/components/public/sport-courts";
 import { GenderSwitch, SelectionTitle, SportPicker, type GenderValue } from "@/components/public/sport-picker";
-import { PresentedBy, SponsorMark, SponsorOffer } from "@/components/public/sponsor-slots";
+import { PresentedBy, SponsorFlyer, SponsorMark } from "@/components/public/sponsor-slots";
 import type { MatchCard, SponsorCard, SportCard } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
 
@@ -39,12 +39,10 @@ function teamTone(short: string) {
 function ClashSide({
   short,
   logo,
-  score,
   dim,
 }: {
   short: string;
   logo: string | null;
-  score: number | null;
   dim: boolean;
 }) {
   return (
@@ -58,7 +56,6 @@ function ClashSide({
       <span className="font-jersey max-w-full truncate text-[2.35rem] leading-none tracking-wide uppercase md:text-5xl">
         {short}
       </span>
-      {score !== null ? <span className="font-jersey text-[2.75rem] leading-none tabular-nums md:text-6xl">{score}</span> : null}
     </div>
   );
 }
@@ -98,16 +95,24 @@ function MatchRow({ match }: { match: MatchCard }) {
       </div>
 
       <div className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-1 px-3 pt-2 pb-4">
-        <ClashSide short={match.homeShort} logo={match.homeLogoUrl} score={scored ? match.homeScore : null} dim={awayWins} />
-        <span className="relative z-10 -rotate-[12deg]">
-          <span aria-hidden className="absolute inset-0 translate-x-1 translate-y-1 -skew-x-12 bg-zinc-950/80" />
-          <span className="relative block -skew-x-12 bg-white px-2.5 py-1 shadow-[0_0_24px_rgba(255,255,255,0.35)]">
-            <span className="font-jersey block skew-x-12 text-[1.65rem] leading-none tracking-wide text-zinc-950 italic md:text-3xl">
-              VS
+        <ClashSide short={match.homeShort} logo={match.homeLogoUrl} dim={awayWins} />
+        {scored ? (
+          <p className="relative z-10 flex items-center gap-1 rounded-2xl bg-black/45 px-2.5 py-1.5 font-jersey text-[3.25rem] leading-none tabular-nums ring-1 ring-white/30 backdrop-blur-md md:text-7xl">
+            <span>{match.homeScore}</span>
+            <span className="text-[1.35rem] text-white/55 md:text-3xl">–</span>
+            <span>{match.awayScore}</span>
+          </p>
+        ) : (
+          <span className="relative z-10 -rotate-[12deg]">
+            <span aria-hidden className="absolute inset-0 translate-x-1 translate-y-1 -skew-x-12 bg-zinc-950/80" />
+            <span className="relative block -skew-x-12 bg-white px-2.5 py-1 shadow-[0_0_24px_rgba(255,255,255,0.35)]">
+              <span className="font-jersey block skew-x-12 text-[1.65rem] leading-none tracking-wide text-zinc-950 italic md:text-3xl">
+                VS
+              </span>
             </span>
           </span>
-        </span>
-        <ClashSide short={match.awayShort} logo={match.awayLogoUrl} score={scored ? match.awayScore : null} dim={homeWins} />
+        )}
+        <ClashSide short={match.awayShort} logo={match.awayLogoUrl} dim={homeWins} />
       </div>
 
       <div className="relative flex items-center justify-between gap-3 border-t border-white/15 bg-black/30 px-4 py-3">
@@ -115,10 +120,14 @@ function MatchRow({ match }: { match: MatchCard }) {
           {statusLabel ? (
             <span className="text-[11px] font-bold tracking-[0.18em] text-white/70 uppercase">{statusLabel}</span>
           ) : null}
-          <span className={cn("font-jersey tabular-nums", closed ? "text-xl text-white/80" : "text-[2rem]")}>
-            {clock}
-            <span className={cn("ml-1", closed ? "text-xs text-white/50" : "text-sm text-white/60")}>{period}</span>
-          </span>
+          {scored ? null : match.status === "finished" ? (
+            <span className="text-[11px] font-semibold tracking-[0.14em] text-white/55 uppercase">Sin marcador</span>
+          ) : (
+            <span className={cn("font-jersey tabular-nums", closed ? "text-xl text-white/80" : "text-[2rem]")}>
+              {clock}
+              <span className={cn("ml-1", closed ? "text-xs text-white/50" : "text-sm text-white/60")}>{period}</span>
+            </span>
+          )}
         </p>
         <p className="flex min-w-0 items-center gap-1.5 text-[13px] font-medium text-white/80">
           {match.location ? (
@@ -142,7 +151,6 @@ export function CalendarView({
   presenter,
   daySponsor,
   feedSponsor,
-  feedOffer,
 }: {
   /** Sorted by kickoff, oldest first. */
   matches: MatchCard[];
@@ -150,8 +158,8 @@ export function CalendarView({
   presenter?: SponsorCard;
   /** Presents the first matchday on screen. */
   daySponsor?: SponsorCard;
+  /** Official sponsor flyer. Not a U Pass brand unless that brand also bought a sponsorship. */
   feedSponsor?: SponsorCard;
-  feedOffer?: string;
 }) {
   const [status, setStatus] = useState<StatusFilter>("all");
   const [sportId, setSportId] = useState("all");
@@ -219,38 +227,39 @@ export function CalendarView({
   const selectedDay = activeDay ?? days[0]?.[0] ?? null;
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="space-y-4 md:space-y-6">
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <div className="relative">
             <Link href="/" aria-label="Liga U — inicio" className="absolute right-0 bottom-0 z-0 md:hidden">
-              <LigaULogo className="h-[5.75rem] w-auto [mask-image:linear-gradient(to_right,transparent,black_22%)]" />
+              <LigaULogo className="h-12 w-auto [mask-image:linear-gradient(to_right,transparent,black_28%)]" />
             </Link>
             <p className="relative z-10 text-[11px] font-semibold tracking-[0.3em] text-[#C8102E] uppercase">Temporada 2026</p>
-            <h1 className="font-jersey relative z-10 mt-0.5 text-[4.25rem] leading-[0.78] text-zinc-950 uppercase sm:mt-1 sm:text-8xl sm:leading-[0.82]">
+            <h1 className="font-jersey relative z-10 mt-0.5 text-[2.85rem] leading-[0.8] text-zinc-950 uppercase sm:mt-1 sm:text-8xl sm:leading-[0.82]">
               Calendario
             </h1>
           </div>
-          <dl className="mt-3 flex gap-5 text-zinc-500">
+          <dl className="mt-2 flex gap-4 text-zinc-500 sm:mt-3 sm:gap-5">
             {[
               { label: "Partidos", value: matches.length },
               { label: "Por jugar", value: matches.filter(STATUS_MATCH.upcoming).length },
               { label: "Deportes", value: sports.length },
             ].map((item) => (
               <div key={item.label} className="flex items-baseline gap-1.5">
-                <dd className="font-jersey text-2xl leading-none text-zinc-950">
+                <dd className="font-jersey text-xl leading-none text-zinc-950 sm:text-2xl">
                   <CountUp value={item.value} />
                 </dd>
-                <dt className="text-[11px] font-semibold tracking-[0.14em] uppercase">{item.label}</dt>
+                <dt className="text-[11px] font-semibold tracking-[0.14em] whitespace-nowrap uppercase">{item.label}</dt>
               </div>
             ))}
           </dl>
         </div>
-        {presenter ? <PresentedBy sponsor={presenter} className="self-start sm:self-auto" /> : null}
+        {presenter ? <PresentedBy sponsor={presenter} className="hidden self-auto sm:inline-flex" /> : null}
       </header>
 
-      <section aria-label="Filtrar por deporte y rama" className="space-y-3">
+      <section aria-label="Filtrar por deporte y rama" className="space-y-2 md:space-y-3">
         <SportPicker
+          dense
           sports={pickerSports}
           value={sportId}
           onChange={(id) => {
@@ -264,7 +273,7 @@ export function CalendarView({
         <GenderSwitch value={gender} onChange={setGender} available={genders} />
       </section>
 
-      <div className="sticky top-[env(safe-area-inset-top,0px)] z-30 -mx-4 space-y-3 bg-[#eef1f4] px-4 py-3 md:top-14 md:mx-0 md:rounded-b-3xl md:px-0">
+      <div className="sticky top-[env(safe-area-inset-top,0px)] z-30 -mx-4 space-y-2 bg-[#eef1f4] px-4 py-2 md:top-14 md:mx-0 md:space-y-3 md:rounded-b-3xl md:px-0 md:py-3">
         <Segmented
           value={status}
           onChange={(id) => setStatus(id as StatusFilter)}
@@ -286,12 +295,12 @@ export function CalendarView({
                   type="button"
                   onClick={() => jumpTo(key)}
                   className={cn(
-                    "relative flex w-14 shrink-0 touch-manipulation flex-col items-center rounded-2xl py-2",
+                    "relative flex w-14 shrink-0 touch-manipulation flex-col items-center rounded-2xl py-1.5 md:py-2",
                     active ? "bg-zinc-950 text-white" : "bg-white text-zinc-700 ring-1 ring-zinc-200",
                   )}
                 >
                   <span className="relative text-[10px] font-semibold tracking-wider uppercase opacity-70">{parts.weekday}</span>
-                  <span className="font-jersey relative text-2xl leading-none">{parts.day}</span>
+                  <span className="font-jersey relative text-xl leading-none md:text-2xl">{parts.day}</span>
                   <span className="relative mt-1 flex gap-0.5">
                     {list.slice(0, 3).map((m) => (
                       <span key={m.id} className={cn("size-1 rounded-full", active ? "bg-[#ff8fa3]" : "bg-[#C8102E]")} />
@@ -304,11 +313,13 @@ export function CalendarView({
         ) : null}
       </div>
 
-      <SelectionTitle
-        title={selectedSport?.name ?? "Todos los deportes"}
-        suffix={genderSuffix}
-        meta={`${filtered.length} ${filtered.length === 1 ? "partido" : "partidos"}`}
-      />
+      <div className="hidden sm:block">
+        <SelectionTitle
+          title={selectedSport?.name ?? "Todos los deportes"}
+          suffix={genderSuffix}
+          meta={`${filtered.length} ${filtered.length === 1 ? "partido" : "partidos"}`}
+        />
+      </div>
 
         <div key={`${status}-${sportId}-${gender}`} className="space-y-8">
           {days.map(([key, list], index) => {
@@ -324,7 +335,7 @@ export function CalendarView({
                   className="scroll-mt-[calc(9.5rem+env(safe-area-inset-top,0px))] md:scroll-mt-44"
                 >
                   <div className="mb-3 flex items-baseline justify-between gap-3">
-                    <h2 className="font-jersey text-[1.75rem] leading-none text-zinc-950 uppercase first-letter:uppercase sm:text-4xl">
+                    <h2 className="font-jersey text-2xl leading-none text-zinc-950 uppercase first-letter:uppercase sm:text-4xl">
                       {parts.long}
                     </h2>
                     <span className="text-[11px] font-semibold tracking-[0.14em] text-zinc-400 uppercase">
@@ -343,11 +354,13 @@ export function CalendarView({
                         <MatchRow match={m} />
                       </li>
                     ))}
+                    {index === 0 && feedSponsor ? (
+                      <li>
+                        <SponsorFlyer sponsor={feedSponsor} context="Calendario" />
+                      </li>
+                    ) : null}
                   </ul>
                 </section>
-                {index === 0 && feedSponsor ? (
-                  <SponsorOffer sponsor={feedSponsor} offer={feedOffer} context="Aliado del calendario" />
-                ) : null}
               </Fragment>
             );
           })}

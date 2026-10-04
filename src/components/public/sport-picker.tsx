@@ -12,7 +12,7 @@ const GRASS =
  * Each sport's real venue: `surface` is the floor around the field, `court` paints the area inside the lines.
  * `from`/`to` stay as the accent pair for shadows, the check badge and the standings banner.
  */
-const THEMES: { match: string[]; from: string; to: string; surface: string; court?: string; line: string }[] = [
+const THEMES: { match: string[]; from: string; to: string; surface: string; court?: string; line: string; sheen?: boolean }[] = [
   {
     match: ["futsal", "sala"],
     from: "#0b4f8a",
@@ -26,7 +26,7 @@ const THEMES: { match: string[]; from: string; to: string; surface: string; cour
     from: "#8a4b1c",
     to: "#d9964f",
     surface:
-      "repeating-linear-gradient(90deg, rgba(60,30,8,0.16) 0 1px, transparent 1px 14px), repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 9px), linear-gradient(165deg, #dca064 0%, #c27f40 55%, #a8662d 100%)",
+      "linear-gradient(180deg, rgba(255,236,206,0.28), transparent 36%), repeating-linear-gradient(90deg, rgba(74,36,8,0.28) 0 1.5px, transparent 1.5px 20px), linear-gradient(165deg, #e7b56c 0%, #c88840 52%, #9d6328 100%)",
     line: "rgba(255,255,255,0.92)",
   },
   {
@@ -41,8 +41,10 @@ const THEMES: { match: string[]; from: string; to: string; surface: string; cour
     match: ["voleib", "voley"],
     from: "#a5461a",
     to: "#ee8a4a",
-    surface: "linear-gradient(165deg, #2457a0 0%, #173d70 100%)",
-    court: "#e3773a",
+    surface:
+      "radial-gradient(90% 55% at 50% 0%, rgba(255,255,255,0.2), transparent 62%), linear-gradient(165deg, #2f6cbe 0%, #1b4d94 58%, #14366e 100%)",
+    court: "#e07a32",
+    sheen: true,
     line: "rgba(255,255,255,0.95)",
   },
   {
@@ -99,6 +101,8 @@ export function SportPicker({
   onChange,
   countLabel,
   allOption,
+  dense = false,
+  wrap = false,
 }: {
   sports: PickerSport[];
   value: string;
@@ -106,6 +110,10 @@ export function SportPicker({
   countLabel: (count: number) => string;
   /** Adds a leading "Todos" tile with this total. */
   allOption?: { count: number };
+  /** Shorter tiles on small screens so the list below can start on the first view. */
+  dense?: boolean;
+  /** Every sport stays on screen. Used where a sideways rail would hide the rest. */
+  wrap?: boolean;
 }) {
   const rail = useRef<HTMLDivElement>(null);
   const tiles = useRef(new Map<string, HTMLButtonElement>());
@@ -127,7 +135,12 @@ export function SportPicker({
       ref={rail}
       role="tablist"
       aria-label="Deporte"
-      className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 py-3 md:mx-0 md:px-1 lg:grid lg:grid-cols-5 lg:overflow-visible xl:auto-cols-fr xl:grid-flow-col xl:grid-cols-none"
+      className={cn(
+        wrap
+          ? "grid grid-cols-3 gap-2 py-1 sm:grid-cols-4 lg:grid-cols-5"
+          : "no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 md:mx-0 md:px-1 md:py-3 lg:grid lg:grid-cols-5 lg:overflow-visible xl:auto-cols-fr xl:grid-flow-col xl:grid-cols-none",
+        !wrap && (dense ? "py-1" : "py-3"),
+      )}
     >
       {items.map((sport) => {
         const active = sport.id === value;
@@ -136,7 +149,8 @@ export function SportPicker({
           ? {
               from: "#7f0a1f",
               to: "#e8193c",
-              surface: "linear-gradient(160deg, #7f0a1f 0%, #e8193c 100%)",
+              surface:
+                "radial-gradient(80% 55% at 50% 12%, rgba(255,255,255,0.22), transparent 68%), linear-gradient(165deg, #9b1730 0%, #640c1c 100%)",
               line: "",
               court: undefined,
             }
@@ -153,7 +167,11 @@ export function SportPicker({
             aria-selected={active}
             onClick={() => onChange(sport.id)}
             className={cn(
-              "relative isolate flex h-44 w-36 shrink-0 touch-manipulation snap-center flex-col justify-between overflow-hidden rounded-[1.6rem] p-3 text-left text-white active:scale-95 lg:w-auto",
+              "relative isolate flex shrink-0 touch-manipulation snap-center flex-col justify-between overflow-hidden text-left text-white active:scale-95",
+              dense
+                ? "h-28 rounded-[1.25rem] p-2.5 md:h-44 md:rounded-[1.6rem] md:p-3"
+                : "h-44 rounded-[1.6rem] p-3",
+              wrap ? "w-full" : dense ? "w-[6.6rem] md:w-36 lg:w-auto" : "w-36 lg:w-auto",
               active ? "-translate-y-1" : "scale-[0.93] opacity-85 saturate-[0.6]",
             )}
             style={{
@@ -166,9 +184,19 @@ export function SportPicker({
               className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),transparent_40%)]"
             />
             {all ? (
-              <span aria-hidden className="absolute inset-x-4 top-11 -z-10 grid grid-cols-3 gap-1.5 opacity-55">
+              <span
+                aria-hidden
+                className={cn(
+                  "absolute inset-x-4 -z-10 grid grid-cols-3 gap-1 opacity-70",
+                  dense ? "top-7 md:top-11" : "top-11",
+                )}
+              >
                 {THEMES.map((t) => (
-                  <span key={t.from} className="aspect-square rounded-md" style={{ background: t.court ?? t.surface }} />
+                  <span
+                    key={t.from}
+                    className="aspect-square rounded-[0.35rem] shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]"
+                    style={{ background: t.to }}
+                  />
                 ))}
               </span>
             ) : (
@@ -176,6 +204,7 @@ export function SportPicker({
                 <CourtMark
                   sport={sport.name}
                   court={theme.court}
+                  sheen={"sheen" in theme ? theme.sheen : false}
                   className="absolute inset-x-3 top-1/2 w-[calc(100%-1.5rem)] -translate-y-[40%] drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]"
                 />
               </span>
@@ -197,7 +226,12 @@ export function SportPicker({
                 </span>
               ) : null}
             </span>
-            <span className="font-jersey text-[1.45rem] leading-[0.9] break-words uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)] lg:text-[1.3rem]">
+            <span
+              className={cn(
+                "font-jersey leading-[0.9] break-words uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]",
+                dense ? "text-lg md:text-[1.45rem] lg:text-[1.3rem]" : "text-[1.45rem] lg:text-[1.3rem]",
+              )}
+            >
               {sport.name}
             </span>
           </button>

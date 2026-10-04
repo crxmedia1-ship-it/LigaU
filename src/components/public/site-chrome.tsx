@@ -57,7 +57,7 @@ function subscribeScroll(onChange: () => void) {
 export function SiteHeader() {
   const pathname = usePathname();
   const home = pathname === "/";
-  const calendar = pathname === "/calendario";
+  const bareMobile = pathname === "/calendario" || pathname === "/clasificacion";
   const scrolled = useSyncExternalStore(
     subscribeScroll,
     () => window.matchMedia("(min-width: 768px)").matches && window.scrollY > 24,
@@ -69,12 +69,12 @@ export function SiteHeader() {
     <header
       className={cn(
         "top-0 z-40 transition-colors duration-300",
-        calendar ? "hidden md:sticky md:block" : "pt-safe md:pt-0",
-        home ? "absolute inset-x-0 md:fixed" : calendar ? "" : "relative md:sticky",
+        bareMobile ? "hidden md:sticky md:block" : "pt-safe md:pt-0",
+        home ? "absolute inset-x-0 md:fixed" : bareMobile ? "" : "relative md:sticky",
         !overlay && "md:border-b md:border-zinc-200/80 md:bg-white/80 md:backdrop-blur-xl",
       )}
     >
-      <div className={cn("flex px-4 pt-3 md:hidden", calendar && "hidden")}>
+      <div className={cn("flex px-4 pt-3 md:hidden", bareMobile && "hidden")}>
         <Link href="/" aria-label="Liga U — inicio" className="flex min-h-11 items-center">
           <LigaULogo preload className="h-14 drop-shadow-[0_4px_10px_rgba(9,9,11,0.18)]" />
         </Link>

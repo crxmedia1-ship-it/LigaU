@@ -18,14 +18,36 @@ const MARKS: { match: string[]; ratio: number; draw: (box: { w: number; h: numbe
 ];
 
 /** The court or board for a sport, by name, drawn in hairlines of the current color over an optional court fill. */
-export function CourtMark({ sport, className, court }: { sport: string; className?: string; court?: string }) {
+export function CourtMark({
+  sport,
+  className,
+  court,
+  sheen = false,
+}: {
+  sport: string;
+  className?: string;
+  court?: string;
+  /** Soft varnish on the painted court, so a flat fill reads as a floor. */
+  sheen?: boolean;
+}) {
   const name = sport.toLowerCase();
   const mark = MARKS.find((m) => m.match.some((key) => name.includes(key))) ?? MARKS[MARKS.length - 1];
   const w = 1000;
   const h = w / mark.ratio;
+  const sheenId = `court-sheen-${name.replace(/[^a-z0-9]+/g, "")}`;
   return (
     <svg aria-hidden viewBox={`0 0 ${w} ${h}`} className={className} fill="none">
+      {court && sheen ? (
+        <defs>
+          <linearGradient id={sheenId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#fff" stopOpacity="0.34" />
+            <stop offset="0.42" stopColor="#fff" stopOpacity="0" />
+            <stop offset="1" stopColor="#000" stopOpacity="0.16" />
+          </linearGradient>
+        </defs>
+      ) : null}
       {court ? <rect width={w} height={h} fill={court} /> : null}
+      {court && sheen ? <rect width={w} height={h} fill={`url(#${sheenId})`} /> : null}
       {mark.draw({ w, h })}
     </svg>
   );

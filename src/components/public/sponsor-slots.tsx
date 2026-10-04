@@ -1,7 +1,5 @@
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { sponsorLogo } from "@/components/public/sponsor-marquee";
-import type { BenefitCard, SponsorCard } from "@/lib/public/types";
+import type { SponsorCard } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
 
 /** Rotates the partner list so each page gets different brands in its slots. */
@@ -9,13 +7,17 @@ export function sponsorAt(sponsors: SponsorCard[], index: number): SponsorCard |
   return sponsors.length ? sponsors[index % sponsors.length] : undefined;
 }
 
-export function offerFor(sponsor: SponsorCard, benefits: BenefitCard[]) {
-  const name = sponsor.name.toLowerCase();
-  return benefits.find((benefit) => benefit.sponsorName.toLowerCase() === name)?.discountTitle;
-}
-
-export function SponsorMark({ sponsor, className }: { sponsor: SponsorCard; className?: string }) {
-  const src = sponsorLogo(sponsor.logoUrl);
+export function SponsorMark({
+  sponsor,
+  className,
+  height = 160,
+}: {
+  sponsor: SponsorCard;
+  className?: string;
+  /** Source height in px. Larger flyers need a sharper mark. */
+  height?: number;
+}) {
+  const src = sponsorLogo(sponsor.logoUrl, height);
   if (!src) {
     return <span className={cn("text-[11px] font-bold tracking-wider text-zinc-700 uppercase", className)}>{sponsor.name}</span>;
   }
@@ -34,66 +36,51 @@ export function PresentedBy({
   className?: string;
 }) {
   return (
-    <Link
-      href="/liga-u-pass"
+    <div
       className={cn(
-        "inline-flex h-9 items-center gap-2.5 rounded-full bg-white pr-2 pl-3.5 shadow-[0_10px_30px_-18px_rgba(15,23,42,0.6)] ring-1 ring-zinc-200/80 transition-transform active:scale-[0.97]",
+        "inline-flex h-9 items-center gap-2.5 rounded-full bg-white pr-2 pl-3.5 shadow-[0_10px_30px_-18px_rgba(15,23,42,0.6)] ring-1 ring-zinc-200/80",
         className,
       )}
     >
       <span className="text-[9px] font-semibold tracking-[0.2em] whitespace-nowrap text-zinc-400 uppercase">{label}</span>
       <SponsorMark sponsor={sponsor} className="h-6 max-w-20" />
-    </Link>
+    </div>
   );
 }
 
-/** In-feed paid placement with a single conversion action. */
-export function SponsorOffer({
+/**
+ * Official-sponsor flyer. It is not a link: a brand can pay for a league
+ * sponsorship, a U Pass benefit, or both, and this slot is only the first.
+ */
+export function SponsorFlyer({
   sponsor,
-  offer,
   context,
 }: {
   sponsor: SponsorCard;
-  offer?: string;
-  /** Short line tying the brand to the section, e.g. "Aliado del calendario". */
+  /** Where the flyer sits, e.g. "Calendario". */
   context: string;
 }) {
   return (
-    <Link
-      href="/liga-u-pass"
-      className="group relative isolate block overflow-hidden rounded-[1.75rem] bg-white p-5 shadow-[0_24px_60px_-36px_rgba(15,23,42,0.5)] ring-1 ring-zinc-200/80 transition-transform duration-300 active:scale-[0.99] sm:p-6"
-    >
-      <div
+    <figure className="relative isolate flex min-h-[15.5rem] flex-col overflow-hidden rounded-[1.75rem] bg-[#07080c] text-white shadow-[0_28px_50px_-28px_rgba(0,0,0,0.7)]">
+      <span
         aria-hidden
-        className="absolute -top-16 -right-16 -z-10 size-48 rounded-full bg-[radial-gradient(circle,rgba(200,16,46,0.12),transparent_70%)]"
+        className="pointer-events-none absolute top-1/2 left-1/2 h-56 w-[78%] -translate-x-1/2 -translate-y-[58%] bg-[radial-gradient(ellipse_at_center,rgba(255,214,120,0.34),rgba(255,255,255,0.08)_36%,transparent_68%)]"
       />
-      <div className="flex items-center justify-between gap-3">
-        <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[9px] font-semibold tracking-[0.18em] text-zinc-500 uppercase">
-          Patrocinado
-        </span>
-        <span className="text-[10px] font-semibold tracking-[0.18em] text-[#C8102E] uppercase">{context}</span>
+      <div className="relative flex items-center justify-between px-5 pt-4">
+        <span className="font-jersey text-xl leading-none">Liga U</span>
+        <span className="text-[10px] font-semibold tracking-[0.22em] text-white/45 uppercase">Temporada 2026</span>
       </div>
-      <div className="mt-5 flex items-center gap-4">
-        <span className="grid size-20 shrink-0 place-items-center rounded-2xl bg-zinc-50 ring-1 ring-zinc-100 transition-transform duration-500 group-hover:scale-105">
-          <SponsorMark sponsor={sponsor} className="max-h-12 max-w-16" />
-        </span>
-        <div className="min-w-0">
-          <p className="font-jersey text-[2rem] leading-[0.9] text-zinc-950 uppercase">
-            {offer ?? `Beneficios ${sponsor.name}`}
-          </p>
-          <p className="mt-1.5 text-[13px] leading-snug text-zinc-500">
-            Exclusivo para hinchas con Liga U Pass. Actívalo gratis en segundos.
-          </p>
-        </div>
-      </div>
-      <span className="relative mt-5 flex h-12 items-center justify-center gap-2 overflow-hidden rounded-full bg-[#C8102E] text-sm font-semibold text-white shadow-[0_14px_30px_-14px_rgba(200,16,46,0.9)]">
-        <span
-          aria-hidden
-          className="animate-ligau-shine absolute inset-y-0 -left-1/2 w-1/3 skew-x-[-20deg] bg-white/25"
+      <div className="relative flex flex-1 items-center justify-center px-6 py-5">
+        <SponsorMark
+          sponsor={sponsor}
+          height={360}
+          className="h-32 w-auto max-w-[min(100%,300px)] drop-shadow-[0_16px_28px_rgba(0,0,0,0.55)] sm:h-36"
         />
-        Activar beneficio
-        <ArrowUpRight className="size-4" strokeWidth={2.5} />
-      </span>
-    </Link>
+      </div>
+      <figcaption className="relative flex items-center justify-between gap-3 px-5 pb-4">
+        <span className="text-[10px] font-bold tracking-[0.22em] text-white/70 uppercase">Patrocinador oficial</span>
+        <span className="text-[10px] font-semibold tracking-[0.16em] text-white/40 uppercase">{context}</span>
+      </figcaption>
+    </figure>
   );
 }

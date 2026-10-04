@@ -320,11 +320,10 @@ html .ligau-public .glass-card,
   background-color: #eef1f4;
   background-image:
     radial-gradient(ellipse 90% 48% at 50% -6%, rgba(200, 16, 46, 0.1), transparent 58%),
-    radial-gradient(circle at 50% 42%, transparent 18%, rgba(148, 163, 184, 0.16) 19%, transparent 20.2%),
     linear-gradient(rgba(100, 116, 139, 0.14) 1px, transparent 1px),
     linear-gradient(90deg, rgba(100, 116, 139, 0.14) 1px, transparent 1px);
-  background-size: auto, 100% 100%, 64px 64px, 64px 64px;
-  background-repeat: no-repeat, no-repeat, repeat, repeat;
+  background-size: auto, 64px 64px, 64px 64px;
+  background-repeat: no-repeat, repeat, repeat;
 }
 
 .ligau-public {

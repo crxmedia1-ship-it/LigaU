@@ -1,13 +1,34 @@
 "use client";
 
-import { useState } from "react";
-import { Trophy } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Trophy, User } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { LigaULogo } from "@/components/public/brand";
 import { CountUp, Segmented } from "@/components/public/app-motion";
 import { Crest } from "@/components/public/match-ui";
 import { CourtMark } from "@/components/public/sport-courts";
 import { GenderSwitch, SelectionTitle, SportPicker, sportTheme, type GenderValue } from "@/components/public/sport-picker";
-import { PresentedBy, SponsorMark, SponsorOffer } from "@/components/public/sponsor-slots";
-import type { MedalTally, SponsorCard, SportCard, StandingRow, TeamGender, UniversityColors } from "@/lib/public/types";
+import { PresentedBy, SponsorFlyer, SponsorMark } from "@/components/public/sponsor-slots";
+import { GENDER_LABELS } from "@/lib/admin/labels";
+import {
+  EDITION_STATUS_LABEL,
+  defaultRound,
+  defaultYear,
+  listTitles,
+  listValidas,
+  listYears,
+  scopeMatches,
+  type TitleWin,
+} from "@/lib/public/editions";
+import { computeStandings } from "@/lib/public/standings";
+import type { AthleteCard, MatchCard, SponsorCard, SportCard, StandingRow, TeamCard, TeamGender, UniversityCard, UniversityColors } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
 
 export type StandingGroup = {
@@ -20,7 +41,43 @@ export type StandingGroup = {
   rows: Array<StandingRow & { colors: UniversityColors }>;
 };
 
-type View = "tablas" | "medallero";
+type View = "tablas" | "titulos";
+type Slice = "ano" | "valida";
+
+function buildGroups(matches: MatchCard[], teams: TeamCard[], sports: SportCard[]): StandingGroup[] {
+  const teamById = new Map(teams.map((team) => [team.id, team]));
+  const buckets = new Map<string, { teams: Map<string, TeamCard>; matches: MatchCard[] }>();
+  for (const match of matches) {
+    const home = teamById.get(match.homeTeamId);
+    const away = teamById.get(match.awayTeamId);
+    if (!home || !away) continue;
+    const key = `${home.sportId}:${home.gender}`;
+    const bucket = buckets.get(key) ?? { teams: new Map<string, TeamCard>(), matches: [] };
+    bucket.teams.set(home.id, home);
+    bucket.teams.set(away.id, away);
+    bucket.matches.push(match);
+    buckets.set(key, bucket);
+  }
+
+  return [...buckets.entries()]
+    .map(([id, bucket]) => {
+      const list = [...bucket.teams.values()];
+      const sport = sports.find((item) => item.id === list[0].sportId);
+      return {
+        id,
+        sportId: list[0].sportId,
+        gender: list[0].gender,
+        sportName: sport?.name ?? "Deporte",
+        genderLabel: GENDER_LABELS[list[0].gender],
+        finished: bucket.matches.filter((match) => match.status === "finished" && match.homeScore !== null && match.awayScore !== null).length,
+        rows: computeStandings(bucket.matches, list).map((row) => ({
+          ...row,
+          colors: list.find((team) => team.id === row.teamId)?.university.colors ?? { primary: "#C8102E", secondary: "#D4AF37" },
+        })),
+      };
+    })
+    .sort((a, b) => b.finished - a.finished || a.sportName.localeCompare(b.sportName, "es"));
+}
 
 function celebrate(colors: UniversityColors) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -107,7 +164,6 @@ function Podium({
 }
 
 function Table({ group }: { group: StandingGroup }) {
-  const top = Math.max(1, ...group.rows.map((row) => row.points));
   const cols = "grid-cols-[1.75rem_minmax(0,1fr)_2rem_2.25rem_2.5rem] sm:grid-cols-[2rem_minmax(0,1fr)_repeat(5,2.5rem)_3rem]";
   return (
     <div className="overflow-hidden rounded-[1.6rem] bg-white shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] ring-1 ring-zinc-200/80">
@@ -133,15 +189,7 @@ function Table({ group }: { group: StandingGroup }) {
             </span>
             <div className="flex min-w-0 items-center gap-2.5">
               <Crest label={row.universityShort} logo={row.logoUrl} size="sm" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[15px] font-semibold text-zinc-900">{row.universityShort}</p>
-                <div className="mt-1 h-1 overflow-hidden rounded-full bg-zinc-100">
-                  <div
-                    className="h-full origin-left rounded-full"
-                    style={{ width: `${Math.max(6, (row.points / top) * 100)}%`, backgroundColor: row.colors.primary }}
-                  />
-                </div>
-              </div>
+              <p className="min-w-0 flex-1 truncate text-[15px] font-semibold text-zinc-900">{row.universityShort}</p>
             </div>
             <span className="text-center text-sm text-zinc-600 tabular-nums">{row.played}</span>
             <span className="hidden text-center text-sm text-zinc-600 tabular-nums sm:block">{row.won}</span>
@@ -158,47 +206,7 @@ function Table({ group }: { group: StandingGroup }) {
   );
 }
 
-const MEDALS = [
-  { key: "gold", label: "Oro", tone: "bg-gradient-to-br from-amber-200 to-amber-400 text-amber-900" },
-  { key: "silver", label: "Plata", tone: "bg-gradient-to-br from-zinc-100 to-zinc-300 text-zinc-700" },
-  { key: "bronze", label: "Bronce", tone: "bg-gradient-to-br from-orange-100 to-orange-300 text-orange-900" },
-] as const;
-
-function MedalBoard({ medals }: { medals: MedalTally[] }) {
-  return (
-    <ol className="overflow-hidden rounded-[1.6rem] bg-white shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] ring-1 ring-zinc-200/80">
-      {medals.map((row, index) => (
-        <li
-          key={row.universityId}
-          className="flex items-center gap-3 border-b border-zinc-100 px-4 py-3.5 last:border-b-0"
-        >
-          <span className={cn("font-jersey w-6 text-xl leading-none", index < 3 && row.total ? "text-amber-600" : "text-zinc-400")}>
-            {index + 1}
-          </span>
-          <span aria-hidden className="h-8 w-1 shrink-0 rounded-full" style={{ backgroundColor: row.colors.primary }} />
-          <Crest label={row.universityShort} logo={row.logoUrl} size="md" />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[15px] font-semibold text-zinc-900">{row.universityShort}</p>
-            <p className="truncate text-[11px] text-zinc-500">{row.universityName}</p>
-          </div>
-          <div className="flex items-center gap-1.5">
-            {MEDALS.map((medal) => (
-              <span
-                key={medal.key}
-                title={medal.label}
-                className={cn("font-jersey grid size-8 place-items-center rounded-full text-base leading-none shadow-inner", medal.tone)}
-              >
-                <CountUp value={row[medal.key]} />
-              </span>
-            ))}
-          </div>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-function EmptySport({ name }: { name: string }) {
+function EmptySport({ name, edition }: { name: string; edition: string }) {
   const theme = sportTheme(name);
   return (
     <div
@@ -210,78 +218,516 @@ function EmptySport({ name }: { name: string }) {
       <p className="text-[11px] font-semibold tracking-[0.3em] text-white/70 uppercase">Próximamente</p>
       <p className="font-jersey mt-2 text-4xl leading-none uppercase sm:text-5xl">{name}</p>
       <p className="mx-auto mt-3 max-w-xs text-sm text-white/80">
-        La tabla aparece en cuanto se inscriban los equipos de esta disciplina.
+        {edition} no tiene partidos de esta disciplina. Las ediciones pasadas y las próximas aparecen cuando ya tienen fecha.
       </p>
+    </div>
+  );
+}
+
+function EditionLabel({
+  active,
+  onClick,
+  children,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: string;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      aria-label={label}
+      onClick={onClick}
+      className={cn(
+        "font-jersey rounded-full px-2 py-0.5 text-sm leading-none",
+        active ? "bg-zinc-950 text-white" : "text-zinc-400",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+function CornerMarks({ color, className }: { color: string; className?: string }) {
+  const gold = "#D4AF37";
+  const mark = cn("absolute z-10", className ?? "size-8");
+  return (
+    <>
+      <span aria-hidden className={cn(mark, "top-0 left-0")} style={{ background: color, clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
+      <span aria-hidden className={cn(mark, "top-0 right-0")} style={{ background: gold, clipPath: "polygon(0 0, 100% 0, 100% 100%)" }} />
+      <span aria-hidden className={cn(mark, "bottom-0 left-0")} style={{ background: gold, clipPath: "polygon(0 0, 0 100%, 100% 100%)" }} />
+      <span aria-hidden className={cn(mark, "right-0 bottom-0")} style={{ background: color, clipPath: "polygon(100% 0, 100% 100%, 0 100%)" }} />
+    </>
+  );
+}
+
+/** Example cup name until each title stores its own competition. */
+const EXAMPLE_CUP = "Copa Liga U";
+
+function TitleTicket({
+  year,
+  sport,
+  detail,
+  color,
+  accent,
+  athletes,
+  university,
+  photo,
+}: {
+  year: string;
+  sport: string;
+  detail: string;
+  color: string;
+  accent: string;
+  athletes: AthleteCard[];
+  university: string;
+  photo?: string;
+}) {
+  const [squadOpen, setSquadOpen] = useState(false);
+  const ordered = [...athletes].sort(
+    (a, b) => (a.jerseyNumber ?? 999) - (b.jerseyNumber ?? 999) || a.fullName.localeCompare(b.fullName, "es"),
+  );
+  const haze = `color-mix(in srgb, ${color} 72%, ${accent})`;
+
+  return (
+    <>
+      <div className="relative isolate">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -inset-x-3 -top-5 -bottom-7 -z-10 blur-2xl"
+          style={{ background: `radial-gradient(ellipse at 50% 58%, ${haze} 0%, transparent 70%)` }}
+        />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-8 -bottom-6 -z-10 h-8 blur-2xl"
+          style={{ background: color, opacity: 0.7 }}
+        />
+        <article className="relative overflow-hidden rounded-2xl shadow-[0_14px_28px_-22px_rgba(15,23,42,0.45)] ring-1 ring-white/70 transition-transform duration-200 has-[:active]:scale-[0.985]">
+          <div className="flex items-center justify-between gap-3 border-b border-white/60 bg-white/85 px-3 py-1 text-zinc-950 backdrop-blur-md">
+            <span className="font-jersey text-2xl leading-none">{year}</span>
+            <span className="text-[10px] font-semibold tracking-[0.16em] text-zinc-500 uppercase">{detail}</span>
+          </div>
+          {photo ? (
+            <img src={photo} alt="" className="h-24 w-full object-cover sm:h-28" />
+          ) : (
+            <div className="grid h-24 place-items-center bg-zinc-100 sm:h-28">
+              <span className="text-[10px] font-semibold tracking-[0.18em] text-zinc-400 uppercase">Foto pendiente</span>
+            </div>
+          )}
+          <div className="flex items-center gap-2 border-t border-white/60 bg-white/85 px-3 py-1.5 text-zinc-950 backdrop-blur-md">
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-semibold tracking-tight">{sport}</span>
+              <span className="block truncate text-[10px] font-semibold tracking-[0.16em] text-zinc-500 uppercase">
+                {EXAMPLE_CUP}
+              </span>
+            </span>
+            <button
+              type="button"
+              onClick={() => setSquadOpen(true)}
+              aria-label={`Ver los jugadores de ${sport}`}
+              className="grid size-8 shrink-0 place-items-center rounded-full bg-white/70 ring-1 ring-zinc-900/10"
+            >
+              <User className="size-4" strokeWidth={1.75} />
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <Dialog open={squadOpen} onOpenChange={setSquadOpen}>
+        <DialogContent className="overflow-hidden p-0 sm:max-w-md">
+          <div className="h-2" style={{ background: `linear-gradient(90deg, ${color}, ${accent})` }} />
+          <DialogHeader className="px-4 pt-4">
+            <DialogTitle className="font-jersey text-4xl uppercase">{university}</DialogTitle>
+            <DialogDescription>
+              {year === "—"
+                ? "Toca un jugador para abrir su perfil."
+                : `${[year, sport, detail, EXAMPLE_CUP].filter(Boolean).join(" · ")}. Toca un jugador para abrir su perfil.`}
+            </DialogDescription>
+          </DialogHeader>
+          {ordered.length === 0 ? (
+            <p className="px-4 pb-4 text-[13px] leading-snug text-zinc-500">
+              Este título todavía no cerró. Cuando lo haga, aquí salen las personas del equipo.
+            </p>
+          ) : (
+            <ul className="grid max-h-[50vh] gap-2 overflow-y-auto px-4 pb-4">
+              {ordered.map((athlete) => (
+                <li key={athlete.id}>
+                  <Link
+                    href={`/atletas/${athlete.id}`}
+                    className="flex min-w-0 items-center gap-3 rounded-2xl bg-zinc-50 px-2.5 py-2"
+                  >
+                    {athlete.photoUrl ? (
+                      <img src={athlete.photoUrl} alt="" className="size-12 shrink-0 rounded-full object-cover" />
+                    ) : (
+                      <span
+                        aria-hidden
+                        className="font-jersey grid size-12 shrink-0 place-items-center rounded-full text-xl text-white"
+                        style={{ backgroundColor: color }}
+                      >
+                        {athlete.fullName.slice(0, 1)}
+                      </span>
+                    )}
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-semibold text-zinc-950">{athlete.fullName}</span>
+                      <span className="block truncate text-[11px] text-zinc-500">
+                        {athlete.jerseyNumber ? `#${athlete.jerseyNumber}` : "Sin número"}
+                        {athlete.position ? ` · ${athlete.position}` : ""}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+/** Sampled from each mascot so the halo matches the mark on screen. */
+const LOGO_GLOW: Record<string, string> = {
+  UAH: "#9a6233",
+  UCAB: "#0e5a85",
+  UCV: "#d11a1a",
+  UMA: "#2c920b",
+  UNE: "#0a8396",
+  UNIMET: "#c47a12",
+  USB: "#d99a0b",
+  USM: "#2b3f9e",
+};
+
+function logoGlow(shortName: string) {
+  return LOGO_GLOW[shortName.toUpperCase()] ?? "#94a3b8";
+}
+
+function TitleShelf({
+  universities,
+  titles,
+  athletes,
+  teams,
+  sports,
+  editionYear,
+}: {
+  universities: UniversityCard[];
+  titles: TitleWin[];
+  athletes: AthleteCard[];
+  teams: TeamCard[];
+  sports: SportCard[];
+  editionYear: number | null;
+}) {
+  const byUniversity = new Map<string, TitleWin[]>();
+  for (const title of titles) byUniversity.set(title.universityId, [...(byUniversity.get(title.universityId) ?? []), title]);
+  const ranked = [...universities].sort(
+    (a, b) => (byUniversity.get(b.id)?.length ?? 0) - (byUniversity.get(a.id)?.length ?? 0) || a.shortName.localeCompare(b.shortName, "es"),
+  );
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected = ranked.find((university) => university.id === selectedId) ?? null;
+  const wins = selected ? (byUniversity.get(selected.id) ?? []) : [];
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!selectedId) return;
+    panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [selectedId]);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 className="font-jersey text-[1.75rem] leading-none text-zinc-950 uppercase sm:text-4xl">Títulos</h2>
+        <span className="shrink-0 text-[11px] font-semibold tracking-[0.14em] text-zinc-400 uppercase">
+          {titles.length} {titles.length === 1 ? "título" : "títulos"}
+        </span>
+      </div>
+      <ul className="grid grid-cols-4 gap-x-1.5 gap-y-3 lg:grid-cols-8">
+        {ranked.map((university) => {
+          const count = byUniversity.get(university.id)?.length ?? 0;
+          const active = university.id === selectedId;
+          return (
+            <li key={university.id}>
+              <button
+                type="button"
+                aria-pressed={active}
+                aria-label={
+                  count === 0
+                    ? university.shortName
+                    : `${university.shortName}, ${count} ${count === 1 ? "título" : "títulos"}`
+                }
+                onClick={() => setSelectedId(active ? null : university.id)}
+                className="flex w-full flex-col items-center text-center"
+              >
+                <span className="grid h-16 w-full place-items-center">
+                  {university.logoUrl ? (
+                    <img
+                      src={university.logoUrl}
+                      alt=""
+                      className={cn("h-14 w-auto max-w-full object-contain", active ? "scale-105" : "opacity-80")}
+                    />
+                  ) : (
+                    <span className="font-jersey text-2xl leading-none text-zinc-950">{university.shortName}</span>
+                  )}
+                </span>
+                <span className={cn("font-jersey mt-1 max-w-full truncate text-lg leading-none sm:text-2xl", active ? "text-zinc-950" : "text-zinc-500")}>
+                  {university.shortName}
+                  {count > 0 ? <span className="ml-1 text-zinc-400">{count}</span> : null}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      {selected ? (
+        <div ref={panelRef} className="space-y-3">
+          <div className="relative flex flex-col items-center gap-1 pt-1 text-center">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute top-6 left-1/2 size-48 -translate-x-1/2 rounded-full blur-2xl"
+              style={{ background: logoGlow(selected.shortName), opacity: 0.55 }}
+            />
+            {selected.logoUrl ? (
+              <img src={selected.logoUrl} alt="" className="relative h-44 w-auto max-w-[16rem] object-contain sm:h-52" />
+            ) : (
+              <span className="font-jersey text-6xl leading-none text-zinc-950">{selected.shortName}</span>
+            )}
+            <p className="font-jersey text-5xl leading-none text-zinc-950">{wins.length}</p>
+            <p className="text-[10px] font-semibold tracking-[0.18em] text-zinc-400 uppercase">
+              {wins.length === 1 ? "título" : "títulos"}
+            </p>
+          </div>
+          {wins.length ? (
+            <ul className="grid gap-3 lg:grid-cols-2">
+              {wins.map((title) => (
+                <li key={`${title.teamId}:${title.year}:${title.sportName}`}>
+                  <TitleTicket
+                    year={String(title.year)}
+                    sport={title.sportName}
+                    detail={GENDER_LABELS[title.gender]}
+                    color={selected.colors.primary}
+                    accent={selected.colors.secondary}
+                    university={selected.shortName}
+                    athletes={athletes.filter((athlete) => athlete.teamId === title.teamId && athlete.isActive)}
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : teams.some((team) => team.universityId === selected.id) ? (
+            <ul className="grid gap-3 lg:grid-cols-2">
+              {teams
+                .filter((team) => team.universityId === selected.id)
+                .map((team) => (
+                  <li key={team.id}>
+                    <TitleTicket
+                      year={editionYear ? String(editionYear) : "—"}
+                      sport={sports.find((sport) => sport.id === team.sportId)?.name ?? "Deporte"}
+                      detail={GENDER_LABELS[team.gender]}
+                      color={selected.colors.primary}
+                      accent={selected.colors.secondary}
+                      university={selected.shortName}
+                      athletes={athletes.filter((athlete) => athlete.teamId === team.id && athlete.isActive)}
+                    />
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <p className="text-[13px] leading-snug text-zinc-500">Esta universidad todavía no tiene un deporte inscrito.</p>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }
 
 export function StandingsView({
   sports,
-  groups,
-  medals,
+  matches,
+  teams,
+  athletes,
+  universities,
   initialView,
+  initialYear,
+  initialRound,
   presenter,
   leaderSponsor,
   feedSponsor,
-  feedOffer,
 }: {
   sports: SportCard[];
-  /** One table per sport and branch, busiest first. */
-  groups: StandingGroup[];
-  medals: MedalTally[];
+  matches: MatchCard[];
+  teams: TeamCard[];
+  athletes: AthleteCard[];
+  universities: UniversityCard[];
   initialView: View;
+  initialYear: number | null;
+  initialRound: string | null;
   presenter?: SponsorCard;
   leaderSponsor?: SponsorCard;
+  /** Official sponsor flyer. Not a U Pass brand unless that brand also bought a sponsorship. */
   feedSponsor?: SponsorCard;
-  feedOffer?: string;
 }) {
+  const years = useMemo(() => listYears(matches), [matches]);
+  const validas = useMemo(() => listValidas(matches), [matches]);
+  const titles = useMemo(() => listTitles(matches, teams), [matches, teams]);
+  const fallbackYear = defaultYear(years);
   const [view, setView] = useState<View>(initialView);
-  const [sportId, setSportId] = useState(groups[0]?.sportId ?? sports[0]?.id ?? "");
-  const [gender, setGender] = useState<GenderValue>(groups[0]?.gender ?? "male");
+  const [slice, setSlice] = useState<Slice>(initialRound ? "valida" : "ano");
+  const [year, setYear] = useState<number | null>(years.some((edition) => edition.year === initialYear) ? initialYear : fallbackYear);
+  const [round, setRound] = useState<string | null>(initialRound);
+  const [sportId, setSportId] = useState(() => {
+    const scoped = scopeMatches(matches, initialRound ? "valida" : "ano", years.some((edition) => edition.year === initialYear) ? initialYear : fallbackYear, initialRound);
+    return buildGroups(scoped, teams, sports)[0]?.sportId ?? sports[0]?.id ?? "";
+  });
+  const [gender, setGender] = useState<GenderValue>("male");
+
+  const scoped = useMemo(() => scopeMatches(matches, slice, year, round), [matches, slice, year, round]);
+  const groups = useMemo(() => buildGroups(scoped, teams, sports), [scoped, teams, sports]);
+
+  const followEdition = (nextSlice: Slice, nextYear: number | null, nextRound: string | null) => {
+    const nextGroups = buildGroups(scopeMatches(matches, nextSlice, nextYear, nextRound), teams, sports);
+    const inSport = nextGroups.filter((item) => item.sportId === sportId);
+    if (!inSport.length) {
+      if (!nextGroups[0]) return;
+      setSportId(nextGroups[0].sportId);
+      setGender(nextGroups[0].gender);
+      return;
+    }
+    if (!inSport.some((item) => item.gender === gender)) setGender(inSport[0].gender);
+  };
   const sportGroups = groups.filter((item) => item.sportId === sportId);
   const group = sportGroups.find((item) => item.gender === gender) ?? sportGroups[0];
   const selectedSport = sports.find((sport) => sport.id === sportId);
+  const editionLabel = slice === "valida" && round && year ? `${round} ${year}` : year ? String(year) : "Esta edición";
+
+  const writeUrl = (nextView: View, nextSlice: Slice, nextYear: number | null, nextRound: string | null) => {
+    const params = new URLSearchParams();
+    if (nextView === "titulos") params.set("vista", "titulos");
+    if (nextYear) params.set("ano", String(nextYear));
+    if (nextSlice === "valida" && nextRound) params.set("valida", nextRound);
+    const query = params.toString();
+    window.history.replaceState(null, "", query ? `/clasificacion?${query}` : "/clasificacion");
+  };
 
   const pickSport = (id: string) => {
     setSportId(id);
     const next = groups.filter((item) => item.sportId === id);
     if (next.length && !next.some((item) => item.gender === gender)) setGender(next[0].gender);
   };
-  const medalsAwarded = medals.some((row) => row.total > 0);
 
-  const changeView = (next: View) => {
-    setView(next);
-    window.history.replaceState(null, "", next === "medallero" ? "/clasificacion?vista=medallero" : "/clasificacion");
+  const pickYear = (nextYear: number) => {
+    const nextRound = defaultRound(validas, nextYear);
+    setYear(nextYear);
+    setRound(nextRound);
+    followEdition(slice, nextYear, nextRound);
+    writeUrl(view, slice, nextYear, nextRound);
+  };
+
+  const pickSlice = (next: Slice) => {
+    const nextRound = round ?? defaultRound(validas, year);
+    if (next === "valida" && nextRound) setRound(nextRound);
+    setSlice(next);
+    followEdition(next, year, nextRound);
+    writeUrl(view, next, year, nextRound);
+  };
+
+  const pickRound = (nextRound: string, nextYear: number) => {
+    setRound(nextRound);
+    setYear(nextYear);
+    followEdition("valida", nextYear, nextRound);
+    writeUrl(view, "valida", nextYear, nextRound);
   };
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[11px] font-semibold tracking-[0.3em] text-[#C8102E] uppercase">Temporada 2026</p>
-          <h1 className="font-jersey mt-1 text-[3.6rem] leading-[0.82] text-zinc-950 uppercase sm:text-8xl">Clasificación</h1>
-          <p className="mt-3 max-w-md text-sm text-zinc-500">
-            Se recalcula sola con cada resultado oficial. 3 puntos por victoria, 1 por empate.
-          </p>
+    <div className="space-y-4 md:space-y-6">
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+        <div className="min-w-0">
+          <div className="relative">
+            <Link href="/" aria-label="Liga U — inicio" className="absolute right-0 bottom-0 z-0 md:hidden">
+              <LigaULogo className="h-12 w-auto [mask-image:linear-gradient(to_right,transparent,black_28%)]" />
+            </Link>
+            <p className="relative z-10 text-[11px] font-semibold tracking-[0.3em] text-[#C8102E] uppercase">
+              {view === "titulos" ? "Historial" : editionLabel}
+            </p>
+            <h1 className="font-jersey relative z-10 mt-0.5 text-[2.55rem] leading-[0.8] text-zinc-950 uppercase sm:mt-1 sm:text-8xl sm:leading-[0.82]">
+              Clasificación
+            </h1>
+          </div>
+          {view === "tablas" ? (
+            <p className="relative z-10 mt-2 max-w-md text-[13px] leading-snug text-zinc-500 sm:mt-3 sm:text-sm">
+              La tabla de la edición que elijas. Abre un año o una válida, pasada o próxima.
+            </p>
+          ) : null}
         </div>
-        {presenter ? <PresentedBy sponsor={presenter} label="Tabla oficial por" className="self-start sm:self-auto" /> : null}
+        {presenter ? <PresentedBy sponsor={presenter} label="Tabla oficial por" className="hidden self-auto sm:inline-flex" /> : null}
       </header>
 
       <Segmented
         value={view}
-        onChange={(id) => changeView(id as View)}
+        onChange={(id) => {
+          const next = id as View;
+          setView(next);
+          writeUrl(next, slice, year, round);
+        }}
         options={[
-          { id: "tablas", label: "Tablas" },
-          { id: "medallero", label: "Medallero" },
+          { id: "tablas", label: "Tabla" },
+          { id: "titulos", label: "Títulos" },
         ]}
         className="sm:max-w-sm"
       />
 
         {view === "tablas" ? (
           <div className="space-y-5">
-            <section aria-label="Elegir deporte y rama" className="space-y-3">
+            <section aria-label="Elegir edición" className="flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => pickSlice("ano")}
+                className={cn(
+                  "text-[10px] font-semibold tracking-[0.18em] uppercase",
+                  slice === "ano" ? "text-zinc-950" : "text-zinc-400",
+                )}
+              >
+                Por año
+              </button>
+              {slice === "ano"
+                ? years.map((edition) => (
+                    <EditionLabel
+                      key={edition.year}
+                      active={edition.year === year}
+                      label={`${edition.year}, ${EDITION_STATUS_LABEL[edition.status]}`}
+                      onClick={() => pickYear(edition.year)}
+                    >
+                      {String(edition.year)}
+                    </EditionLabel>
+                  ))
+                : null}
+              <button
+                type="button"
+                onClick={() => pickSlice("valida")}
+                className={cn(
+                  "text-[10px] font-semibold tracking-[0.18em] uppercase",
+                  slice === "ano" ? "ml-auto text-zinc-400" : "text-zinc-950",
+                )}
+              >
+                Por válida
+              </button>
+              {slice === "valida"
+                ? validas.map((edition) => (
+                    <EditionLabel
+                      key={`${edition.year}:${edition.round}`}
+                      active={edition.year === year && edition.round === round}
+                      label={`${edition.round} ${edition.year}, ${EDITION_STATUS_LABEL[edition.status]}`}
+                      onClick={() => pickRound(edition.round, edition.year)}
+                    >
+                      {edition.round}
+                    </EditionLabel>
+                  ))
+                : null}
+            </section>
+
+            <section aria-label="Elegir deporte y rama" className="space-y-2 md:space-y-3">
               <SportPicker
+                dense
                 sports={sports.map((sport) => ({
                   id: sport.id,
                   name: sport.name,
@@ -300,44 +746,39 @@ export function StandingsView({
             </section>
 
             {group ? (
-              <div key={group.id} className="space-y-5">
-                <SelectionTitle
-                  title={group.sportName}
-                  suffix={group.genderLabel}
-                  meta={`${group.finished} ${group.finished === 1 ? "resultado" : "resultados"}`}
-                />
-                {group.finished === 0 ? (
-                  <p className="rounded-2xl bg-amber-50 px-4 py-3 text-[13px] text-amber-800 ring-1 ring-amber-200/70">
-                    Aún no hay resultados oficiales: la tabla se moverá con el primer partido finalizado.
-                  </p>
-                ) : null}
-                <div className="grid gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
-                  <Podium rows={group.rows} leaderSponsor={leaderSponsor} />
-                  <Table group={group} />
+              <div key={`${group.id}:${editionLabel}`} className="space-y-5">
+                <div className="hidden sm:block">
+                  <SelectionTitle
+                    title={group.sportName}
+                    suffix={group.genderLabel}
+                    meta={`${editionLabel} · ${group.finished} ${group.finished === 1 ? "resultado" : "resultados"}`}
+                  />
                 </div>
+                {group.finished > 0 ? (
+                  <div className="grid gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+                    <Podium rows={group.rows} leaderSponsor={leaderSponsor} />
+                    <Table group={group} />
+                  </div>
+                ) : (
+                  <Table group={group} />
+                )}
               </div>
             ) : (
-              <EmptySport name={selectedSport?.name ?? "este deporte"} />
+              <EmptySport name={selectedSport?.name ?? "este deporte"} edition={editionLabel} />
             )}
           </div>
         ) : (
-          <div className="space-y-5">
-            <div className="flex items-baseline justify-between gap-3">
-              <h2 className="font-jersey text-[1.75rem] leading-none text-zinc-950 uppercase sm:text-4xl">Medallero general</h2>
-              <span className="shrink-0 text-[11px] font-semibold tracking-[0.14em] text-zinc-400 uppercase">
-                {medals.length} universidades
-              </span>
-            </div>
-            {!medalsAwarded ? (
-              <p className="rounded-2xl bg-amber-50 px-4 py-3 text-[13px] text-amber-800 ring-1 ring-amber-200/70">
-                Las medallas se reparten al cerrar cada disciplina: top 3 de cada tabla.
-              </p>
-            ) : null}
-            <MedalBoard medals={medals} />
-          </div>
+          <TitleShelf
+            universities={universities}
+            titles={titles}
+            athletes={athletes}
+            teams={teams}
+            sports={sports}
+            editionYear={year}
+          />
         )}
 
-      {feedSponsor ? <SponsorOffer sponsor={feedSponsor} offer={feedOffer} context="Aliado de la clasificación" /> : null}
+      {feedSponsor ? <SponsorFlyer sponsor={feedSponsor} context="Clasificación" /> : null}
     </div>
   );
 }

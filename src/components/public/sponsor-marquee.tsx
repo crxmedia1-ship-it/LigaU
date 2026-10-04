@@ -1,13 +1,13 @@
 import { Marquee } from "@/components/magic/marquee";
 import type { SponsorCard } from "@/lib/public/types";
 
-/** Cloudinary delivery URL trimmed to the mark and capped at 160px tall. */
-export function sponsorLogo(url: string | null | undefined) {
+/** Cloudinary delivery URL trimmed to the mark and capped at `height` px tall. */
+export function sponsorLogo(url: string | null | undefined, height = 160) {
   if (!url) return null;
   const marker = "/upload/";
   const index = url.indexOf(marker);
   if (index === -1) return url;
-  return `${url.slice(0, index + marker.length)}e_trim,f_auto,q_auto,c_fit,h_160/${url.slice(index + marker.length)}`;
+  return `${url.slice(0, index + marker.length)}e_trim,f_auto,q_auto,c_fit,h_${height}/${url.slice(index + marker.length)}`;
 }
 
 export function SponsorMarquee({ sponsors }: { sponsors: SponsorCard[] }) {

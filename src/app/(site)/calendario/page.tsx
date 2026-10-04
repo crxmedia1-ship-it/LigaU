@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CalendarView } from "@/components/public/calendar-view";
-import { offerFor, sponsorAt } from "@/components/public/sponsor-slots";
+import { sponsorAt } from "@/components/public/sponsor-slots";
 import { TabTransition } from "@/components/public/tab-transition";
 import { getHomeSponsorLogos } from "@/lib/public/home-sponsors";
 import { getPublicCatalog } from "@/lib/public/queries";
@@ -23,7 +23,6 @@ export default async function CalendarioPage() {
           presenter={sponsorAt(sponsors, 1)}
           daySponsor={sponsorAt(sponsors, 2)}
           feedSponsor={feedSponsor}
-          feedOffer={feedSponsor ? offerFor(feedSponsor, catalog.benefits) : undefined}
         />
       </main>
     </TabTransition>
