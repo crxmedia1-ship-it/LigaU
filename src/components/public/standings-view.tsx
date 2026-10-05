@@ -10,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { LigaULogo } from "@/components/public/brand";
 import { CountUp, Segmented } from "@/components/public/app-motion";
 import { Crest } from "@/components/public/match-ui";
 import { CourtMark } from "@/components/public/sport-courts";
@@ -636,9 +635,6 @@ export function StandingsView({
       <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <div className="relative">
-            <Link href="/" aria-label="Liga U — inicio" className="absolute right-0 bottom-0 z-0 md:hidden">
-              <LigaULogo className="h-12 w-auto [mask-image:linear-gradient(to_right,transparent,black_28%)]" />
-            </Link>
             <p className="relative z-10 text-[11px] font-semibold tracking-[0.3em] text-[#C8102E] uppercase">
               {view === "titulos" ? "Historial" : editionLabel}
             </p>
@@ -666,7 +662,7 @@ export function StandingsView({
           { id: "tablas", label: "Tabla" },
           { id: "titulos", label: "Títulos" },
         ]}
-        className="w-full sm:max-w-md md:max-w-lg"
+        className="w-full"
       />
 
         {view === "tablas" ? (

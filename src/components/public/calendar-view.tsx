@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { LigaULogo } from "@/components/public/brand";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRight, MapPin } from "lucide-react";
 import { CountUp, Segmented } from "@/components/public/app-motion";
@@ -231,9 +230,6 @@ export function CalendarView({
       <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <div className="relative">
-            <Link href="/" aria-label="Liga U — inicio" className="absolute right-0 bottom-0 z-0 md:hidden">
-              <LigaULogo className="h-12 w-auto [mask-image:linear-gradient(to_right,transparent,black_28%)]" />
-            </Link>
             <p className="relative z-10 text-[11px] font-semibold tracking-[0.3em] text-[#C8102E] uppercase">Temporada 2026</p>
             <h1 className="font-jersey relative z-10 mt-0.5 text-[2.85rem] leading-[0.8] text-zinc-950 uppercase sm:mt-1 sm:text-8xl sm:leading-[0.82]">
               Calendario
@@ -282,7 +278,6 @@ export function CalendarView({
             { id: "upcoming", label: "Próximos" },
             { id: "results", label: "Resultados" },
           ]}
-          className="md:max-w-xl"
         />
         {days.length > 1 ? (
           <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 md:mx-0 md:px-0">

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { Gift, Plane, Smartphone, Sparkles, UtensilsCrossed } from "lucide-react";
+import { ArrowUpRight, Gift, Lock, Plane, Smartphone, Sparkles, UtensilsCrossed } from "lucide-react";
 import { Marquee } from "@/components/magic/marquee";
 import { PassCard, ShineLink } from "@/components/public/pass-landing";
 import { sponsorLogo } from "@/components/public/sponsor-marquee";
 import { getPassBrandLogos } from "@/lib/public/home-sponsors";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Liga U Pass",
@@ -31,18 +33,20 @@ const STEPS: { icon: LucideIcon; title: string; text: string }[] = [
 ];
 
 /** Illustrative offers. Real discounts come from each partner once the pass is active. */
-const SAMPLE_BENEFITS: { icon: LucideIcon; category: string; offer: string; detail: string }[] = [
+const SAMPLE_BENEFITS: { icon: LucideIcon; category: string; offer: string; detail: string; tone: string }[] = [
   {
     icon: Plane,
     category: "Viajes",
     offer: "Hasta 20%",
     detail: "En boletos de aerolíneas aliadas.",
+    tone: "bg-[linear-gradient(165deg,#e0233f_0%,#C8102E_45%,#8a0b20_100%)] shadow-[0_24px_50px_-28px_rgba(200,16,46,0.85)]",
   },
   {
     icon: UtensilsCrossed,
     category: "Comida",
     offer: "2x1",
     detail: "En combos de locales aliados.",
+    tone: "bg-[linear-gradient(165deg,#52525b_0%,#3f3f46_45%,#27272a_100%)] shadow-[0_24px_50px_-28px_rgba(39,39,42,0.8)]",
   },
 ];
 
@@ -165,14 +169,17 @@ export default async function LigaUPassPage() {
           </p>
 
           <div className="mx-auto mt-5 grid max-w-6xl gap-3 px-4 md:mt-6 md:grid-cols-3 md:gap-5">
-            {SAMPLE_BENEFITS.map(({ icon: Icon, category, offer, detail }) => (
+            {SAMPLE_BENEFITS.map(({ icon: Icon, category, offer, detail, tone }) => (
               <article
                 key={category}
-                className="relative flex min-h-56 flex-col overflow-hidden rounded-[28px] bg-[linear-gradient(165deg,#1c1c1f_0%,#09090b_62%)] p-5 text-white shadow-[0_24px_50px_-28px_rgba(9,9,11,0.7)] ring-1 ring-[#D4AF37]/35 md:min-h-64 md:p-6"
+                className={cn(
+                  "relative flex min-h-56 flex-col overflow-hidden rounded-[28px] p-5 text-white ring-1 ring-white/15 md:min-h-64 md:p-6",
+                  tone,
+                )}
               >
                 <Icon
                   aria-hidden
-                  className="pointer-events-none absolute -top-6 -right-5 size-36 text-white/[0.045]"
+                  className="pointer-events-none absolute -top-6 -right-5 size-36 text-white/[0.08]"
                   strokeWidth={1.25}
                 />
                 <div className="flex items-center justify-between gap-3">
@@ -180,17 +187,21 @@ export default async function LigaUPassPage() {
                     <Icon className="size-3.5" strokeWidth={2.25} />
                     {category}
                   </span>
-                  <span className="text-[10px] font-semibold tracking-[0.16em] text-[#D4AF37] uppercase">Ejemplo</span>
+                  <span className="text-[10px] font-semibold tracking-[0.16em] text-white/75 uppercase">Ejemplo</span>
                 </div>
-                <p className="font-jersey mt-auto pt-8 text-[4.5rem] leading-none text-[#D4AF37]">{offer}</p>
-                <p className="mt-2 text-sm leading-snug text-white/70">{detail}</p>
-                <p className="mt-4 border-t border-white/10 pt-3 text-[11px] font-medium tracking-wide text-white/45">
+                <p className="font-jersey mt-auto pt-8 text-[4.5rem] leading-none text-white">{offer}</p>
+                <p className="mt-2 text-sm leading-snug text-white/80">{detail}</p>
+                <p className="mt-4 border-t border-white/15 pt-3 text-[11px] font-medium tracking-wide text-white/60">
                   Se desbloquea con tu U Pass
                 </p>
               </article>
             ))}
 
-            <article className="relative flex min-h-56 flex-col overflow-hidden rounded-[28px] bg-[linear-gradient(165deg,#fafafa_0%,#e4e4e7_48%,#d4d4d8_100%)] p-5 text-zinc-950 shadow-[0_24px_50px_-28px_rgba(9,9,11,0.35)] ring-1 ring-zinc-200 md:min-h-64 md:p-6">
+            <Link
+              href="/liga-u-pass/obtener"
+              aria-label="Beneficios bloqueados: obtén tu U Pass para desbloquearlos"
+              className="group relative flex min-h-56 flex-col overflow-hidden rounded-[28px] bg-[linear-gradient(165deg,#fafafa_0%,#e4e4e7_48%,#d4d4d8_100%)] p-5 text-zinc-950 shadow-[0_24px_50px_-28px_rgba(9,9,11,0.35)] ring-1 ring-zinc-200 md:min-h-64 md:p-6"
+            >
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0 opacity-50 [background-image:repeating-linear-gradient(115deg,rgba(255,255,255,0.7)_0_1px,transparent_1px_8px)]"
@@ -200,16 +211,28 @@ export default async function LigaUPassPage() {
                   <Sparkles className="size-3.5" strokeWidth={2.25} />
                   Temporada
                 </span>
-                <span className="text-[10px] font-semibold tracking-[0.16em] text-[#C8102E] uppercase">En camino</span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-zinc-950 px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] text-white uppercase">
+                  <Lock className="size-3" strokeWidth={2.5} />
+                  Bloqueado
+                </span>
               </div>
-              <p className="font-jersey relative mt-auto pt-8 text-[4.5rem] leading-none">Más</p>
-              <p className="relative mt-2 text-sm leading-snug text-zinc-600">
-                Nuevas marcas se suman durante la temporada.
+
+              <span
+                aria-hidden
+                className="absolute top-1/2 left-1/2 z-10 grid size-16 -translate-1/2 place-items-center rounded-full bg-white shadow-[0_14px_30px_-12px_rgba(9,9,11,0.45)] ring-1 ring-zinc-200 transition-transform duration-300 group-hover:scale-110"
+              >
+                <Lock className="size-7 text-[#C8102E]" strokeWidth={2.25} />
+              </span>
+
+              <div aria-hidden className="relative mt-auto pt-8 opacity-60 blur-[3px] select-none">
+                <p className="font-jersey text-[4.5rem] leading-none">Más</p>
+                <p className="mt-2 text-sm leading-snug text-zinc-600">Nuevas marcas se suman durante la temporada.</p>
+              </div>
+              <p className="relative mt-4 flex items-center justify-between gap-2 border-t border-zinc-900/10 pt-3 text-[11px] font-semibold tracking-wide text-zinc-700">
+                Desbloquéalo con tu U Pass
+                <ArrowUpRight className="size-4 text-[#C8102E] transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
               </p>
-              <p className="relative mt-4 border-t border-zinc-900/10 pt-3 text-[11px] font-medium tracking-wide text-zinc-500">
-                Tu U Pass las incluye
-              </p>
-            </article>
+            </Link>
           </div>
         </section>
 

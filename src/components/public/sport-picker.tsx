@@ -244,13 +244,13 @@ export function SportPicker({
 export type GenderValue = "all" | "male" | "female" | "mixed";
 
 const GENDERS: { id: GenderValue; label: string; icon: typeof Mars; tint: string }[] = [
-  { id: "all", label: "Todas", icon: Users, tint: "text-zinc-500" },
-  { id: "male", label: "Masculino", icon: Mars, tint: "text-sky-600" },
-  { id: "female", label: "Femenino", icon: Venus, tint: "text-pink-600" },
-  { id: "mixed", label: "Mixto", icon: Users, tint: "text-violet-600" },
+  { id: "all", label: "Todas", icon: Users, tint: "text-zinc-600" },
+  { id: "male", label: "Masculino", icon: Mars, tint: "text-sky-500" },
+  { id: "female", label: "Femenino", icon: Venus, tint: "text-pink-500" },
+  { id: "mixed", label: "Mixto", icon: Users, tint: "text-violet-500" },
 ];
 
-/** Big two-tone branch switch; branches without teams stay visible but disabled. */
+/** Same segmented look as the status filter; only the active branch tints its icon. Branches without teams stay visible but disabled. */
 export function GenderSwitch({
   value,
   onChange,
@@ -266,7 +266,7 @@ export function GenderSwitch({
     (g) => (g.id === "all" ? includeAll : g.id !== "mixed" || available.includes("mixed")),
   );
   return (
-    <div role="tablist" aria-label="Rama" className="grid auto-cols-fr grid-flow-col gap-1 rounded-2xl bg-white p-1.5 ring-1 ring-zinc-200/80">
+    <div role="tablist" aria-label="Rama" className="grid auto-cols-fr grid-flow-col gap-1 rounded-full bg-zinc-200/80 p-1.5">
       {options.map((g) => {
         const active = g.id === value;
         const enabled = g.id === "all" || available.includes(g.id);
@@ -280,15 +280,14 @@ export function GenderSwitch({
             disabled={!enabled}
             onClick={() => onChange(g.id)}
             className={cn(
-              "relative flex h-12 touch-manipulation items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-colors disabled:opacity-35",
-              active ? "text-white" : "text-zinc-700 hover:bg-zinc-50",
+              "flex min-h-11 touch-manipulation items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold whitespace-nowrap transition-colors disabled:opacity-35 md:min-h-12 md:text-[15px]",
+              active
+                ? "bg-white text-zinc-950 shadow-[0_4px_14px_-6px_rgba(15,23,42,0.35)]"
+                : "text-zinc-500 enabled:hover:text-zinc-800",
             )}
           >
-            {active ? (
-              <span className="absolute inset-0 rounded-xl bg-zinc-950 shadow-[0_10px_24px_-12px_rgba(15,23,42,0.8)]" />
-            ) : null}
-            <Icon className={cn("relative size-4", active ? "text-white" : g.tint)} strokeWidth={2.5} />
-            <span className="relative">{g.label}</span>
+            <Icon className={cn("size-4", active ? g.tint : "text-zinc-400")} strokeWidth={2.5} />
+            {g.label}
           </button>
         );
       })}
