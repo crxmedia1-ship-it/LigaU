@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: "Universidad",
 };
 
+export const revalidate = 30;
+
+export function generateStaticParams() {
+  return [];
+}
+
 export default async function UniversidadPage({
   params,
 }: {
@@ -20,6 +26,11 @@ export default async function UniversidadPage({
   const teams = catalog.teams.filter((team) => team.universityId === id);
   const teamIds = new Set(teams.map((team) => team.id));
   const athletes = catalog.athletes.filter((athlete) => teamIds.has(athlete.teamId));
+  const matches = catalog.matches.filter(
+    (match) => teamIds.has(match.homeTeamId) || teamIds.has(match.awayTeamId),
+  );
+  const matchIds = new Set(matches.map((match) => match.id));
+  const events = catalog.events.filter((event) => matchIds.has(event.matchId));
 
   return (
     <main className="relative mx-auto max-w-6xl px-4 py-6 md:py-10">
@@ -28,8 +39,8 @@ export default async function UniversidadPage({
         sports={catalog.sports}
         teams={teams}
         athletes={athletes}
-        matches={catalog.matches}
-        events={catalog.events}
+        matches={matches}
+        events={events}
       />
     </main>
   );

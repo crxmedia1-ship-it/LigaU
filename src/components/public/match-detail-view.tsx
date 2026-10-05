@@ -14,17 +14,19 @@ import type { AthleteCard, MatchCard, MatchEventCard } from "@/lib/public/types"
 
 export function MatchDetailView({
   match,
+  matchDetails,
   events,
   mvp,
   winnerColors,
 }: {
   match: MatchCard;
+  matchDetails: unknown;
   events: MatchEventCard[];
   mvp: AthleteCard | null;
   winnerColors: string[];
 }) {
   const kind = getSportFormKind(match.sportSlug);
-  const details = parseMatchDetails(kind, match.matchDetails);
+  const details = parseMatchDetails(kind, matchDetails);
   const finished = match.status === "finished";
   const hasScore = finished && match.homeScore !== null && match.awayScore !== null;
 

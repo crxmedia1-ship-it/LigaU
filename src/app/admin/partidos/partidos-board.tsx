@@ -61,7 +61,7 @@ type MatchDraft = {
   status: MatchStatus;
 };
 
-const STATUS_FILTERS = ["all", "scheduled", "live", "finished"] as const;
+type StatusFilter = "all" | "scheduled" | "live" | "finished";
 
 function emptyDraft(sports: SportOption[]): MatchDraft {
   return {
@@ -91,7 +91,7 @@ export function PartidosBoard({
   athletes,
   matches,
 }: PartidosBoardProps) {
-  const [statusFilter, setStatusFilter] = useState<(typeof STATUS_FILTERS)[number]>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sportFilter, setSportFilter] = useState("all");
   const [formOpen, setFormOpen] = useState(false);
   const [draft, setDraft] = useState<MatchDraft>(() => emptyDraft(sports));
@@ -149,7 +149,7 @@ export function PartidosBoard({
             <Tabs
               value={statusFilter}
               onValueChange={(value) =>
-                setStatusFilter(value as (typeof STATUS_FILTERS)[number])
+                setStatusFilter(value as StatusFilter)
               }
             >
               <TabsList>

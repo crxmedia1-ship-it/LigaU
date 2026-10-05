@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { GlassCard, PageHero } from "@/components/public/brand";
+import { cloudinaryImage } from "@/lib/public/media";
 import { getPublicCatalog } from "@/lib/public/queries";
 import { youtubeEmbed } from "@/lib/public/format";
 
 export const metadata: Metadata = {
   title: "Multimedia",
 };
+
+export const revalidate = 30;
 
 export default async function MultimediaPage() {
   const { podcasts, news } = await getPublicCatalog();
@@ -35,8 +38,9 @@ export default async function MultimediaPage() {
                 <div className="grid gap-0 md:grid-cols-[16rem_1fr]">
                   {episode.coverUrl ? (
                     <img
-                      src={episode.coverUrl}
+                      src={cloudinaryImage(episode.coverUrl, 640) ?? episode.coverUrl}
                       alt=""
+                      loading="lazy"
                       className="h-48 w-full object-cover md:h-full"
                     />
                   ) : (

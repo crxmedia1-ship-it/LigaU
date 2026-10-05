@@ -21,7 +21,7 @@ export type AthleteSheet = {
 };
 
 /** Age in full years from a calendar date, or null when the birth date is missing. */
-export function athleteAge(birthDate: string | null, today = new Date()) {
+function athleteAge(birthDate: string | null, today = new Date()) {
   if (!birthDate) return null;
   const [year, month, day] = birthDate.slice(0, 10).split("-").map(Number);
   if (!year || !month || !day) return null;

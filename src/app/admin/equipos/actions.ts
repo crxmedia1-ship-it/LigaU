@@ -1,7 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { requireStaff } from "@/lib/admin/session";
+import { refreshPublicSite } from "@/lib/public/revalidate";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database.types";
 
@@ -28,8 +28,7 @@ export async function upsertTeam(input: {
     : supabase.from("teams").insert(payload);
   const { error } = await query;
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/equipos");
-  revalidatePath("/admin/partidos");
+  refreshPublicSite();
   return { ok: true as const };
 }
 
@@ -39,8 +38,7 @@ export async function deleteTeam(teamId: string) {
   const supabase = await createClient();
   const { error } = await supabase.from("teams").delete().eq("id", teamId);
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/equipos");
-  revalidatePath("/admin/partidos");
+  refreshPublicSite();
   return { ok: true as const };
 }
 
@@ -82,10 +80,7 @@ export async function upsertAthlete(input: {
     : supabase.from("athletes").insert(payload);
   const { error } = await query;
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/equipos");
-  revalidatePath("/admin/partidos");
-  revalidatePath("/universidades", "layout");
-  revalidatePath("/");
+  refreshPublicSite();
   return { ok: true as const };
 }
 
@@ -95,7 +90,6 @@ export async function deleteAthlete(athleteId: string) {
   const supabase = await createClient();
   const { error } = await supabase.from("athletes").delete().eq("id", athleteId);
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/equipos");
-  revalidatePath("/admin/partidos");
+  refreshPublicSite();
   return { ok: true as const };
 }

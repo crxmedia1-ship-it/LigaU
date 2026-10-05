@@ -1,7 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { requireSuperadmin } from "@/lib/admin/session";
+import { refreshPublicSite } from "@/lib/public/revalidate";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database.types";
 
@@ -34,7 +34,7 @@ export async function upsertSponsor(input: {
     : supabase.from("pass_sponsors").insert(payload);
   const { error } = await query;
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/comercial");
+  refreshPublicSite();
   return { ok: true as const };
 }
 
@@ -44,7 +44,7 @@ export async function deleteSponsor(id: string) {
   const supabase = await createClient();
   const { error } = await supabase.from("pass_sponsors").delete().eq("id", id);
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/comercial");
+  refreshPublicSite();
   return { ok: true as const };
 }
 
@@ -78,7 +78,7 @@ export async function upsertBenefit(input: {
     : supabase.from("pass_benefits").insert(payload);
   const { error } = await query;
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/comercial");
+  refreshPublicSite();
   return { ok: true as const };
 }
 
@@ -88,6 +88,6 @@ export async function deleteBenefit(id: string) {
   const supabase = await createClient();
   const { error } = await supabase.from("pass_benefits").delete().eq("id", id);
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/comercial");
+  refreshPublicSite();
   return { ok: true as const };
 }

@@ -6,11 +6,18 @@ import { GlassCard, JerseyMark, PageKicker } from "@/components/public/brand";
 import { UniversityCrest } from "@/components/public/university-crest";
 import { formatAthleteAge, formatAthleteHeight } from "@/lib/public/athlete-sheet";
 import { formatMatchDate, formatScore } from "@/lib/public/format";
+import { cloudinaryImage } from "@/lib/public/media";
 import { getPublicCatalog } from "@/lib/public/queries";
 
 export const metadata: Metadata = {
   title: "Atleta",
 };
+
+export const revalidate = 30;
+
+export function generateStaticParams() {
+  return [];
+}
 
 export default async function AtletaPage({
   params,
@@ -44,8 +51,9 @@ export default async function AtletaPage({
       <JerseyMark number={athlete.jerseyNumber?.toString() ?? "U"} />
       <GlassCard className="p-6 sm:flex sm:items-center sm:gap-6">
         {athlete.photoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={athlete.photoUrl}
+            src={cloudinaryImage(athlete.photoUrl, 320) ?? athlete.photoUrl}
             alt=""
             className="size-28 object-cover ring-2 ring-brand-gold/50"
           />

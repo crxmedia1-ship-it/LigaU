@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   title: "Universidades",
 };
 
+export const revalidate = 30;
+
 export default async function UniversidadesPage() {
   const { universities } = await getPublicCatalog();
 

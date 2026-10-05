@@ -1,8 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { requireStaff } from "@/lib/admin/session";
 import { slugify } from "@/lib/admin/sport";
+import { refreshPublicSite } from "@/lib/public/revalidate";
 import { createClient } from "@/lib/supabase/server";
 
 export async function upsertNews(input: {
@@ -39,7 +39,7 @@ export async function upsertNews(input: {
     : supabase.from("news").insert(payload);
   const { error } = await query;
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/noticias");
+  refreshPublicSite();
   return { ok: true as const };
 }
 
@@ -49,6 +49,6 @@ export async function deleteNews(id: string) {
   const supabase = await createClient();
   const { error } = await supabase.from("news").delete().eq("id", id);
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/noticias");
+  refreshPublicSite();
   return { ok: true as const };
 }

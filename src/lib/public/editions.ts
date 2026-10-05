@@ -30,12 +30,12 @@ export type TitleWin = {
   year: number;
 };
 
-export function matchYear(iso: string): number {
+function matchYear(iso: string): number {
   const year = new Intl.DateTimeFormat("en-US", { timeZone: ZONE, year: "numeric" }).format(new Date(iso));
   return Number(year);
 }
 
-export function roundLabel(match: MatchCard): string {
+function roundLabel(match: MatchCard): string {
   const name = match.roundName?.trim();
   return name ? name : "Válida única";
 }
@@ -52,7 +52,7 @@ function statusOf(matches: MatchCard[]): EditionStatus {
 }
 
 /** A championship final, not a semifinal or quarterfinal. */
-export function isChampionshipFinal(roundName: string | null): boolean {
+function isChampionshipFinal(roundName: string | null): boolean {
   const name = (roundName ?? "")
     .normalize("NFD")
     .replace(/\p{M}/gu, "")

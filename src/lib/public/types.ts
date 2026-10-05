@@ -73,7 +73,6 @@ export type MatchCard = {
   homeScore: number | null;
   awayScore: number | null;
   mvpAthleteId: string | null;
-  matchDetails: unknown;
 };
 
 export type MatchEventCard = {
@@ -94,7 +93,6 @@ export type NewsCard = {
   title: string;
   slug: string;
   excerpt: string | null;
-  content: string | null;
   coverImageUrl: string | null;
   sportId: string | null;
   universityId: string | null;
@@ -139,19 +137,6 @@ export type BenefitCard = {
   clickCount: number;
 };
 
-export type MedalTally = {
-  universityId: string;
-  universityShort: string;
-  universityName: string;
-  logoUrl: string | null;
-  colors: UniversityColors;
-  gold: number;
-  silver: number;
-  bronze: number;
-  total: number;
-  points?: number;
-};
-
 export type StandingRow = {
   teamId: string;
   universityId: string;
@@ -167,18 +152,6 @@ export type StandingRow = {
   goalsAgainst: number;
   goalDiff: number;
   points: number;
-};
-
-export type MvpHighlight = {
-  athlete: AthleteCard;
-  team: TeamCard;
-  sportName: string;
-  matchId: string;
-  matchLabel: string;
-  goals: number;
-  points: number;
-  cards: number;
-  mvpAwards: number;
 };
 
 export function one<T>(value: T | T[] | null | undefined): T | null {

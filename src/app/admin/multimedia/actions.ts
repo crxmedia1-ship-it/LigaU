@@ -1,7 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { requireStaff } from "@/lib/admin/session";
+import { refreshPublicSite } from "@/lib/public/revalidate";
 import { createClient } from "@/lib/supabase/server";
 
 export async function upsertPodcast(input: {
@@ -37,7 +37,7 @@ export async function upsertPodcast(input: {
     : supabase.from("podcast_episodes").insert(payload);
   const { error } = await query;
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/multimedia");
+  refreshPublicSite();
   return { ok: true as const };
 }
 
@@ -47,6 +47,6 @@ export async function deletePodcast(id: string) {
   const supabase = await createClient();
   const { error } = await supabase.from("podcast_episodes").delete().eq("id", id);
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/multimedia");
+  refreshPublicSite();
   return { ok: true as const };
 }

@@ -190,11 +190,7 @@ export function PassCard() {
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      setLines(true);
-      return;
-    }
-    const id = window.setTimeout(() => setLines(true), 280);
+    const id = window.setTimeout(() => setLines(true), reduced ? 0 : 280);
     return () => window.clearTimeout(id);
   }, []);
 

@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MatchDetailView } from "@/components/public/match-detail-view";
-import { getPublicCatalog } from "@/lib/public/queries";
+import { getMatchDetails, getPublicCatalog } from "@/lib/public/queries";
 
 export const metadata: Metadata = {
   title: "Partido",
 };
+
+export const revalidate = 30;
+
+export function generateStaticParams() {
+  return [];
+}
 
 export default async function PartidoPage({
   params,
@@ -13,7 +19,7 @@ export default async function PartidoPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const catalog = await getPublicCatalog();
+  const [catalog, matchDetails] = await Promise.all([getPublicCatalog(), getMatchDetails(id)]);
   const match = catalog.matches.find((item) => item.id === id);
   if (!match) notFound();
 
@@ -44,6 +50,7 @@ export default async function PartidoPage({
     <main className="relative mx-auto max-w-4xl px-4 py-6 md:py-10">
       <MatchDetailView
         match={match}
+        matchDetails={matchDetails}
         events={events}
         mvp={mvp}
         winnerColors={winnerColors}

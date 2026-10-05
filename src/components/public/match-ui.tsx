@@ -1,4 +1,3 @@
-import { MatchCountdown } from "@/components/public/match-countdown";
 import type { MatchCard } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
 
@@ -13,12 +12,6 @@ export function kickoff(value: string) {
   }).formatToParts(new Date(value));
   const pick = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
   return { clock: `${pick("hour")}:${pick("minute")}`, period: pick("dayPeriod").replace(/[\s.]/g, "").toUpperCase() };
-}
-
-export function matchDay(value: string) {
-  return new Intl.DateTimeFormat("es-VE", { timeZone: TZ, weekday: "short", day: "numeric", month: "short" })
-    .format(new Date(value))
-    .replace(/\./g, "");
 }
 
 /** Calendar day in Caracas, used to group matches: `2026-09-20`. */
@@ -93,29 +86,5 @@ export function Crest({
     >
       {label.slice(0, 3)}
     </span>
-  );
-}
-
-/** Live coverage isn't offered yet, so a match marked live shows as upcoming. */
-export function StatusPill({ match }: { match: MatchCard }) {
-  if (match.status === "finished") {
-    return (
-      <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-[10px] font-bold tracking-[0.14em] text-zinc-600">
-        FINAL
-      </span>
-    );
-  }
-  if (match.status === "postponed" || match.status === "cancelled") {
-    return (
-      <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-[10px] font-bold tracking-[0.14em] text-zinc-500 uppercase">
-        {match.status === "postponed" ? "Aplazado" : "Cancelado"}
-      </span>
-    );
-  }
-  return (
-    <MatchCountdown
-      date={match.matchDate}
-      className="rounded-full bg-zinc-950 px-2.5 py-1 text-[10px] font-semibold tracking-[0.12em] text-white"
-    />
   );
 }

@@ -27,6 +27,7 @@ import {
   scopeMatches,
   type TitleWin,
 } from "@/lib/public/editions";
+import { cloudinaryThumb } from "@/lib/public/media";
 import { computeStandings } from "@/lib/public/standings";
 import type { AthleteCard, MatchCard, SponsorCard, SportCard, StandingRow, TeamCard, TeamGender, UniversityCard, UniversityColors } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
@@ -251,19 +252,6 @@ function EditionLabel({
   );
 }
 
-function CornerMarks({ color, className }: { color: string; className?: string }) {
-  const gold = "#D4AF37";
-  const mark = cn("absolute z-10", className ?? "size-8");
-  return (
-    <>
-      <span aria-hidden className={cn(mark, "top-0 left-0")} style={{ background: color, clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
-      <span aria-hidden className={cn(mark, "top-0 right-0")} style={{ background: gold, clipPath: "polygon(0 0, 100% 0, 100% 100%)" }} />
-      <span aria-hidden className={cn(mark, "bottom-0 left-0")} style={{ background: gold, clipPath: "polygon(0 0, 0 100%, 100% 100%)" }} />
-      <span aria-hidden className={cn(mark, "right-0 bottom-0")} style={{ background: color, clipPath: "polygon(100% 0, 100% 100%, 0 100%)" }} />
-    </>
-  );
-}
-
 /** Example cup name until each title stores its own competition. */
 const EXAMPLE_CUP = "Copa Liga U";
 
@@ -360,7 +348,12 @@ function TitleTicket({
                     className="flex min-w-0 items-center gap-3 rounded-2xl bg-zinc-50 px-2.5 py-2"
                   >
                     {athlete.photoUrl ? (
-                      <img src={athlete.photoUrl} alt="" className="size-12 shrink-0 rounded-full object-cover" />
+                      <img
+                        src={cloudinaryThumb(athlete.photoUrl, 96) ?? athlete.photoUrl}
+                        alt=""
+                        loading="lazy"
+                        className="size-12 shrink-0 rounded-full object-cover"
+                      />
                     ) : (
                       <span
                         aria-hidden

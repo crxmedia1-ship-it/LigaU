@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { ImageUpIcon, Loader2Icon } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
@@ -26,11 +26,13 @@ export function ImageUploader({
   onUploaded,
 }: ImageUploaderProps) {
   const [preview, setPreview] = useState<string | null>(initialUrl ?? null);
+  const [shownInitial, setShownInitial] = useState(initialUrl);
   const [pending, startTransition] = useTransition();
 
-  useEffect(() => {
+  if (initialUrl !== shownInitial) {
+    setShownInitial(initialUrl);
     setPreview(initialUrl ?? null);
-  }, [initialUrl]);
+  }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];

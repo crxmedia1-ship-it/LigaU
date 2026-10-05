@@ -11,7 +11,7 @@ function slugOf(shortName: string) {
   return shortName.trim().toLowerCase();
 }
 
-export function marksFor(shortName: string): UniversityMarks {
+function marksFor(shortName: string): UniversityMarks {
   const slug = slugOf(shortName);
   if (!SLUGS.includes(slug as (typeof SLUGS)[number])) {
     return { crestUrl: null, mascotUrl: null };

@@ -7,10 +7,10 @@ import { MvpCarousel, type MvpSlide } from "@/components/public/mvp-carousel";
 import { SponsorMarquee } from "@/components/public/sponsor-marquee";
 import { CourtMark } from "@/components/public/sport-courts";
 import { SponsorMark } from "@/components/public/sponsor-slots";
-import { TabTransition } from "@/components/public/tab-transition";
 import { GENDER_LABELS } from "@/lib/admin/labels";
 import { getHomeSponsorLogos } from "@/lib/public/home-sponsors";
-import { getPublicCatalog } from "@/lib/public/queries";
+import { cloudinaryImage } from "@/lib/public/media";
+import { getNewsContent, getPublicCatalog } from "@/lib/public/queries";
 import { computeStandings } from "@/lib/public/standings";
 import type { MatchCard, NewsCard, SponsorCard, SportCard, StandingRow, TeamCard } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
@@ -325,7 +325,7 @@ function weeklyMvps(catalog: Awaited<ReturnType<typeof getPublicCatalog>>): MvpS
         teamLogo: team.university.logoUrl,
         jersey: athlete.jerseyNumber,
         position: athlete.position,
-        photoUrl: athlete.photoUrl,
+        photoUrl: cloudinaryImage(athlete.photoUrl, 640),
         stat: goals
           ? `${goals} ${goals === 1 ? "gol" : "goles"} · ${match.homeShort} vs ${match.awayShort}`
           : points
@@ -387,13 +387,13 @@ const NEWS_PHOTO: Record<string, string> = {
 };
 
 function newsPhoto(item: NewsCard | undefined, sports: SportCard[]) {
-  if (item?.coverImageUrl) return item.coverImageUrl;
+  if (item?.coverImageUrl) return cloudinaryImage(item.coverImageUrl, 480) ?? item.coverImageUrl;
   const slug = sports.find((sport) => sport.id === item?.sportId)?.slug;
   return (slug && NEWS_PHOTO[slug]) || "/news/futbol-campo.webp";
 }
 
-function storyText(item?: NewsCard) {
-  const body = [item?.excerpt, item?.content?.replace(/<[^>]+>|[#*_>`]/g, " ")]
+function storyText(item: NewsCard | undefined, content: string | null) {
+  const body = [item?.excerpt, content?.replace(/<[^>]+>|[#*_>`]/g, " ")]
     .filter(Boolean)
     .join(" ")
     .replace(/\s+/g, " ")
@@ -402,7 +402,17 @@ function storyText(item?: NewsCard) {
 }
 
 /** Front page of the league's paper; the full stories live on /noticias. */
-function NewsTile({ item, count, photo }: { item?: NewsCard; count: number; photo: string }) {
+function NewsTile({
+  item,
+  content,
+  count,
+  photo,
+}: {
+  item?: NewsCard;
+  content: string | null;
+  count: number;
+  photo: string;
+}) {
   return (
     <Link
       href="/noticias"
@@ -441,7 +451,7 @@ function NewsTile({ item, count, photo }: { item?: NewsCard; count: number; phot
           />
         </figure>
         <p className="max-h-[7.5rem] min-w-0 self-start overflow-hidden border-l border-zinc-950/15 pl-2.5 font-serif text-xs leading-[1.25rem] break-words text-zinc-700 hyphens-auto [mask-image:linear-gradient(to_bottom,black_75%,transparent)] md:max-h-[10rem] first-letter:float-left first-letter:mr-1 first-letter:text-[2.6rem] first-letter:leading-[0.8] first-letter:font-black first-letter:text-[#C8102E]">
-          {storyText(item)}
+          {storyText(item, content)}
         </p>
       </div>
 
@@ -843,15 +853,18 @@ function PassTile() {
   );
 }
 
+export const revalidate = 30;
+
 export default async function HomePage() {
   const [catalog, sponsors] = await Promise.all([getPublicCatalog(), getHomeSponsorLogos()]);
   const mvps = weeklyMvps(catalog);
   const match = featuredMatch(catalog.matches);
   const lead = catalog.news.find((item) => item.isFeatured) ?? catalog.news[0];
+  const leadContent = lead ? await getNewsContent(lead.id) : null;
   const universities = catalog.universities.length || CLUB_ORDER.length;
   const disciplines = catalog.sports.length || 9;
   return (
-    <TabTransition>
+    <>
       <style>{`.ligau-canvas{visibility:hidden}`}</style>
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white" />
       <main className="overflow-x-hidden bg-white">
@@ -898,7 +911,12 @@ export default async function HomePage() {
             <MatchTile match={match} />
             <StandingsTile table={standingsPreview(catalog, match)} />
             {mvps.length ? <MvpCarousel slides={mvps} className={RAIL} /> : <MvpPending />}
-            <NewsTile item={lead} count={catalog.news.length} photo={newsPhoto(lead, catalog.sports)} />
+            <NewsTile
+              item={lead}
+              content={leadContent}
+              count={catalog.news.length}
+              photo={newsPhoto(lead, catalog.sports)}
+            />
             <SponsorFlyer sponsor={topSponsor(sponsors)} />
             <MediaTile />
           </div>
@@ -911,6 +929,6 @@ export default async function HomePage() {
           <SponsorMarquee sponsors={sponsors} />
         </div>
       </main>
-    </TabTransition>
+    </>
   );
 }

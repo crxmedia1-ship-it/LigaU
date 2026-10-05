@@ -4,7 +4,6 @@ import { Gift, Plane, Smartphone, Sparkles, UtensilsCrossed } from "lucide-react
 import { Marquee } from "@/components/magic/marquee";
 import { PassCard, ShineLink } from "@/components/public/pass-landing";
 import { sponsorLogo } from "@/components/public/sponsor-marquee";
-import { TabTransition } from "@/components/public/tab-transition";
 import { getPassBrandLogos } from "@/lib/public/home-sponsors";
 
 export const metadata: Metadata = {
@@ -69,7 +68,7 @@ export default async function LigaUPassPage() {
   const reel = brands.length && brands.length < MIN_REEL ? Array(Math.ceil(MIN_REEL / brands.length)).fill(brands).flat() : brands;
 
   return (
-    <TabTransition>
+    <>
       <style>{`.ligau-canvas{visibility:hidden}`}</style>
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white" />
       <main className="overflow-x-hidden bg-white pb-12 md:pb-20">
@@ -215,6 +214,6 @@ export default async function LigaUPassPage() {
         </section>
 
       </main>
-    </TabTransition>
+    </>
   );
 }

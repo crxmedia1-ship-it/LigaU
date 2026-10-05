@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JerseyMark, PageKicker } from "@/components/public/brand";
-import { getPublicCatalog } from "@/lib/public/queries";
+import { cloudinaryImage } from "@/lib/public/media";
+import { getNewsContent, getPublicCatalog } from "@/lib/public/queries";
 
 export const metadata: Metadata = {
   title: "Noticia",
 };
+
+export const revalidate = 30;
+
+export function generateStaticParams() {
+  return [];
+}
 
 export default async function NoticiaPage({
   params,
@@ -16,6 +23,7 @@ export default async function NoticiaPage({
   const { news } = await getPublicCatalog();
   const item = news.find((entry) => entry.slug === slug);
   if (!item) notFound();
+  const content = await getNewsContent(item.id);
 
   return (
     <main className="relative mx-auto max-w-3xl px-4 py-6 md:py-10">
@@ -25,9 +33,11 @@ export default async function NoticiaPage({
       </PageKicker>
       <h1 className="chrome-text mt-3 text-4xl font-black">{item.title}</h1>
       {item.coverImageUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={item.coverImageUrl}
+          src={cloudinaryImage(item.coverImageUrl, 1200) ?? item.coverImageUrl}
           alt=""
+          fetchPriority="high"
           className="mt-6 w-full object-cover"
           style={{
             clipPath:
@@ -38,9 +48,9 @@ export default async function NoticiaPage({
       {item.excerpt ? (
         <p className="mt-6 text-lg text-brand-silver-dim">{item.excerpt}</p>
       ) : null}
-      {item.content ? (
+      {content ? (
         <div className="mt-6 whitespace-pre-wrap text-sm leading-7 text-brand-silver">
-          {item.content}
+          {content}
         </div>
       ) : null}
     </main>

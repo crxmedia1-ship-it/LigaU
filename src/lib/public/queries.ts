@@ -1,8 +1,8 @@
 import { unstable_cache } from "next/cache";
-import { connection } from "next/server";
 import { createClient as createSupabaseClient, type SupabaseClient } from "@supabase/supabase-js";
 import { teamLabel } from "@/lib/admin/labels";
 import { createClient } from "@/lib/supabase/server";
+import { PUBLIC_CATALOG_TAG } from "@/lib/public/revalidate";
 import { applyUniversityMarks, getUniversityMarks } from "@/lib/public/university-marks";
 import type { Database, Json } from "@/types/database.types";
 import {
@@ -12,7 +12,6 @@ import {
   type BenefitCard,
   type MatchCard,
   type MatchEventCard,
-  type MvpHighlight,
   type NewsCard,
   type PodcastCard,
   type SportCard,
@@ -80,7 +79,6 @@ function mapMatch(
     location: string | null;
     home_score: number | null;
     away_score: number | null;
-    match_details: unknown;
     status: MatchCard["status"];
     mvp_athlete_id: string | null;
     round_name: string | null;
@@ -114,7 +112,6 @@ function mapMatch(
     homeScore: match.home_score,
     awayScore: match.away_score,
     mvpAthleteId: match.mvp_athlete_id,
-    matchDetails: match.match_details,
   };
 }
 
@@ -123,7 +120,6 @@ function mapNews(item: {
   title: string;
   slug: string;
   excerpt: string | null;
-  content: string | null;
   cover_image_url: string | null;
   sport_id: string | null;
   university_id: string | null;
@@ -137,7 +133,6 @@ function mapNews(item: {
     title: item.title,
     slug: item.slug,
     excerpt: item.excerpt,
-    content: item.content,
     coverImageUrl: item.cover_image_url,
     sportId: item.sport_id,
     universityId: item.university_id,
@@ -194,7 +189,7 @@ async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
     supabase
       .from("matches")
       .select(
-        "id, sport_id, home_team_id, away_team_id, match_date, location, home_score, away_score, match_details, status, mvp_athlete_id, round_name, sports(id, name, slug)",
+        "id, sport_id, home_team_id, away_team_id, match_date, location, home_score, away_score, status, mvp_athlete_id, round_name, sports(id, name, slug)",
       )
       .order("match_date", { ascending: false }),
     supabase
@@ -205,7 +200,7 @@ async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
     supabase
       .from("news")
       .select(
-        "id, title, slug, excerpt, content, cover_image_url, sport_id, university_id, is_featured, published_at, sports(name), universities(name)",
+        "id, title, slug, excerpt, cover_image_url, sport_id, university_id, is_featured, published_at, sports(name), universities(name)",
       )
       .not("published_at", "is", null)
       .order("published_at", { ascending: false }),
@@ -313,46 +308,39 @@ async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
   };
 }
 
-const getCachedPublicCatalog = unstable_cache(() => loadCatalog(createPublicClient(), false), ["public-catalog"], {
-  revalidate: 30,
-});
+const CACHE_OPTIONS = { revalidate: 30, tags: [PUBLIC_CATALOG_TAG] };
+
+const getCachedPublicCatalog = unstable_cache(
+  () => loadCatalog(createPublicClient(), false),
+  ["public-catalog"],
+  CACHE_OPTIONS,
+);
 
 export async function getPublicCatalog(options?: { staff?: boolean }) {
   if (options?.staff) return loadCatalog(await createClient(), true);
-  await connection();
   return getCachedPublicCatalog();
 }
 
-export function getMvpHighlight(
-  matches: MatchCard[],
-  athletes: AthleteCard[],
-  teams: TeamCard[],
-  events: MatchEventCard[],
-): MvpHighlight | null {
-  const withMvp = matches.find(
-    (match) => match.status === "finished" && match.mvpAthleteId,
-  );
-  if (!withMvp?.mvpAthleteId) return null;
-  const athlete = athletes.find((item) => item.id === withMvp.mvpAthleteId);
-  const team = athlete ? teams.find((item) => item.id === athlete.teamId) : null;
-  if (!athlete || !team) return null;
+/** Set scores and other per-sport detail; only the match page reads them. */
+export const getMatchDetails = unstable_cache(
+  async (matchId: string) => {
+    const { data } = await createPublicClient()
+      .from("matches")
+      .select("match_details")
+      .eq("id", matchId)
+      .maybeSingle();
+    return data?.match_details ?? null;
+  },
+  ["match-details"],
+  CACHE_OPTIONS,
+);
 
-  const athleteEvents = events.filter((event) => event.athleteId === athlete.id);
-  return {
-    athlete,
-    team,
-    sportName: withMvp.sportName,
-    matchId: withMvp.id,
-    matchLabel: `${withMvp.homeShort} vs ${withMvp.awayShort}`,
-    goals: athleteEvents
-      .filter((event) => event.eventType === "goal")
-      .reduce((sum, event) => sum + event.value, 0),
-    points: athleteEvents
-      .filter((event) => event.eventType === "points")
-      .reduce((sum, event) => sum + event.value, 0),
-    cards: athleteEvents.filter(
-      (event) => event.eventType === "yellow_card" || event.eventType === "red_card",
-    ).length,
-    mvpAwards: matches.filter((match) => match.mvpAthleteId === athlete.id).length,
-  };
-}
+/** Full article body, kept out of the catalog so list pages don't carry every story. */
+export const getNewsContent = unstable_cache(
+  async (newsId: string) => {
+    const { data } = await createPublicClient().from("news").select("content").eq("id", newsId).maybeSingle();
+    return data?.content ?? null;
+  },
+  ["news-content"],
+  CACHE_OPTIONS,
+);

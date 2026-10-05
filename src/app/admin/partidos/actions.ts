@@ -1,8 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import type { Json } from "@/types/database.types";
 import { requireStaff } from "@/lib/admin/session";
+import { refreshPublicSite } from "@/lib/public/revalidate";
 import { createClient } from "@/lib/supabase/server";
 import type { MatchEventDraft, MatchDetailsPayload } from "@/lib/admin/sport";
 
@@ -50,7 +50,7 @@ export async function upsertMatch(input: UpsertMatchInput) {
 
   const { error } = await query;
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/partidos");
+  refreshPublicSite();
   return { ok: true as const };
 }
 
@@ -60,7 +60,7 @@ export async function deleteMatch(matchId: string) {
   const supabase = await createClient();
   const { error } = await supabase.from("matches").delete().eq("id", matchId);
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath("/admin/partidos");
+  refreshPublicSite();
   return { ok: true as const };
 }
 
@@ -157,6 +157,6 @@ export async function finishMatch(input: FinishMatchInput) {
     .eq("id", input.matchId);
 
   if (updateError) return { ok: false as const, error: updateError.message };
-  revalidatePath("/admin/partidos");
+  refreshPublicSite();
   return { ok: true as const };
 }
