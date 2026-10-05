@@ -673,7 +673,7 @@ export function StandingsView({
           { id: "tablas", label: "Tabla" },
           { id: "titulos", label: "Títulos" },
         ]}
-        className="sm:max-w-sm"
+        className="w-full sm:max-w-md md:max-w-lg"
       />
 
         {view === "tablas" ? (

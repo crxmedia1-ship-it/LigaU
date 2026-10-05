@@ -139,7 +139,7 @@ export function SportPicker({
         wrap
           ? "grid grid-cols-3 gap-2 py-1 sm:grid-cols-4 lg:grid-cols-5"
           : "no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 md:mx-0 md:px-1 md:py-3 lg:grid lg:grid-cols-5 lg:overflow-visible xl:auto-cols-fr xl:grid-flow-col xl:grid-cols-none",
-        !wrap && (dense ? "py-1" : "py-3"),
+        !wrap && "pt-3 pb-6",
       )}
     >
       {items.map((sport) => {

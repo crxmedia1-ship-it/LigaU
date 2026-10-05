@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { GlassCard, JerseyMark, PageKicker } from "@/components/public/brand";
 import { UniversityCrest } from "@/components/public/university-crest";
+import { formatAthleteAge, formatAthleteHeight } from "@/lib/public/athlete-sheet";
 import { formatMatchDate, formatScore } from "@/lib/public/format";
 import { getPublicCatalog } from "@/lib/public/queries";
 
@@ -59,8 +60,14 @@ export default async function AtletaPage({
           </PageKicker>
           <h1 className="chrome-text mt-2 text-3xl font-black">{athlete.fullName}</h1>
           <p className="text-brand-silver-dim">
-            {athlete.jerseyNumber ? `#${athlete.jerseyNumber} · ` : ""}
-            {athlete.position || "Atleta Liga U"}
+            {[
+              athlete.jerseyNumber ? `#${athlete.jerseyNumber}` : null,
+              athlete.position || "Atleta Liga U",
+              athlete.birthDate ? `${formatAthleteAge(athlete.birthDate)} años` : null,
+              athlete.heightCm != null ? formatAthleteHeight(athlete.heightCm) : null,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
           </p>
           {team ? (
             <Link

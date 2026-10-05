@@ -22,7 +22,7 @@ export function Segmented({
   return (
     <div
       role="tablist"
-      className={cn("grid auto-cols-fr grid-flow-col rounded-full bg-zinc-200/70 p-1", className)}
+      className={cn("grid auto-cols-fr grid-flow-col gap-1 rounded-full bg-zinc-200/80 p-1.5", className)}
     >
       {options.map((option) => {
         const active = option.id === value;
@@ -34,7 +34,7 @@ export function Segmented({
             aria-selected={active}
             onClick={() => onChange(option.id)}
             className={cn(
-              "relative h-9 touch-manipulation rounded-full px-3 text-[13px] font-semibold whitespace-nowrap",
+              "relative min-h-11 touch-manipulation rounded-full px-4 text-sm font-semibold whitespace-nowrap md:min-h-12 md:px-6 md:text-[15px]",
               active ? "bg-white text-zinc-950 shadow-[0_4px_14px_-6px_rgba(15,23,42,0.35)]" : "text-zinc-500 hover:text-zinc-800",
             )}
           >

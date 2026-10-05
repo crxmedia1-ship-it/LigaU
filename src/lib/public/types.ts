@@ -44,6 +44,8 @@ export type AthleteCard = {
   jerseyNumber: number | null;
   position: string | null;
   photoUrl: string | null;
+  birthDate: string | null;
+  heightCm: number | null;
   isActive: boolean;
 };
 

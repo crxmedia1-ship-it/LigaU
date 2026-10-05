@@ -189,7 +189,7 @@ async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
       .select("id, sport_id, university_id, gender, coach_name, universities(id, name, short_name, logo_url, colors)"),
     supabase
       .from("athletes")
-      .select("id, team_id, full_name, jersey_number, position, photo_url, is_active")
+      .select("id, team_id, full_name, jersey_number, position, photo_url, birth_date, height_cm, is_active")
       .order("full_name"),
     supabase
       .from("matches")
@@ -241,6 +241,8 @@ async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
     jerseyNumber: athlete.jersey_number,
     position: athlete.position,
     photoUrl: athlete.photo_url,
+    birthDate: athlete.birth_date,
+    heightCm: athlete.height_cm,
     isActive: athlete.is_active,
   }));
   const matches = (matchesRes.data ?? []).map((match) => mapMatch(match, teamById));

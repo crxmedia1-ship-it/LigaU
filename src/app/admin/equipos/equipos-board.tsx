@@ -81,6 +81,8 @@ export type AthleteRow = {
   jerseyNumber: number | null;
   position: string | null;
   photoUrl: string | null;
+  birthDate: string | null;
+  heightCm: number | null;
   isActive: boolean;
 };
 
@@ -98,6 +100,8 @@ type AthleteDraft = {
   jerseyNumber: string;
   position: string;
   photoUrl: string | null;
+  birthDate: string;
+  heightCm: string;
   isActive: boolean;
 };
 
@@ -260,6 +264,8 @@ export function EquiposBoard({
       jerseyNumber: "",
       position: "",
       photoUrl: null,
+      birthDate: "",
+      heightCm: "",
       isActive: true,
     });
     setAthleteOpen(true);
@@ -564,6 +570,8 @@ export function EquiposBoard({
                               jerseyNumber: athlete.jerseyNumber?.toString() ?? "",
                               position: athlete.position ?? "",
                               photoUrl: athlete.photoUrl,
+                              birthDate: athlete.birthDate ?? "",
+                              heightCm: athlete.heightCm?.toString() ?? "",
                               isActive: athlete.isActive,
                             });
                             setAthleteOpen(true);
@@ -688,6 +696,8 @@ export function EquiposBoard({
                       : null,
                     position: athleteDraft.position,
                     photoUrl: athleteDraft.photoUrl,
+                    birthDate: athleteDraft.birthDate || null,
+                    heightCm: athleteDraft.heightCm ? Number(athleteDraft.heightCm) : null,
                     isActive: athleteDraft.isActive,
                   });
                   if (!result.ok) {
@@ -736,6 +746,35 @@ export function EquiposBoard({
                       })
                     }
                     placeholder="Base, delantero..."
+                  />
+                </Field>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Fecha de nacimiento">
+                  <Input
+                    type="date"
+                    value={athleteDraft.birthDate}
+                    onChange={(event) =>
+                      setAthleteDraft({
+                        ...athleteDraft,
+                        birthDate: event.target.value,
+                      })
+                    }
+                  />
+                </Field>
+                <Field label="Altura (cm)">
+                  <Input
+                    type="number"
+                    min={140}
+                    max={230}
+                    value={athleteDraft.heightCm}
+                    onChange={(event) =>
+                      setAthleteDraft({
+                        ...athleteDraft,
+                        heightCm: event.target.value,
+                      })
+                    }
+                    placeholder="178"
                   />
                 </Field>
               </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { cn } from "@/lib/utils";
+import { SportPicker } from "@/components/public/sport-picker";
 import { SafeLogo } from "@/components/public/safe-logo";
 import { AthleteCardModal } from "@/components/athletes/AthleteCardModal";
 import {
@@ -100,34 +100,24 @@ export function UniversityClubBoard({
         </div>
       </header>
 
-      <div className="-mx-4 overflow-x-auto px-4">
-        <div className="flex w-max gap-2 pb-1" role="tablist" aria-label="Disciplinas">
-          {orderedSports.map((sport) => {
-            const active = sport.id === sportId;
-            return (
-              <button
-                key={sport.id}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                onClick={() => setSportId(sport.id)}
-                className={cn(
-                  "inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 py-2 font-mono text-[11px] tracking-[0.14em] uppercase transition-colors",
-                  active
-                    ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
-                    : "border-zinc-800 bg-zinc-950/70 text-zinc-400 hover:border-red-600/40",
-                )}
-              >
-                {sport.name}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <SportPicker
+        dense
+        sports={orderedSports.map((sport, index) => {
+          const count = athletes.filter(
+            (athlete) =>
+              athlete.isActive &&
+              teams.some((team) => team.id === athlete.teamId && team.sportId === sport.id),
+          ).length;
+          return { id: sport.id, name: sport.name, count, rank: orderedSports.length - index };
+        })}
+        value={sportId}
+        onChange={setSportId}
+        countLabel={(count) => `${count} ${count === 1 ? "atleta" : "atletas"}`}
+      />
 
       <section>
         <div className="mb-4 flex items-end justify-between gap-3">
-          <h2 className="text-lg font-semibold text-white">
+          <h2 className="text-lg font-semibold text-zinc-950">
             {activeSport?.name ?? "Plantilla"}
           </h2>
           <p className="font-mono text-xs text-zinc-500">
@@ -136,7 +126,7 @@ export function UniversityClubBoard({
         </div>
 
         {roster.length === 0 ? (
-          <p className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-8 text-sm text-zinc-500">
+          <p className="rounded-[1.35rem] bg-white px-4 py-8 text-sm text-zinc-500 shadow-[0_16px_36px_-26px_rgba(15,23,42,0.45)] ring-1 ring-zinc-200/90">
             Aún no hay atletas convocados en esta disciplina.
           </p>
         ) : (
@@ -156,31 +146,25 @@ export function UniversityClubBoard({
                   key={athlete.id}
                   type="button"
                   onClick={() => setSelected(sheet)}
-                  className="flex min-h-16 items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 text-left transition-all hover:border-red-600/60"
+                  className="group flex min-h-[5.5rem] items-center gap-3 overflow-hidden rounded-[1.35rem] bg-white p-3 text-left shadow-[0_18px_40px_-28px_rgba(15,23,42,0.55)] ring-1 ring-zinc-200/90 transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_44px_-24px_rgba(15,23,42,0.4)]"
                 >
-                  {athlete.photoUrl ? (
-                    <img
-                      src={athlete.photoUrl}
-                      alt=""
-                      className="size-12 rounded-xl object-cover"
-                    />
-                  ) : (
-                    <span
-                      className="grid size-12 place-items-center rounded-xl text-sm font-black text-white"
-                      style={{ backgroundColor: university.colors.primary }}
-                    >
-                      {athlete.fullName.slice(0, 1)}
-                    </span>
-                  )}
+                  <span
+                    aria-hidden
+                    className="h-14 w-1 shrink-0 rounded-full"
+                    style={{ backgroundColor: university.colors.primary }}
+                  />
+                  <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-zinc-50 ring-1 ring-zinc-200">
+                    <SafeLogo url={university.logoUrl} label={university.shortName} className="size-10" />
+                  </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-semibold text-white">
+                    <span className="block truncate text-[15px] font-semibold tracking-tight text-zinc-950">
                       {athlete.fullName}
                     </span>
-                    <span className="block text-xs text-zinc-500">
+                    <span className="mt-1 block text-[10px] font-semibold tracking-[0.16em] text-zinc-400 uppercase">
                       {athlete.position || "Roster"}
                     </span>
                   </span>
-                  <span className="font-jersey text-2xl leading-none text-zinc-400">
+                  <span className="font-jersey pr-1 text-4xl leading-none text-zinc-950">
                     {athlete.jerseyNumber ?? "—"}
                   </span>
                 </button>

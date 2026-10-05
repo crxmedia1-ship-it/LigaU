@@ -51,12 +51,20 @@ export async function upsertAthlete(input: {
   jerseyNumber: number | null;
   position: string;
   photoUrl: string | null;
+  birthDate: string | null;
+  heightCm: number | null;
   isActive: boolean;
 }) {
   const staff = await requireStaff();
   if (!staff.ok) return staff;
   if (!input.fullName.trim()) {
     return { ok: false as const, error: "El nombre del atleta es obligatorio." };
+  }
+  if (input.heightCm != null && (input.heightCm < 140 || input.heightCm > 230)) {
+    return { ok: false as const, error: "La altura debe estar entre 140 y 230 cm." };
+  }
+  if (input.birthDate && input.birthDate > new Date().toISOString().slice(0, 10)) {
+    return { ok: false as const, error: "La fecha de nacimiento no puede ser futura." };
   }
   const supabase = await createClient();
   const payload = {
@@ -65,6 +73,8 @@ export async function upsertAthlete(input: {
     jersey_number: input.jerseyNumber,
     position: input.position || null,
     photo_url: input.photoUrl,
+    birth_date: input.birthDate || null,
+    height_cm: input.heightCm,
     is_active: input.isActive,
   };
   const query = input.id
@@ -74,6 +84,8 @@ export async function upsertAthlete(input: {
   if (error) return { ok: false as const, error: error.message };
   revalidatePath("/admin/equipos");
   revalidatePath("/admin/partidos");
+  revalidatePath("/universidades", "layout");
+  revalidatePath("/");
   return { ok: true as const };
 }
 

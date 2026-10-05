@@ -16,8 +16,10 @@ export type Database = {
     Tables: {
       athletes: {
         Row: {
+          birth_date: string | null
           created_at: string
           full_name: string
+          height_cm: number | null
           id: string
           is_active: boolean
           jersey_number: number | null
@@ -28,8 +30,10 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          birth_date?: string | null
           created_at?: string
           full_name: string
+          height_cm?: number | null
           id?: string
           is_active?: boolean
           jersey_number?: number | null
@@ -40,8 +44,10 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          birth_date?: string | null
           created_at?: string
           full_name?: string
+          height_cm?: number | null
           id?: string
           is_active?: boolean
           jersey_number?: number | null

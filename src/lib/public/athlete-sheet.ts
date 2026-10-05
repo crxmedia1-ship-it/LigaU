@@ -11,11 +11,43 @@ export type AthleteSheet = {
   universityPrimary: string;
   sportName: string;
   genderLabel: string;
-  goals: number;
-  points: number;
+  ageLabel: string;
+  heightLabel: string;
+  matchesPlayed: number;
+  scoringLabel: string;
+  scoringValue: number;
+  assists: number;
   mvpAwards: number;
-  bio: string;
 };
+
+/** Age in full years from a calendar date, or null when the birth date is missing. */
+export function athleteAge(birthDate: string | null, today = new Date()) {
+  if (!birthDate) return null;
+  const [year, month, day] = birthDate.slice(0, 10).split("-").map(Number);
+  if (!year || !month || !day) return null;
+  let age = today.getFullYear() - year;
+  const beforeBirthday = today.getMonth() + 1 < month || (today.getMonth() + 1 === month && today.getDate() < day);
+  if (beforeBirthday) age -= 1;
+  return age >= 0 ? age : null;
+}
+
+export function formatAthleteAge(birthDate: string | null) {
+  const age = athleteAge(birthDate);
+  return age == null ? "—" : String(age);
+}
+
+export function formatAthleteHeight(heightCm: number | null) {
+  if (heightCm == null) return "—";
+  return `${(heightCm / 100).toFixed(2).replace(".", ",")} m`;
+}
+
+function scoringOf(sportName: string, goals: number, points: number) {
+  const name = sportName.toLowerCase();
+  if (name.includes("balonc") || name.includes("volei") || name.includes("voley")) {
+    return { label: "Puntos", value: points };
+  }
+  return { label: "Goles", value: goals };
+}
 
 const GENDER: Record<string, string> = {
   male: "Masculino",
@@ -39,8 +71,13 @@ export function buildAthleteSheet(input: {
     .filter((event) => event.eventType === "points")
     .reduce((sum, event) => sum + event.value, 0);
   const mvpAwards = matches.filter((match) => match.mvpAthleteId === athlete.id).length;
-  const role = athlete.position || "atleta";
-  const dorsal = athlete.jerseyNumber ? ` con el dorsal ${athlete.jerseyNumber}` : "";
+  const matchesPlayed = matches.filter(
+    (match) =>
+      match.status === "finished" &&
+      (match.homeTeamId === athlete.teamId || match.awayTeamId === athlete.teamId),
+  ).length;
+  const assists = events.filter((event) => event.assistAthleteId === athlete.id).length;
+  const scoring = scoringOf(sportName, goals, points);
 
   return {
     id: athlete.id,
@@ -53,10 +90,13 @@ export function buildAthleteSheet(input: {
     universityPrimary: team.university.colors.primary,
     sportName,
     genderLabel: GENDER[team.gender] ?? team.gender,
-    goals,
-    points,
+    ageLabel: formatAthleteAge(athlete.birthDate),
+    heightLabel: formatAthleteHeight(athlete.heightCm),
+    matchesPlayed,
+    scoringLabel: scoring.label,
+    scoringValue: scoring.value,
+    assists,
     mvpAwards,
-    bio: `${athlete.fullName} representa a ${team.university.shortName} en ${sportName} (${GENDER[team.gender] ?? team.gender}) como ${role}${dorsal}.`,
   };
 }
 
