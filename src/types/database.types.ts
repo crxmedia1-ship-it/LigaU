@@ -18,10 +18,12 @@ export type Database = {
         Row: {
           birth_date: string | null
           created_at: string
+          dominant_side: string | null
           full_name: string
           height_cm: number | null
           id: string
           is_active: boolean
+          person_id: string
           jersey_number: number | null
           photo_url: string | null
           position: string | null
@@ -32,10 +34,12 @@ export type Database = {
         Insert: {
           birth_date?: string | null
           created_at?: string
+          dominant_side?: string | null
           full_name: string
           height_cm?: number | null
           id?: string
           is_active?: boolean
+          person_id?: string
           jersey_number?: number | null
           photo_url?: string | null
           position?: string | null
@@ -46,10 +50,12 @@ export type Database = {
         Update: {
           birth_date?: string | null
           created_at?: string
+          dominant_side?: string | null
           full_name?: string
           height_cm?: number | null
           id?: string
           is_active?: boolean
+          person_id?: string
           jersey_number?: number | null
           photo_url?: string | null
           position?: string | null
@@ -212,6 +218,53 @@ export type Database = {
           },
         ]
       }
+      media_videos: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          kind: string
+          published_at: string
+          sport_id: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          video_url: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          published_at?: string
+          sport_id?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          video_url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          published_at?: string
+          sport_id?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          video_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_videos_sport_id_fkey"
+            columns: ["sport_id"]
+            isOneToOne: false
+            referencedRelation: "sports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news: {
         Row: {
           content: string | null
@@ -327,7 +380,9 @@ export type Database = {
       }
       pass_sponsors: {
         Row: {
+          brand_color: string | null
           category: string
+          contact: Json
           created_at: string
           id: string
           is_active: boolean
@@ -337,7 +392,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          brand_color?: string | null
           category: string
+          contact?: Json
           created_at?: string
           id?: string
           is_active?: boolean
@@ -347,7 +404,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          brand_color?: string | null
           category?: string
+          contact?: Json
           created_at?: string
           id?: string
           is_active?: boolean
@@ -549,7 +608,7 @@ export type Database = {
         | "external_link"
       sport_category: "individual" | "colectivo"
       team_gender: "male" | "female" | "mixed"
-      user_role: "superadmin" | "mesa_tecnica"
+      user_role: "superadmin" | "directivo"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -688,7 +747,7 @@ export const Constants = {
       ],
       sport_category: ["individual", "colectivo"],
       team_gender: ["male", "female", "mixed"],
-      user_role: ["superadmin", "mesa_tecnica"],
+      user_role: ["superadmin", "directivo"],
     },
   },
 } as const

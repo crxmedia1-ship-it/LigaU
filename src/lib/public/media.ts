@@ -10,6 +10,11 @@ export function cloudinaryThumb(url: string | null | undefined, width = 160) {
   return withTransform(url, `f_auto,q_auto,c_fit,w_${width},h_${width}`);
 }
 
+/** Logo trimmed to its mark and capped at `height` px tall. */
+export function cloudinaryLogo(url: string | null | undefined, height = 160) {
+  return withTransform(url, `e_trim,f_auto,q_auto,c_fit,h_${height}`);
+}
+
 /** Modern format, tuned quality and no wider than `width`; non-Cloudinary URLs pass through. */
 export function cloudinaryImage(url: string | null | undefined, width: number) {
   return withTransform(url, `f_auto,q_auto,c_limit,w_${width}`);

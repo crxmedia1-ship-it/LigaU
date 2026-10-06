@@ -1,14 +1,6 @@
 import { Marquee } from "@/components/magic/marquee";
+import { cloudinaryLogo } from "@/lib/public/media";
 import type { SponsorCard } from "@/lib/public/types";
-
-/** Cloudinary delivery URL trimmed to the mark and capped at `height` px tall. */
-export function sponsorLogo(url: string | null | undefined, height = 160) {
-  if (!url) return null;
-  const marker = "/upload/";
-  const index = url.indexOf(marker);
-  if (index === -1) return url;
-  return `${url.slice(0, index + marker.length)}e_trim,f_auto,q_auto,c_fit,h_${height}/${url.slice(index + marker.length)}`;
-}
 
 export function SponsorMarquee({ sponsors }: { sponsors: SponsorCard[] }) {
   const items =
@@ -33,7 +25,7 @@ export function SponsorMarquee({ sponsors }: { sponsors: SponsorCard[] }) {
       <div className="py-4 [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
         <Marquee duration="28s">
           {items.map((sponsor) => {
-            const logo = sponsorLogo(sponsor.logoUrl);
+            const logo = cloudinaryLogo(sponsor.logoUrl);
             return (
               <div
                 key={sponsor.id}

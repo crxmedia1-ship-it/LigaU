@@ -242,7 +242,7 @@ function EditionLabel({
       aria-label={label}
       onClick={onClick}
       className={cn(
-        "font-jersey rounded-full px-2 py-0.5 text-sm leading-none",
+        "font-jersey inline-flex min-h-8 min-w-8 items-center justify-center rounded-full px-2.5 text-sm leading-none",
         active ? "bg-zinc-950 text-white" : "text-zinc-400",
       )}
     >
@@ -672,7 +672,7 @@ export function StandingsView({
                 type="button"
                 onClick={() => pickSlice("ano")}
                 className={cn(
-                  "text-[10px] font-semibold tracking-[0.18em] uppercase",
+                  "inline-flex min-h-8 items-center text-[10px] font-semibold tracking-[0.18em] uppercase",
                   slice === "ano" ? "text-zinc-950" : "text-zinc-400",
                 )}
               >
@@ -694,7 +694,7 @@ export function StandingsView({
                 type="button"
                 onClick={() => pickSlice("valida")}
                 className={cn(
-                  "text-[10px] font-semibold tracking-[0.18em] uppercase",
+                  "inline-flex min-h-8 items-center text-[10px] font-semibold tracking-[0.18em] uppercase",
                   slice === "ano" ? "ml-auto text-zinc-400" : "text-zinc-950",
                 )}
               >

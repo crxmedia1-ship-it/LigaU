@@ -1,48 +1,20 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { NewspaperIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { ChevronDownIcon, NewspaperIcon, PencilIcon, PlusIcon, StarIcon, Trash2Icon } from "lucide-react";
 import { toast } from "@/components/ui/toast";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Field, NativeSelect } from "@/components/admin/field";
+import { NativeSelect } from "@/components/admin/field";
 import { ImageUploader } from "@/components/admin/image-uploader";
-import { slugify, toDatetimeLocal } from "@/lib/admin/sport";
-import { deleteNews, upsertNews } from "@/app/admin/noticias/actions";
-import {
-  AdminEmptyState,
-  AdminPageHeader,
-  adminGhostIconClass,
-  adminLaserCtaClass,
-  adminPanelClass,
-} from "@/components/admin/admin-chrome";
+import { SPORT_EMOJI, slugify, toDatetimeLocal } from "@/lib/admin/sport";
+import { deleteNews, upsertNews } from "@/app/admin/(panel)/noticias/actions";
+import { AdminEmptyState, AdminPageHeader, adminLaserCtaClass } from "@/components/admin/admin-chrome";
+import { cn } from "@/lib/utils";
 
-export type CatalogOption = { id: string; name: string };
+export type CatalogOption = { id: string; name: string; slug?: string };
 export type NewsRow = {
   id: string;
   title: string;
@@ -85,185 +57,155 @@ function emptyDraft(): NewsDraft {
   };
 }
 
+function draftFromRow(item: NewsRow): NewsDraft {
+  return {
+    id: item.id,
+    title: item.title,
+    slug: item.slug,
+    excerpt: item.excerpt ?? "",
+    content: item.content ?? "",
+    coverImageUrl: item.coverImageUrl,
+    sportId: item.sportId ?? "",
+    universityId: item.universityId ?? "",
+    isFeatured: item.isFeatured,
+    publishedAt: item.publishedAt ? toDatetimeLocal(item.publishedAt) : "",
+  };
+}
+
+function autoExcerpt(content: string) {
+  const text = content.replace(/\s+/g, " ").trim();
+  return text.length > 160 ? `${text.slice(0, 157).trimEnd()}…` : text;
+}
+
 export function NoticiasBoard({
   sports,
   universities,
   news,
+  startOpen = false,
+  editId,
 }: {
   sports: CatalogOption[];
   universities: CatalogOption[];
   news: NewsRow[];
+  startOpen?: boolean;
+  editId?: string;
 }) {
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState<NewsDraft>(emptyDraft);
+  const editing = news.find((item) => item.id === editId);
+  const [open, setOpen] = useState(startOpen || Boolean(editing));
+  const [draft, setDraft] = useState<NewsDraft>(() => (editing ? draftFromRow(editing) : emptyDraft()));
+  const [moreOpen, setMoreOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
+  function openNew() {
+    setDraft(emptyDraft());
+    setMoreOpen(false);
+    setOpen(true);
+  }
+
+  function openEdit(item: NewsRow) {
+    setDraft(draftFromRow(item));
+    setMoreOpen(false);
+    setOpen(true);
+  }
+
+  function remove(item: NewsRow) {
+    if (!confirm(`¿Eliminar "${item.title}"?`)) return;
+    startTransition(async () => {
+      const result = await deleteNews(item.id);
+      if (!result.ok) toast.add({ type: "error", title: "No se pudo eliminar", description: result.error });
+      else toast.add({ type: "success", title: "Noticia eliminada" });
+    });
+  }
+
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-6">
+    <div className="space-y-6">
       <AdminPageHeader
-        kicker="Editorial"
+        kicker="Media"
         title="Noticias"
-        description="Crónicas con portada Cloudinary y vínculo a deporte o universidad."
         action={
-          <Button
-            type="button"
-            className={adminLaserCtaClass}
-            onClick={() => {
-              setDraft(emptyDraft());
-              setOpen(true);
-            }}
-          >
+          <Button type="button" className={adminLaserCtaClass} onClick={openNew}>
             <PlusIcon />
-            Nueva crónica
+            Nueva noticia
           </Button>
         }
       />
 
-      <Card className={adminPanelClass}>
-        <CardHeader className="border-b border-zinc-800/80">
-          <CardTitle className="text-zinc-100">Publicaciones</CardTitle>
-          <CardDescription className="text-zinc-400">
-            Las crónicas destacadas alimentan el home público.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pt-4">
-          {news.length === 0 ? (
-            <AdminEmptyState
-              icon={<NewspaperIcon className="size-16" />}
-              title="Sin crónicas"
-              description="Aún no hay publicaciones. Lanza la primera del torneo para llenar el bento de la Home."
-              actionLabel="Nueva crónica"
-              onAction={() => {
-                setDraft(emptyDraft());
-                setOpen(true);
-              }}
-            />
-          ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="border-zinc-800 hover:bg-transparent">
-                <TableHead className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
-                  Título
-                </TableHead>
-                <TableHead className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
-                  Deporte
-                </TableHead>
-                <TableHead className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
-                  Universidad
-                </TableHead>
-                <TableHead className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
-                  Estado
-                </TableHead>
-                <TableHead className="text-right text-[11px] uppercase tracking-[0.2em] text-zinc-500">
-                  Acciones
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {news.map((item) => (
-                  <TableRow key={item.id} className="border-zinc-800/80 hover:bg-zinc-900/50">
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        {item.coverImageUrl ? (
-                          <img
-                            src={item.coverImageUrl}
-                            alt=""
-                            className="size-10 rounded-sm object-cover ring-1 ring-zinc-700"
-                          />
-                        ) : (
-                          <span className="grid size-10 place-items-center rounded-sm border border-dashed border-zinc-600 bg-zinc-900 text-[10px] text-zinc-500">
-                            IMG
-                          </span>
-                        )}
-                        <div>
-                          <div className="font-medium text-zinc-100">{item.title}</div>
-                          <div className="text-xs text-zinc-500">{item.slug}</div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-zinc-400">{item.sportName || "—"}</TableCell>
-                    <TableCell className="text-zinc-400">{item.universityName || "—"}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {item.isFeatured ? (
-                          <Badge className="border-0 bg-linear-to-r from-red-600 to-rose-800 text-white">
-                            Destacada
-                          </Badge>
-                        ) : null}
-                        <Badge variant="outline" className="border-zinc-700 text-zinc-300">
-                          {item.publishedAt ? "Publicada" : "Borrador"}
-                        </Badge>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button
-                          type="button"
-                          size="icon-sm"
-                          variant="ghost"
-                          className={adminGhostIconClass}
-                          onClick={() => {
-                            setDraft({
-                              id: item.id,
-                              title: item.title,
-                              slug: item.slug,
-                              excerpt: item.excerpt ?? "",
-                              content: item.content ?? "",
-                              coverImageUrl: item.coverImageUrl,
-                              sportId: item.sportId ?? "",
-                              universityId: item.universityId ?? "",
-                              isFeatured: item.isFeatured,
-                              publishedAt: item.publishedAt
-                                ? toDatetimeLocal(item.publishedAt)
-                                : "",
-                            });
-                            setOpen(true);
-                          }}
-                        >
-                          <PencilIcon />
-                        </Button>
-                        <Button
-                          type="button"
-                          size="icon-sm"
-                          variant="ghost"
-                          className={adminGhostIconClass}
-                          onClick={() => {
-                            if (!confirm("¿Eliminar esta crónica?")) return;
-                            startTransition(async () => {
-                              const result = await deleteNews(item.id);
-                              if (!result.ok) {
-                                toast.add({
-                                  type: "error",
-                                  title: "No se pudo eliminar",
-                                  description: result.error,
-                                });
-                              }
-                            });
-                          }}
-                          disabled={pending}
-                        >
-                          <Trash2Icon />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-          )}
-        </CardContent>
-      </Card>
+      {news.length === 0 ? (
+        <AdminEmptyState
+          icon={<NewspaperIcon className="size-16" />}
+          title="Sin noticias"
+          description="Publica la primera noticia del torneo."
+          actionLabel="Nueva noticia"
+          onAction={openNew}
+        />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {news.map((item) => (
+            <article key={item.id} className="admin-surface overflow-hidden rounded-3xl">
+              <button type="button" onClick={() => openEdit(item)} className="relative block aspect-video w-full">
+                {item.coverImageUrl ? (
+                  <img src={item.coverImageUrl} alt="" className="size-full object-cover" />
+                ) : (
+                  <span className="grid size-full place-items-center bg-zinc-100 text-zinc-300">
+                    <NewspaperIcon className="size-10" />
+                  </span>
+                )}
+                <span className="absolute top-3 left-3 flex gap-1.5">
+                  {item.isFeatured ? (
+                    <span className="flex items-center gap-1 rounded-full bg-[#C8102E] px-2.5 py-1 text-[11px] font-bold text-white">
+                      <StarIcon className="size-3 fill-current" /> Destacada
+                    </span>
+                  ) : null}
+                  {!item.publishedAt ? (
+                    <span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-zinc-700">Borrador</span>
+                  ) : null}
+                </span>
+              </button>
+              <div className="flex items-start gap-2 p-4">
+                <div className="min-w-0 flex-1">
+                  <p className="line-clamp-2 leading-snug font-semibold text-zinc-950">{item.title}</p>
+                  <p className="mt-1 truncate text-xs text-zinc-500">
+                    {[item.sportName, item.universityName].filter(Boolean).join(" · ") || "Liga U"}
+                    {item.publishedAt
+                      ? ` · ${new Date(item.publishedAt).toLocaleDateString("es-VE", { day: "numeric", month: "short" })}`
+                      : ""}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  aria-label="Editar"
+                  onClick={() => openEdit(item)}
+                  className="grid size-9 place-items-center rounded-xl text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900"
+                >
+                  <PencilIcon className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Eliminar"
+                  disabled={pending}
+                  onClick={() => remove(item)}
+                  className="grid size-9 place-items-center rounded-xl text-zinc-300 hover:bg-rose-50 hover:text-[#C8102E]"
+                >
+                  <Trash2Icon className="size-4" />
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto border-zinc-800 bg-zinc-950 sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{draft.id ? "Editar crónica" : "Nueva crónica"}</DialogTitle>
-            <DialogDescription>
-              Portada en Cloudinary y vínculo opcional a disciplina o casa de estudios.
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="flex! max-h-[94dvh] flex-col gap-0 overflow-hidden p-0! max-sm:top-auto max-sm:bottom-0 max-sm:max-w-full max-sm:translate-y-0 max-sm:rounded-b-none! sm:max-w-xl">
+          <div className="shrink-0 px-5 pt-5 pb-4 text-center sm:px-7">
+            <span aria-hidden className="mx-auto mb-3 block h-1 w-10 rounded-full bg-zinc-200 sm:hidden" />
+            <DialogTitle className="text-xl font-semibold text-zinc-950">
+              {draft.id ? "Editar noticia" : "Nueva noticia"}
+            </DialogTitle>
+            <DialogDescription className="mt-1 text-sm">Foto, título y texto. Lo demás es opcional.</DialogDescription>
+          </div>
           <form
-            className="grid gap-3"
+            id="news-form"
+            className="grid min-h-0 flex-1 content-start gap-5 overflow-y-auto border-t border-rose-100/70 px-5 pt-5 pb-8 sm:px-7"
             onSubmit={(event) => {
               event.preventDefault();
               startTransition(async () => {
@@ -271,7 +213,7 @@ export function NoticiasBoard({
                   id: draft.id,
                   title: draft.title,
                   slug: draft.slug || slugify(draft.title),
-                  excerpt: draft.excerpt,
+                  excerpt: draft.excerpt.trim() || autoExcerpt(draft.content),
                   content: draft.content,
                   coverImageUrl: draft.coverImageUrl,
                   sportId: draft.sportId || null,
@@ -280,118 +222,165 @@ export function NoticiasBoard({
                   publishedAt: draft.publishedAt || null,
                 });
                 if (!result.ok) {
-                  toast.add({
-                    type: "error",
-                    title: "No se pudo guardar",
-                    description: result.error,
-                  });
+                  toast.add({ type: "error", title: "No se pudo guardar", description: result.error });
                   return;
                 }
-                toast.add({ type: "success", title: "Crónica guardada" });
+                toast.add({ type: "success", title: draft.id ? "Noticia actualizada" : "Noticia publicada" });
                 setOpen(false);
               });
             }}
           >
-            <Field label="Título">
-              <Input
-                value={draft.title}
-                onChange={(event) => {
-                  const title = event.target.value;
-                  setDraft({
-                    ...draft,
-                    title,
-                    slug: draft.id ? draft.slug : slugify(title),
-                  });
-                }}
-                required
-              />
-            </Field>
-            <Field label="Slug">
-              <Input
-                value={draft.slug}
-                onChange={(event) => setDraft({ ...draft, slug: event.target.value })}
-              />
-            </Field>
-            <Field label="Extracto">
-              <Textarea
-                value={draft.excerpt}
-                onChange={(event) => setDraft({ ...draft, excerpt: event.target.value })}
-              />
-            </Field>
-            <Field label="Cuerpo">
-              <Textarea
-                className="min-h-40"
-                value={draft.content}
-                onChange={(event) => setDraft({ ...draft, content: event.target.value })}
-              />
-            </Field>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="Deporte">
-                <NativeSelect
-                  value={draft.sportId}
-                  onChange={(event) =>
-                    setDraft({ ...draft, sportId: event.target.value })
-                  }
-                >
-                  <option value="">Sin deporte</option>
-                  {sports.map((sport) => (
-                    <option key={sport.id} value={sport.id}>
-                      {sport.name}
-                    </option>
-                  ))}
-                </NativeSelect>
-              </Field>
-              <Field label="Universidad">
-                <NativeSelect
-                  value={draft.universityId}
-                  onChange={(event) =>
-                    setDraft({ ...draft, universityId: event.target.value })
-                  }
-                >
-                  <option value="">Sin universidad</option>
-                  {universities.map((university) => (
-                    <option key={university.id} value={university.id}>
-                      {university.name}
-                    </option>
-                  ))}
-                </NativeSelect>
-              </Field>
-            </div>
-            <Field label="Publicación">
-              <Input
-                type="datetime-local"
-                value={draft.publishedAt}
-                onChange={(event) =>
-                  setDraft({ ...draft, publishedAt: event.target.value })
-                }
-              />
-            </Field>
-            <Field label="Destacada">
-              <NativeSelect
-                value={draft.isFeatured ? "yes" : "no"}
-                onChange={(event) =>
-                  setDraft({ ...draft, isFeatured: event.target.value === "yes" })
-                }
-              >
-                <option value="no">No</option>
-                <option value="yes">Sí</option>
-              </NativeSelect>
-            </Field>
             <ImageUploader
               key={draft.id ?? "new-news"}
               folder="noticias"
-              label="Imagen de portada"
+              label="Foto de portada"
               initialUrl={draft.coverImageUrl}
-              onUploaded={(asset) =>
-                setDraft({ ...draft, coverImageUrl: asset.secureUrl })
-              }
+              onUploaded={(asset) => setDraft({ ...draft, coverImageUrl: asset.secureUrl })}
             />
-            <DialogFooter>
-              <Button type="submit" disabled={pending} className={adminLaserCtaClass}>
-                {pending ? "Guardando..." : "Guardar crónica"}
-              </Button>
-            </DialogFooter>
+
+            <label className="grid gap-1.5 text-sm font-medium text-zinc-800">
+              Título
+              <Input
+                required
+                value={draft.title}
+                onChange={(event) => {
+                  const title = event.target.value;
+                  setDraft({ ...draft, title, slug: draft.id ? draft.slug : slugify(title) });
+                }}
+                placeholder="Ej. UCV vence a UCAB en el clásico"
+                className="h-12 rounded-2xl bg-white text-base"
+              />
+            </label>
+
+            <label className="grid gap-1.5 text-sm font-medium text-zinc-800">
+              Texto
+              <Textarea
+                value={draft.content}
+                onChange={(event) => setDraft({ ...draft, content: event.target.value })}
+                placeholder="Cuenta lo que pasó…"
+                className="min-h-44 rounded-2xl bg-white"
+              />
+            </label>
+
+            <label className="grid gap-1.5 text-sm font-medium text-zinc-800">
+              Universidad
+              <NativeSelect
+                value={draft.universityId}
+                onChange={(event) => setDraft({ ...draft, universityId: event.target.value })}
+              >
+                <option value="">Ninguna</option>
+                {universities.map((university) => (
+                  <option key={university.id} value={university.id}>
+                    {university.name}
+                  </option>
+                ))}
+              </NativeSelect>
+            </label>
+
+            <div className="grid gap-2">
+              <span className="text-sm font-medium text-zinc-800">Sección</span>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDraft({ ...draft, sportId: "" })}
+                  className={cn(
+                    "flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-semibold transition-all",
+                    !draft.sportId
+                      ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white"
+                      : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                  )}
+                >
+                  <img
+                    src="/brand/liga-u-logo.svg"
+                    alt=""
+                    className={cn("h-3.5 w-auto", !draft.sportId && "brightness-0 invert")}
+                  />
+                  Liga U
+                </button>
+                {sports.map((sport) => {
+                  const active = draft.sportId === sport.id;
+                  return (
+                    <button
+                      key={sport.id}
+                      type="button"
+                      onClick={() => setDraft({ ...draft, sportId: active ? "" : sport.id })}
+                      className={cn(
+                        "flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-semibold transition-all",
+                        active
+                          ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white"
+                          : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                      )}
+                    >
+                      <span>{SPORT_EMOJI[sport.slug ?? ""] ?? "🏅"}</span>
+                      <span className="truncate">{sport.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={draft.isFeatured}
+              onClick={() => setDraft({ ...draft, isFeatured: !draft.isFeatured })}
+              className="flex items-center gap-3 rounded-2xl bg-white p-4 text-left ring-1 ring-zinc-200"
+            >
+              <StarIcon className={cn("size-5 shrink-0", draft.isFeatured ? "fill-amber-400 text-amber-400" : "text-zinc-300")} />
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-semibold text-zinc-900">Destacar en el inicio</span>
+                <span className="block text-xs text-zinc-500">Sale grande en la portada del sitio.</span>
+              </span>
+              <span
+                className={cn(
+                  "relative h-7 w-12 shrink-0 rounded-full transition-colors",
+                  draft.isFeatured ? "bg-[#C8102E]" : "bg-zinc-200",
+                )}
+              >
+                <span
+                  className={cn(
+                    "absolute top-1 size-5 rounded-full bg-white shadow transition-all",
+                    draft.isFeatured ? "left-6" : "left-1",
+                  )}
+                />
+              </span>
+            </button>
+
+            <div className="grid gap-4">
+              <button
+                type="button"
+                onClick={() => setMoreOpen((value) => !value)}
+                className="flex items-center justify-center gap-1 text-sm font-semibold text-zinc-500 hover:text-zinc-900"
+              >
+                Cambiar fecha de publicación
+                <ChevronDownIcon className={cn("size-4 transition-transform", moreOpen && "rotate-180")} />
+              </button>
+              {moreOpen ? (
+                <div className="grid gap-4 rounded-2xl bg-zinc-50 p-4 ring-1 ring-zinc-100">
+                  <label className="grid gap-1.5 text-sm font-medium text-zinc-800">
+                    Fecha de publicación
+                    <Input
+                      type="datetime-local"
+                      value={draft.publishedAt}
+                      onChange={(event) => setDraft({ ...draft, publishedAt: event.target.value })}
+                      className="h-12 rounded-2xl bg-white"
+                    />
+                    <span className="text-xs font-normal text-zinc-500">Vacía = se guarda como borrador.</span>
+                  </label>
+                </div>
+              ) : null}
+            </div>
           </form>
+          <div className="shrink-0 border-t border-rose-100/70 bg-[#fbf7f7] px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-7 sm:py-4">
+            <Button
+              type="submit"
+              form="news-form"
+              disabled={pending}
+              className={cn(adminLaserCtaClass, "h-12 w-full rounded-2xl text-[15px] font-semibold")}
+            >
+              {pending ? "Guardando..." : draft.id ? "Guardar cambios" : "Publicar noticia"}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

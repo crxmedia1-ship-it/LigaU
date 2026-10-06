@@ -1,4 +1,5 @@
 import type { Database, Json } from "@/types/database.types";
+import type { SponsorContact } from "@/lib/public/pass-contact";
 
 export type MatchStatus = Database["public"]["Enums"]["match_status"];
 export type TeamGender = Database["public"]["Enums"]["team_gender"];
@@ -113,6 +114,17 @@ export type PodcastCard = {
   publishedAt: string | null;
 };
 
+export type VideoCard = {
+  id: string;
+  title: string;
+  kind: string;
+  videoUrl: string;
+  thumbnailUrl: string | null;
+  sportName: string | null;
+  description: string | null;
+  publishedAt: string;
+};
+
 export type SponsorCard = {
   id: string;
   name: string;
@@ -127,6 +139,8 @@ export type BenefitCard = {
   sponsorName: string;
   sponsorLogo: string | null;
   sponsorCategory: string;
+  sponsorContact?: SponsorContact;
+  sponsorColor?: string | null;
   locationTag: string | null;
   discountTitle: string;
   status: PassStatus;

@@ -1,16 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOutIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { signOut } from "@/app/admin/actions";
 import { AdminSidebar, type AdminProfile } from "@/components/admin/admin-sidebar";
-import { ADMIN_NAV } from "@/components/admin/nav";
-import { roleLabel } from "@/lib/auth/roles";
-import { cn } from "@/lib/utils";
+import { CommandSearch } from "@/components/admin/command-search";
+import { MobileNav } from "@/components/admin/mobile-nav";
+import { ADMIN_NAV, isNavActive } from "@/components/admin/nav";
+import { isSuperadmin } from "@/lib/auth/roles";
+import { LigaULogo } from "@/components/public/brand";
 
 type AdminShellProps = {
   profile: AdminProfile;
@@ -26,12 +23,10 @@ export function AdminShell({
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(initialCollapsed);
   const items = ADMIN_NAV.filter((item) => item.roles.includes(profile.role));
-  const current = items.find(
-    (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
-  );
+  const current = items.find((item) => isNavActive(item, pathname));
 
   return (
-    <div className="ligau-admin dark relative flex min-h-screen bg-transparent text-zinc-100">
+    <div className="ligau-admin relative flex min-h-screen bg-transparent text-zinc-900">
       <div className="sticky top-0 hidden h-screen shrink-0 md:block">
         <AdminSidebar
           profile={profile}
@@ -40,53 +35,21 @@ export function AdminShell({
         />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-zinc-800 bg-[#09090b]/90 px-4 py-3 backdrop-blur-xl">
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-rose-100/80 bg-white/80 px-4 backdrop-blur-xl md:px-8">
+          <LigaULogo className="h-8 shrink-0 md:hidden" />
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C8102E]">
-              {current?.label ?? "Backoffice"}
+            <p className="truncate text-base font-semibold text-zinc-900">
+              {current?.label ?? "Panel de control"}
             </p>
-            <p className="hidden truncate text-xs text-zinc-400 sm:block">
-              {current?.description ?? "Panel operativo de Liga U"}
+            <p className="hidden truncate text-xs text-zinc-500 md:block">
+              {current?.description ?? "Administración de Liga U"}
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="hidden sm:inline-flex">
-              {roleLabel(profile.role)}
-            </Badge>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="border-zinc-800 bg-zinc-950 text-zinc-200 hover:border-[#C8102E]/50 hover:text-white"
-              onClick={() => void signOut()}
-            >
-              <LogOutIcon />
-              Cerrar sesión
-            </Button>
-          </div>
+          <CommandSearch role={profile.role} />
         </header>
-        <nav className="flex gap-1 overflow-x-auto border-b border-zinc-800 px-3 py-2 md:hidden">
-          {items.map((item) => {
-            const active =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "shrink-0 rounded-md px-2 py-1 text-xs font-medium",
-                  active
-                    ? "bg-[#C8102E]/15 text-zinc-100"
-                    : "text-zinc-400",
-                )}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-        <main className="min-w-0 flex-1 p-6 lg:p-8">{children}</main>
+        <main className="min-w-0 flex-1 p-4 pb-28 sm:p-6 sm:pb-28 md:pb-8 lg:p-8">{children}</main>
       </div>
+      <MobileNav items={items} superadmin={isSuperadmin(profile.role)} />
     </div>
   );
 }

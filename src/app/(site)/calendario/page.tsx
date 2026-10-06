@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { CalendarView } from "@/components/public/calendar-view";
 import { sponsorAt } from "@/components/public/sponsor-slots";
-import { getHomeSponsorLogos } from "@/lib/public/home-sponsors";
+import { getHomeSponsorLogos } from "@/lib/public/sponsor-logos";
 import { getPublicCatalog } from "@/lib/public/queries";
 
 export const metadata: Metadata = {

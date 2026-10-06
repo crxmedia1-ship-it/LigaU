@@ -4,8 +4,8 @@ import type { LucideIcon } from "lucide-react";
 import { ArrowUpRight, Gift, Lock, Plane, Smartphone, Sparkles, UtensilsCrossed } from "lucide-react";
 import { Marquee } from "@/components/magic/marquee";
 import { PassCard, ShineLink } from "@/components/public/pass-landing";
-import { sponsorLogo } from "@/components/public/sponsor-marquee";
-import { getPassBrandLogos } from "@/lib/public/home-sponsors";
+import { cloudinaryLogo } from "@/lib/public/media";
+import { getPassBrandLogos } from "@/lib/public/sponsor-logos";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -66,7 +66,7 @@ function SectionTitle({ id, eyebrow, children }: { id: string; eyebrow: string; 
 
 export default async function LigaUPassPage() {
   const brands = (await getPassBrandLogos()).flatMap((brand) => {
-    const logo = sponsorLogo(brand.logoUrl);
+    const logo = cloudinaryLogo(brand.logoUrl);
     return logo ? [{ id: brand.id, name: brand.name, logo }] : [];
   });
   const reel = brands.length && brands.length < MIN_REEL ? Array(Math.ceil(MIN_REEL / brands.length)).fill(brands).flat() : brands;

@@ -2,6 +2,8 @@ import { unstable_cache } from "next/cache";
 import { createClient as createSupabaseClient, type SupabaseClient } from "@supabase/supabase-js";
 import { teamLabel } from "@/lib/admin/labels";
 import { createClient } from "@/lib/supabase/server";
+import { cloudinaryLogo } from "@/lib/public/media";
+import { parseContact } from "@/lib/public/pass-contact";
 import { PUBLIC_CATALOG_TAG } from "@/lib/public/revalidate";
 import { applyUniversityMarks, getUniversityMarks } from "@/lib/public/university-marks";
 import type { Database, Json } from "@/types/database.types";
@@ -14,6 +16,7 @@ import {
   type MatchEventCard,
   type NewsCard,
   type PodcastCard,
+  type VideoCard,
   type SportCard,
   type SponsorCard,
   type TeamCard,
@@ -174,6 +177,7 @@ async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
     eventsRes,
     newsRes,
     podcastsRes,
+    videosRes,
     sponsorsRes,
     benefitsRes,
   ] = await Promise.all([
@@ -208,6 +212,12 @@ async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
       .from("podcast_episodes")
       .select("id, title, description, episode_number, cover_url, spotify_url, youtube_url, published_at")
       .order("episode_number", { ascending: false }),
+    supabase
+      .from("media_videos")
+      .select("id, title, kind, video_url, thumbnail_url, description, published_at, sports(name)")
+      .lte("published_at", new Date().toISOString())
+      .order("published_at", { ascending: false })
+      .limit(60),
     staff
       ? supabase.from("pass_sponsors").select("id, name, category, location_tag, logo_url").order("name")
       : supabase
@@ -268,6 +278,16 @@ async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
     youtubeUrl: episode.youtube_url,
     publishedAt: episode.published_at,
   }));
+  const videos: VideoCard[] = (videosRes.data ?? []).map((video) => ({
+    id: video.id,
+    title: video.title,
+    kind: video.kind,
+    videoUrl: video.video_url,
+    thumbnailUrl: video.thumbnail_url,
+    sportName: one(video.sports)?.name ?? null,
+    description: video.description,
+    publishedAt: video.published_at,
+  }));
   const sponsors: SponsorCard[] = (sponsorsRes.data ?? []).map((sponsor) => ({
     id: sponsor.id,
     name: sponsor.name,
@@ -281,7 +301,7 @@ async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
       id: benefit.id,
       sponsorId: benefit.sponsor_id,
       sponsorName: sponsor?.name ?? "Sponsor",
-      sponsorLogo: sponsor?.logo_url ?? null,
+      sponsorLogo: cloudinaryLogo(sponsor?.logo_url, 240),
       sponsorCategory: sponsor?.category ?? "General",
       locationTag: sponsor?.location_tag ?? null,
       discountTitle: benefit.discount_title,
@@ -303,6 +323,7 @@ async function loadCatalog(supabase: SupabaseClient<Database>, staff: boolean) {
     events,
     news,
     podcasts,
+    videos,
     sponsors,
     benefits,
   };
@@ -342,5 +363,41 @@ export const getNewsContent = unstable_cache(
     return data?.content ?? null;
   },
   ["news-content"],
+  CACHE_OPTIONS,
+);
+
+/** Member-facing benefit list for /upass: everything a pass holder can use or is about to get. */
+export const getMemberBenefits = unstable_cache(
+  async (): Promise<BenefitCard[]> => {
+    const { data } = await createPublicClient()
+      .from("pass_benefits")
+      .select(
+        "id, sponsor_id, discount_title, status, redemption_type, promo_code, instructions, external_url, click_count, pass_sponsors!inner(name, logo_url, category, location_tag, is_active, contact, brand_color)",
+      )
+      .in("status", ["active", "coming_soon", "raffle"])
+      .eq("pass_sponsors.is_active", true)
+      .order("created_at", { ascending: false });
+    return (data ?? []).map((benefit) => {
+      const sponsor = one(benefit.pass_sponsors);
+      return {
+        id: benefit.id,
+        sponsorId: benefit.sponsor_id,
+        sponsorName: sponsor?.name ?? "Sponsor",
+        sponsorLogo: cloudinaryLogo(sponsor?.logo_url, 240),
+        sponsorCategory: sponsor?.category ?? "General",
+        sponsorContact: parseContact(sponsor?.contact),
+        sponsorColor: sponsor?.brand_color ?? null,
+        locationTag: sponsor?.location_tag ?? null,
+        discountTitle: benefit.discount_title,
+        status: benefit.status,
+        redemptionType: benefit.redemption_type,
+        promoCode: benefit.promo_code,
+        instructions: benefit.instructions,
+        externalUrl: benefit.external_url,
+        clickCount: benefit.click_count,
+      };
+    });
+  },
+  ["member-benefits"],
   CACHE_OPTIONS,
 );

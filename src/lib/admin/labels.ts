@@ -5,27 +5,11 @@ export const GENDER_LABELS = {
 } as const;
 
 export const MATCH_STATUS_LABELS = {
-  scheduled: "SCHEDULED",
-  live: "LIVE",
-  finished: "FINISHED",
-  postponed: "POSTPONED",
-  cancelled: "CANCELLED",
-} as const;
-
-export const PASS_STATUS_LABELS = {
-  active: "ACTIVE",
-  inactive: "INACTIVE",
-  expired: "EXPIRED",
-  coming_soon: "COMING_SOON",
-  raffle: "RAFFLE",
-} as const;
-
-export const REDEMPTION_LABELS = {
-  web: "Web",
-  physical: "Físico",
-  carnetx_scan: "CARNETX_SCAN",
-  promo_code: "PROMO_CODE",
-  external_link: "EXTERNAL_LINK",
+  scheduled: "Programado",
+  live: "En vivo",
+  finished: "Finalizado",
+  postponed: "Aplazado",
+  cancelled: "Suspendido",
 } as const;
 
 export function teamLabel(

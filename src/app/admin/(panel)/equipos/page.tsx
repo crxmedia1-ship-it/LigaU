@@ -4,9 +4,14 @@ import {
   EquiposBoard,
   type AthleteRow,
   type TeamRow,
-} from "@/app/admin/equipos/equipos-board";
+} from "@/app/admin/(panel)/equipos/equipos-board";
 
-export default async function AdminEquiposPage() {
+export default async function AdminEquiposPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ equipo?: string }>;
+}) {
+  const { equipo } = await searchParams;
   const supabase = await createClient();
   const [{ data: universities }, { data: sports }, { data: teams }, { data: athletes }] =
     await Promise.all([
@@ -21,7 +26,7 @@ export default async function AdminEquiposPage() {
         .order("created_at"),
       supabase
         .from("athletes")
-        .select("id, team_id, full_name, jersey_number, position, photo_url, birth_date, height_cm, is_active")
+        .select("id, person_id, team_id, full_name, jersey_number, position, photo_url, birth_date, height_cm, dominant_side, is_active")
         .order("full_name"),
     ]);
 
@@ -44,6 +49,7 @@ export default async function AdminEquiposPage() {
 
   const athleteRows: AthleteRow[] = (athletes ?? []).map((athlete) => ({
     id: athlete.id,
+    personId: athlete.person_id,
     teamId: athlete.team_id,
     fullName: athlete.full_name,
     jerseyNumber: athlete.jersey_number,
@@ -51,6 +57,7 @@ export default async function AdminEquiposPage() {
     photoUrl: athlete.photo_url,
     birthDate: athlete.birth_date,
     heightCm: athlete.height_cm,
+    dominantSide: athlete.dominant_side,
     isActive: athlete.is_active,
   }));
 
@@ -65,6 +72,7 @@ export default async function AdminEquiposPage() {
       sports={sports ?? []}
       teams={teamRows}
       athletes={athleteRows}
+      initialTeamId={equipo}
     />
   );
 }

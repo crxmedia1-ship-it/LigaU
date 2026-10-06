@@ -1,3 +1,15 @@
+export const SPORT_EMOJI: Record<string, string> = {
+  "futbol-campo": "⚽",
+  futsal: "🥅",
+  baloncesto: "🏀",
+  "voleibol-cancha": "🏐",
+  "voley-playa": "🏖️",
+  rugby: "🏉",
+  "tenis-campo": "🎾",
+  "tenis-de-mesa": "🏓",
+  ajedrez: "♟️",
+};
+
 export type SportFormKind = "football" | "basketball" | "sets" | "chess";
 
 const FOOTBALL_SLUGS = new Set(["futbol-campo", "futsal", "rugby"]);

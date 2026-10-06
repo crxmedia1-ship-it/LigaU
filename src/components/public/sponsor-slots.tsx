@@ -1,4 +1,4 @@
-import { sponsorLogo } from "@/components/public/sponsor-marquee";
+import { cloudinaryLogo } from "@/lib/public/media";
 import type { SponsorCard } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,7 @@ export function SponsorMark({
   /** Source height in px. Larger flyers need a sharper mark. */
   height?: number;
 }) {
-  const src = sponsorLogo(sponsor.logoUrl, height);
+  const src = cloudinaryLogo(sponsor.logoUrl, height);
   if (!src) {
     return <span className={cn("text-[11px] font-bold tracking-wider text-zinc-700 uppercase", className)}>{sponsor.name}</span>;
   }

@@ -8,7 +8,7 @@ import { SponsorMarquee } from "@/components/public/sponsor-marquee";
 import { CourtMark } from "@/components/public/sport-courts";
 import { SponsorMark } from "@/components/public/sponsor-slots";
 import { GENDER_LABELS } from "@/lib/admin/labels";
-import { getHomeSponsorLogos } from "@/lib/public/home-sponsors";
+import { getHomeSponsorLogos } from "@/lib/public/sponsor-logos";
 import { cloudinaryImage } from "@/lib/public/media";
 import { getNewsContent, getPublicCatalog } from "@/lib/public/queries";
 import { computeStandings } from "@/lib/public/standings";
@@ -428,7 +428,7 @@ function NewsTile({
           Diario <span className="text-[#C8102E] italic">Liga U</span>
         </span>
       </div>
-      <div className="flex items-center justify-between border-b-[3px] border-double border-zinc-950/80 py-1 font-serif text-[8px] tracking-[0.2em] text-zinc-600 uppercase">
+      <div className="flex items-center justify-between border-b-[3px] border-double border-zinc-950/80 py-1 font-serif text-[9px] tracking-[0.18em] text-zinc-600 uppercase">
         <span>Caracas</span>
         <span>Edición {editionLabel()}</span>
         <span>Temporada 2026</span>
@@ -798,15 +798,6 @@ function PassTile() {
               </span>
               <Wifi aria-hidden className="size-5 rotate-90 text-zinc-500" strokeWidth={2.25} />
             </div>
-
-            <span
-              aria-hidden
-              className="grid h-8 w-11 grid-cols-3 gap-px overflow-hidden rounded-md bg-[linear-gradient(135deg,#e5e7eb,#9ca3af)] p-1 shadow-inner ring-1 ring-zinc-500/30"
-            >
-              {Array.from({ length: 6 }, (_, cell) => (
-                <span key={cell} className="rounded-[2px] border border-zinc-500/35" />
-              ))}
-            </span>
 
             <div className="flex items-end justify-between gap-3">
               <span>

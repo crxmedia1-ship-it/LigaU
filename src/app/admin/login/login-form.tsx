@@ -138,7 +138,7 @@ export function LoginForm() {
             Entrando...
           </>
         ) : (
-          "Entrar al backoffice"
+          "Entrar al panel"
         )}
       </Button>
     </form>

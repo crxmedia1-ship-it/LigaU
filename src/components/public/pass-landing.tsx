@@ -93,7 +93,7 @@ function CardFront() {
         <p className="font-jersey mt-1 text-[2.15rem] leading-[0.88] tracking-wide uppercase">{DEMO_MEMBER.name}</p>
         <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
           <span className="font-mono text-[10px] tracking-[0.16em] text-white/80">{DEMO_MEMBER.id}</span>
-          <span className="text-[8px] font-semibold tracking-[0.14em] text-white/50 uppercase">
+          <span className="text-[9px] font-semibold tracking-[0.14em] text-white/60 uppercase">
             Powered by <span className="text-white">CarnetX</span>
           </span>
         </div>
