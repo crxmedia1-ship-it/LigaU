@@ -55,14 +55,14 @@ function TitleGlow() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute top-0 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-[#BA0C2F]/20 blur-3xl"
+      className="pointer-events-none absolute top-0 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-brand-red/20 blur-3xl"
     />
   );
 }
 
 export function PageKicker({ children }: { children: React.ReactNode }) {
   return (
-    <p className="relative text-[11px] font-semibold tracking-[0.32em] text-[#BA0C2F] uppercase">
+    <p className="relative text-[11px] font-semibold tracking-[0.32em] text-brand-red uppercase">
       {children}
     </p>
   );

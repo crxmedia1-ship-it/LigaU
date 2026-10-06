@@ -109,10 +109,10 @@ function AthleteSheetBody({
           aria-hidden
           className="pointer-events-none absolute -top-10 -left-8 size-40 rounded-full bg-[radial-gradient(circle,rgba(200,16,46,0.22),transparent_70%)]"
         />
-        <span aria-hidden className="absolute inset-y-4 left-0 w-[3px] rounded-r-full bg-[#C8102E]" />
+        <span aria-hidden className="absolute inset-y-4 left-0 w-[3px] rounded-r-full bg-brand-red" />
         <span
           aria-hidden
-          className="font-jersey pointer-events-none absolute right-3 bottom-0 text-[5.5rem] leading-none text-[#C8102E]/25 select-none md:right-4 md:bottom-3 md:text-[7.5rem]"
+          className="font-jersey pointer-events-none absolute right-3 bottom-0 text-[5.5rem] leading-none text-brand-red/25 select-none md:right-4 md:bottom-3 md:text-[7.5rem]"
         >
           {dorsal}
         </span>
@@ -127,7 +127,7 @@ function AthleteSheetBody({
 
       <div className="flex flex-col justify-center gap-4 px-5 pt-4 pb-[calc(1.15rem+env(safe-area-inset-bottom,0px))] md:px-5 md:py-4 md:pr-6">
         <div>
-          <p className="font-mono text-[11px] tracking-[0.22em] text-[#C8102E] uppercase">
+          <p className="font-mono text-[11px] tracking-[0.22em] text-brand-red uppercase">
             {athlete.universityShort} · {athlete.sportName}
           </p>
           <h2 id="athlete-sheet-title" className="mt-1 text-[1.65rem] leading-none font-black tracking-tight text-zinc-950 uppercase md:text-4xl">
@@ -163,7 +163,7 @@ function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div className={glassTile}>
       <p className="relative z-10 text-xl leading-none font-semibold tracking-tight whitespace-nowrap text-zinc-950 tabular-nums">{value}</p>
-      <p className="relative z-10 mt-1 text-[10px] font-semibold tracking-[0.16em] text-[#C8102E] uppercase">{label}</p>
+      <p className="relative z-10 mt-1 text-[10px] font-semibold tracking-[0.16em] text-brand-red uppercase">{label}</p>
     </div>
   );
 }
@@ -171,7 +171,7 @@ function Fact({ label, value }: { label: string; value: string }) {
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className={glassTile}>
-      <p className="font-jersey relative z-10 text-2xl leading-none text-[#C8102E]">{value}</p>
+      <p className="font-jersey relative z-10 text-2xl leading-none text-brand-red">{value}</p>
       <p className="relative z-10 mt-1 text-[10px] font-semibold tracking-[0.14em] text-zinc-600 uppercase">{label}</p>
     </div>
   );

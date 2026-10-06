@@ -19,6 +19,7 @@ import type {
   UniversityOption,
 } from "@/app/admin/(panel)/equipos/equipos-board";
 import { cn } from "@/lib/utils";
+import { normalizeText } from "@/lib/text";
 
 const COLUMNS = ["Nombre", "Número", "Posición", "Pie / mano", "Nacimiento", "Altura (cm)"];
 const TEMPLATE = [
@@ -29,16 +30,9 @@ const TEMPLATE = [
 
 type ParsedLine = { line: number; row?: BulkAthleteInput; label?: string; error?: string; warning?: string };
 
-function normalize(value: string) {
-  return value
-    .normalize("NFD")
-    .replace(/\p{M}/gu, "")
-    .toLowerCase()
-    .trim();
-}
 
 function parseSide(value: string): DominantSide | null | undefined {
-  const text = normalize(value);
+  const text = normalizeText(value);
   if (!text) return null;
   if (/^(zurd|izq|left|l$)/.test(text)) return "left";
   if (/^(derech|diestr|right|r$|d$)/.test(text)) return "right";
@@ -109,7 +103,7 @@ export function AthletesBulkDialog({
 
   const parsed = useMemo<ParsedLine[]>(() => {
     const existing = new Set(
-      athletes.filter((athlete) => athlete.teamId === team?.id).map((athlete) => normalize(athlete.fullName)),
+      athletes.filter((athlete) => athlete.teamId === team?.id).map((athlete) => normalizeText(athlete.fullName)),
     );
     const seen = new Set<string>();
     return paste
@@ -134,7 +128,7 @@ export function AthletesBulkDialog({
         }
         const heightCm = parseHeight(height);
         if (heightCm === undefined) return { line, error: `Altura inválida: "${height}" (entre 140 y 230 cm).` };
-        const key = normalize(name);
+        const key = normalizeText(name);
         const warning = existing.has(key)
           ? "Ya está en este equipo."
           : seen.has(key)
@@ -193,8 +187,8 @@ export function AthletesBulkDialog({
                     className={cn(
                       "flex min-w-0 flex-col items-center gap-1.5 rounded-2xl px-1.5 pt-2.5 pb-2 transition-all",
                       active
-                        ? "bg-white shadow-[0_10px_24px_-14px_rgba(200,16,46,0.7)] ring-2 ring-[#C8102E]"
-                        : "bg-white ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                        ? "bg-white shadow-[0_10px_24px_-14px_rgba(200,16,46,0.7)] ring-2 ring-brand-red"
+                        : "bg-white ring-1 ring-zinc-200 hover:ring-brand-red/40",
                     )}
                   >
                     <TeamCrest logoUrl={item.logoUrl} label={item.shortName} bare className="size-9" />
@@ -220,7 +214,7 @@ export function AthletesBulkDialog({
                       "flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-sm font-semibold transition-all",
                       active
                         ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white shadow-[0_10px_20px_-12px_rgba(200,16,46,0.9)]"
-                        : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                        : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-brand-red/40",
                     )}
                   >
                     <span className="text-base leading-none">{SPORT_EMOJI[item.slug] ?? "🏅"}</span>
@@ -242,7 +236,7 @@ export function AthletesBulkDialog({
                   onClick={() => setGender(item)}
                   className={cn(
                     "rounded-xl py-2.5 text-sm font-semibold transition-all",
-                    gender === item ? "bg-white text-[#C8102E] shadow-sm" : "text-zinc-500 hover:text-zinc-800",
+                    gender === item ? "bg-white text-brand-red shadow-sm" : "text-zinc-500 hover:text-zinc-800",
                   )}
                 >
                   {GENDER_LABELS[item]}
@@ -269,7 +263,7 @@ export function AthletesBulkDialog({
                       className={cn(
                         "shrink-0 rounded-lg px-2 py-1 text-[11px] font-semibold",
                         index === 0
-                          ? "bg-[#C8102E] text-white"
+                          ? "bg-brand-red text-white"
                           : ignored
                             ? "bg-zinc-100 text-zinc-400 line-through"
                             : "bg-white text-zinc-800 ring-1 ring-zinc-200",
@@ -291,7 +285,7 @@ export function AthletesBulkDialog({
                   await navigator.clipboard.writeText(TEMPLATE);
                   toast.add({ type: "success", title: "Plantilla copiada", description: "Pégala en Excel o Sheets." });
                 }}
-                className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#C8102E] ring-1 ring-rose-200 hover:bg-rose-50"
+                className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-brand-red ring-1 ring-rose-200 hover:bg-rose-50"
               >
                 <ClipboardCopyIcon className="size-3.5" />
                 Copiar plantilla

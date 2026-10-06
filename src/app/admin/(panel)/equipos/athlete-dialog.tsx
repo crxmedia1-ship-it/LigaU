@@ -73,7 +73,7 @@ function ageFrom(birthDate: string) {
 function SectionTitle({ step, title, hint }: { step: number; title: string; hint?: string }) {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-[#C8102E] text-xs font-bold text-white">
+      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-brand-red text-xs font-bold text-white">
         {step}
       </span>
       <span className="text-[15px] font-semibold text-zinc-950">{title}</span>
@@ -211,8 +211,8 @@ export function AthleteDialog({
                         className={cn(
                           "flex min-w-0 flex-col items-center gap-2 rounded-2xl px-1.5 pt-3 pb-2.5 transition-all active:scale-[0.97]",
                           active
-                            ? "bg-white shadow-[0_10px_24px_-14px_rgba(200,16,46,0.7)] ring-2 ring-[#C8102E]"
-                            : "bg-white ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                            ? "bg-white shadow-[0_10px_24px_-14px_rgba(200,16,46,0.7)] ring-2 ring-brand-red"
+                            : "bg-white ring-1 ring-zinc-200 hover:ring-brand-red/40",
                         )}
                       >
                         <TeamCrest logoUrl={university.logoUrl} label={university.shortName} bare className="size-11" />
@@ -238,7 +238,7 @@ export function AthleteDialog({
                       onClick={() => setDraft({ ...draft, gender })}
                       className={cn(
                         "rounded-xl py-2.5 text-sm font-semibold transition-all",
-                        active ? "bg-white text-[#C8102E] shadow-sm" : "text-zinc-500 hover:text-zinc-800",
+                        active ? "bg-white text-brand-red shadow-sm" : "text-zinc-500 hover:text-zinc-800",
                       )}
                     >
                       {GENDER_LABELS[gender]}
@@ -264,7 +264,7 @@ export function AthleteDialog({
                         "relative flex items-center gap-2.5 rounded-2xl px-3 py-3 text-left transition-all active:scale-[0.98]",
                         active
                           ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white shadow-[0_12px_24px_-14px_rgba(200,16,46,0.9)]"
-                          : "bg-white text-zinc-800 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                          : "bg-white text-zinc-800 ring-1 ring-zinc-200 hover:ring-brand-red/40",
                       )}
                     >
                       <span className="text-xl leading-none">{SPORT_EMOJI[sport.slug] ?? "🏅"}</span>
@@ -277,7 +277,7 @@ export function AthleteDialog({
                       <span
                         className={cn(
                           "grid size-5 shrink-0 place-items-center rounded-full",
-                          active ? "bg-white text-[#C8102E]" : "ring-1 ring-zinc-300",
+                          active ? "bg-white text-brand-red" : "ring-1 ring-zinc-300",
                         )}
                       >
                         {active ? <CheckIcon className="size-3.5" strokeWidth={3} /> : null}
@@ -343,7 +343,7 @@ export function AthleteDialog({
                                 className={cn(
                                   "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
                                   active
-                                    ? "bg-[#C8102E] text-white"
+                                    ? "bg-brand-red text-white"
                                     : "bg-zinc-50 text-zinc-600 ring-1 ring-zinc-200 hover:text-zinc-950",
                                 )}
                               >
@@ -369,7 +369,7 @@ export function AthleteDialog({
                                   onClick={() => updateEntry(sport.id, { dominantSide: active ? null : side.id })}
                                   className={cn(
                                     "rounded-xl py-2 text-sm font-semibold transition-all",
-                                    active ? "bg-white text-[#C8102E] shadow-sm" : "text-zinc-500 hover:text-zinc-800",
+                                    active ? "bg-white text-brand-red shadow-sm" : "text-zinc-500 hover:text-zinc-800",
                                   )}
                                 >
                                   {side.id === "left" ? "Zurdo" : side.id === "right" ? (profile.side === "foot" ? "Derecho" : "Diestro") : "Ambos"}
@@ -402,7 +402,7 @@ export function AthleteDialog({
                   <span className="flex items-center justify-between">
                     Nacimiento
                     {age != null ? (
-                      <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-bold text-[#C8102E]">
+                      <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-bold text-brand-red">
                         {age} años
                       </span>
                     ) : null}
@@ -463,7 +463,7 @@ export function AthleteDialog({
                 <span
                   className={cn(
                     "relative h-7 w-12 shrink-0 rounded-full transition-colors",
-                    draft.isActive ? "bg-[#C8102E]" : "bg-zinc-200",
+                    draft.isActive ? "bg-brand-red" : "bg-zinc-200",
                   )}
                 >
                   <span

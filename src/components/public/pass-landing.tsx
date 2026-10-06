@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type AnimationEvent, type ReactNode } from "react";
-import Link from "next/link";
 import { RotateCw } from "lucide-react";
 import { CarnetFace, type CarnetData, type CarnetDesign } from "@/components/public/carnet/carnet-face";
 import membershipDesign from "@/components/public/carnet/membership-design.json";
@@ -17,7 +16,7 @@ const DEMO_MEMBER: CarnetData = {
   miembro_desde: "2026",
 };
 const DEMO_PHOTO = "/pass/member-demo.webp";
-const DEMO_QR = "https://ligau.app/carnet/LU-26-0417";
+const DEMO_QR = "https://ligauve.com/carnet/LU-26-0417";
 const DESIGN = membershipDesign as unknown as CarnetDesign;
 
 type Callout = { side: "left" | "right"; x: number; y: number; label: string };
@@ -42,28 +41,42 @@ const DROP = 28;
 
 const FACE = "absolute inset-0 overflow-hidden rounded-[26px] backface-hidden";
 
-/** Liquid timing: slow start, a long glide, and a soft stop. Values in ms. */
-const FLOW = "cubic-bezier(0.45, 0, 0.15, 1)";
-const RISE = { delay: 60, duration: 560 };
-const RUN = { delay: 540, duration: 460 };
-const LAND = RUN.delay + RUN.duration - 40;
+/**
+ * One continuous stroke: the rise eases in and the run eases out with matching end slopes,
+ * and each leg lasts in proportion to its length, so the tip turns the corner without slowing.
+ */
+const STROKE_MS = 1000;
+const START_MS = 60;
+const RISE_EASE = "cubic-bezier(0.4, 0, 1, 1)";
+const RUN_EASE = "cubic-bezier(0, 0, 0.6, 1)";
+const CARD_PX = 256;
 
-function flow(show: boolean, property: string, enter: { delay: number; duration: number }, exitDelay: number) {
+type Leg = { delay: number; duration: number };
+
+function strokeTiming(side: Callout["side"], x: number, y: number) {
+  const rise = ((100 - y) / 100) * CARD_PX * (5 / 3) + DROP;
+  const run = ((side === "left" ? x : 100 - x) / 100) * CARD_PX + OUTSET;
+  const riseMs = Math.round((STROKE_MS * rise) / (rise + run));
+  const runLeg = { delay: START_MS + riseMs, duration: STROKE_MS - riseMs };
+  return { rise: { delay: START_MS, duration: riseMs }, run: runLeg, land: runLeg.delay + runLeg.duration - 40 };
+}
+
+function flow(show: boolean, property: string, enter: Leg, ease: string, exitDelay: number) {
   return show
-    ? `${property} ${enter.duration}ms ${FLOW} ${enter.delay}ms`
+    ? `${property} ${enter.duration}ms ${ease} ${enter.delay}ms`
     : `${property} 220ms cubic-bezier(0.4, 0, 1, 1) ${exitDelay}ms`;
 }
 
-/** Glowing drop riding the tip of a line while it flows, gone once it arrives. */
-function Bead({ show, timing, className }: { show: boolean; timing: typeof RISE; className: string }) {
+/** Glowing drop riding the tip: it appears on the rise and hands over to the run at the corner. */
+function Bead({ show, leg, part, className }: { show: boolean; leg: Leg; part: "rise" | "run"; className: string }) {
   return (
     <span
       className={cn(
-        "absolute size-[7px] rounded-full bg-[#C8102E] opacity-0 shadow-[0_0_10px_3px_rgba(200,16,46,0.45)]",
-        show && "animate-ligau-bead",
+        "absolute size-[7px] rounded-full bg-brand-red opacity-0 shadow-[0_0_10px_3px_rgba(200,16,46,0.45)]",
+        show && (part === "rise" ? "animate-ligau-bead-rise" : "animate-ligau-bead-run"),
         className,
       )}
-      style={{ animationDelay: `${timing.delay}ms`, animationDuration: `${timing.duration + 120}ms` }}
+      style={{ animationDelay: `${leg.delay}ms`, animationDuration: `${leg.duration}ms` }}
     />
   );
 }
@@ -72,6 +85,7 @@ function Bead({ show, timing, className }: { show: boolean; timing: typeof RISE;
 function CalloutLine({ side, x, y, show }: Callout & { show: boolean }) {
   const edge = side === "left" ? { left: -OUTSET } : { right: -OUTSET };
   const run = side === "left" ? `calc(${x}% + ${OUTSET}px)` : `calc(${100 - x}% + ${OUTSET}px)`;
+  const timing = strokeTiming(side, x, y);
   return (
     <div aria-hidden className="ligau-callout pointer-events-none absolute inset-0 z-20">
       <span
@@ -80,18 +94,19 @@ function CalloutLine({ side, x, y, show }: Callout & { show: boolean }) {
           ...edge,
           bottom: -DROP,
           height: show ? `calc(${100 - y}% + ${DROP}px)` : 0,
-          transition: flow(show, "height", RISE, 120),
+          transition: flow(show, "height", timing.rise, RISE_EASE, 120),
         }}
       >
-        <Bead show={show} timing={RISE} className="-top-[3px] left-1/2 -translate-x-1/2" />
+        <Bead show={show} leg={timing.rise} part="rise" className="-top-[3px] left-1/2 -translate-x-1/2" />
       </span>
       <span
-        className="absolute h-px bg-[#C8102E]"
-        style={{ ...edge, top: `${y}%`, width: show ? run : 0, transition: flow(show, "width", RUN, 0) }}
+        className="absolute h-px bg-brand-red"
+        style={{ ...edge, top: `${y}%`, width: show ? run : 0, transition: flow(show, "width", timing.run, RUN_EASE, 0) }}
       >
         <Bead
           show={show}
-          timing={RUN}
+          leg={timing.run}
+          part="run"
           className={cn("top-1/2 -translate-y-1/2", side === "left" ? "-right-[3px]" : "-left-[3px]")}
         />
       </span>
@@ -100,19 +115,19 @@ function CalloutLine({ side, x, y, show }: Callout & { show: boolean }) {
           ? [0, 260].map((offset) => (
               <span
                 key={offset}
-                className="animate-ligau-ripple absolute inset-0 rounded-full border border-[#C8102E] opacity-0"
-                style={{ animationDelay: `${LAND + offset}ms` }}
+                className="animate-ligau-ripple absolute inset-0 rounded-full border border-brand-red opacity-0"
+                style={{ animationDelay: `${timing.land + offset}ms` }}
               />
             ))
           : null}
         <span
           className={cn(
-            "block size-2 rounded-full bg-[#C8102E]",
+            "block size-2 rounded-full bg-brand-red",
             show ? "scale-100 opacity-100 shadow-[0_0_0_5px_rgba(200,16,46,0.16)]" : "scale-0 opacity-0",
           )}
           style={{
             transition: show
-              ? `transform 420ms cubic-bezier(0.34, 1.7, 0.64, 1) ${LAND}ms, opacity 160ms ease-out ${LAND}ms, box-shadow 600ms ease-out ${LAND + 120}ms`
+              ? `transform 420ms cubic-bezier(0.34, 1.7, 0.64, 1) ${timing.land}ms, opacity 160ms ease-out ${timing.land}ms, box-shadow 600ms ease-out ${timing.land + 120}ms`
               : "transform 150ms ease-in, opacity 150ms ease-in, box-shadow 150ms ease-in",
           }}
         />
@@ -196,7 +211,7 @@ export function PassCard({ logos }: { logos: string[] }) {
           <div
             onAnimationEnd={onFlipEnd}
             className={cn(
-              "relative aspect-[3/5] w-full rounded-[26px] transform-3d group-focus-visible:ring-2 group-focus-visible:ring-[#C8102E] group-focus-visible:ring-offset-4",
+              "relative aspect-[3/5] w-full rounded-[26px] transform-3d group-focus-visible:ring-2 group-focus-visible:ring-brand-red group-focus-visible:ring-offset-4",
               spin === "to-back" && "animate-ligau-pass-to-back",
               spin === "to-front" && "animate-ligau-pass-to-front",
               !spin && face === "back" && "rotate-y-180",
@@ -268,12 +283,12 @@ export function PassCard({ logos }: { logos: string[] }) {
 }
 
 /** Red pill with a periodic light sweep. */
-export function ShineLink({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
+export function ShineButton({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <Link
-      href={href}
+    <button
+      type="button"
       className={cn(
-        "relative isolate inline-flex min-h-14 items-center justify-center overflow-hidden rounded-full bg-[#C8102E] px-8 text-[15px] font-semibold tracking-[0.08em] text-white uppercase shadow-[0_18px_40px_-16px_rgba(200,16,46,0.75)] transition-[transform,background-color] duration-300 select-none hover:bg-[#a50f25] active:scale-[0.97]",
+        "relative isolate inline-flex min-h-14 items-center justify-center overflow-hidden rounded-full bg-brand-red px-8 text-[15px] font-semibold tracking-[0.08em] text-white uppercase shadow-[0_18px_40px_-16px_rgba(200,16,46,0.75)] transition-[transform,background-color] duration-300 select-none hover:bg-brand-red-dark active:scale-[0.97]",
         className,
       )}
     >
@@ -282,6 +297,6 @@ export function ShineLink({ href, children, className }: { href: string; childre
         className="animate-ligau-shine absolute inset-y-0 -left-1/2 -z-10 w-1/3 skew-x-[-20deg] bg-white/30"
       />
       {children}
-    </Link>
+    </button>
   );
 }

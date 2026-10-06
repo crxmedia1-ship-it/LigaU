@@ -635,7 +635,7 @@ export function StandingsView({
       <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <div className="relative">
-            <p className="relative z-10 text-[11px] font-semibold tracking-[0.3em] text-[#C8102E] uppercase">
+            <p className="relative z-10 text-[11px] font-semibold tracking-[0.3em] text-brand-red uppercase">
               {view === "titulos" ? "Historial" : editionLabel}
             </p>
             <h1 className="font-jersey relative z-10 mt-0.5 text-[2.55rem] leading-[0.8] text-zinc-950 uppercase sm:mt-1 sm:text-8xl sm:leading-[0.82]">

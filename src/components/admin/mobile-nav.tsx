@@ -111,7 +111,7 @@ export function MobileNav({
                   href={item.href}
                   className={cn(
                     "flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors",
-                    active ? "text-[#C8102E]" : "text-zinc-500",
+                    active ? "text-brand-red" : "text-zinc-500",
                   )}
                 >
                   <span
@@ -136,7 +136,7 @@ export function MobileNav({
               onClick={() => setMoreOpen(true)}
               className={cn(
                 "flex h-16 w-full flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors",
-                moreActive ? "text-[#C8102E]" : "text-zinc-500",
+                moreActive ? "text-brand-red" : "text-zinc-500",
               )}
             >
               <span
@@ -182,7 +182,7 @@ export function MobileNav({
                   className={cn(
                     "flex h-24 flex-col items-center justify-center gap-2 rounded-2xl p-1.5 text-center text-xs leading-tight font-semibold transition-colors",
                     active
-                      ? "bg-[#C8102E] text-white shadow-[0_12px_24px_-14px_rgba(200,16,46,0.9)]"
+                      ? "bg-brand-red text-white shadow-[0_12px_24px_-14px_rgba(200,16,46,0.9)]"
                       : "bg-zinc-50 text-zinc-700 ring-1 ring-zinc-100 active:bg-rose-50",
                   )}
                 >
@@ -214,7 +214,7 @@ export function MobileNav({
                   className={cn(
                     "flex aspect-square flex-col items-center justify-center gap-2 rounded-2xl p-1.5 text-center text-[11px] leading-tight font-semibold transition-colors",
                     active
-                      ? "bg-[#C8102E] text-white shadow-[0_12px_24px_-14px_rgba(200,16,46,0.9)]"
+                      ? "bg-brand-red text-white shadow-[0_12px_24px_-14px_rgba(200,16,46,0.9)]"
                       : "bg-zinc-50 text-zinc-700 ring-1 ring-zinc-100 active:bg-rose-50",
                   )}
                 >
@@ -236,7 +236,7 @@ export function MobileNav({
             <button
               type="button"
               onClick={() => void signOut()}
-              className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-zinc-50 text-sm font-semibold text-[#C8102E] ring-1 ring-zinc-100"
+              className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-zinc-50 text-sm font-semibold text-brand-red ring-1 ring-zinc-100"
             >
               <LogOutIcon className="size-4" />
               Salir

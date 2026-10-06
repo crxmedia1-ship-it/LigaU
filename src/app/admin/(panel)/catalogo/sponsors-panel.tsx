@@ -103,7 +103,7 @@ export function SponsorsPanel({
                     size="icon-sm"
                     variant="ghost"
                     aria-label={`Editar ${sponsor.name}`}
-                    className="text-zinc-500 hover:bg-rose-50 hover:text-[#C8102E]"
+                    className="text-zinc-500 hover:bg-rose-50 hover:text-brand-red"
                     onClick={() => setDraft({ id: sponsor.id, name: sponsor.name, logoUrl: sponsor.logoUrl })}
                   >
                     <PencilIcon />
@@ -114,7 +114,7 @@ export function SponsorsPanel({
                     variant="ghost"
                     aria-label={`Eliminar ${sponsor.name}`}
                     disabled={pending}
-                    className="text-zinc-500 hover:bg-rose-50 hover:text-[#C8102E]"
+                    className="text-zinc-500 hover:bg-rose-50 hover:text-brand-red"
                     onClick={() => remove(sponsor)}
                   >
                     <Trash2Icon />
@@ -158,11 +158,11 @@ export function SponsorsPanel({
 
               <div className="grid gap-1.5">
                 <span className="text-sm font-medium text-zinc-800">Logo</span>
-                <label className="group relative grid h-32 cursor-pointer place-items-center overflow-hidden rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 px-6 transition-colors hover:border-[#C8102E]/50 hover:bg-rose-50/40">
+                <label className="group relative grid h-32 cursor-pointer place-items-center overflow-hidden rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 px-6 transition-colors hover:border-brand-red/50 hover:bg-rose-50/40">
                   {shownLogo ? (
                     <>
                       <img src={shownLogo} alt="" className="max-h-20 w-auto max-w-full object-contain" />
-                      <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-zinc-700 shadow-sm ring-1 ring-zinc-200 group-hover:text-[#C8102E]">
+                      <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-zinc-700 shadow-sm ring-1 ring-zinc-200 group-hover:text-brand-red">
                         <ImageUpIcon className="size-3.5" />
                         Cambiar
                       </span>

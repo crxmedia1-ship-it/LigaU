@@ -187,7 +187,7 @@ export function CatalogoBoard({
               className={cn(
                 "flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition-all",
                 tab === id
-                  ? "bg-white text-[#C8102E] shadow-sm"
+                  ? "bg-white text-brand-red shadow-sm"
                   : "text-zinc-500 hover:text-zinc-900",
               )}
             >
@@ -196,7 +196,7 @@ export function CatalogoBoard({
                 className={cn(
                   "rounded-full px-1.5 text-[11px] tabular-nums",
                   tab === id
-                    ? "bg-rose-50 text-[#C8102E]"
+                    ? "bg-rose-50 text-brand-red"
                     : "bg-zinc-200 text-zinc-500",
                 )}
               >
@@ -262,7 +262,7 @@ export function CatalogoBoard({
                   size="icon-sm"
                   variant="ghost"
                   aria-label="Editar"
-                  className="text-zinc-500 hover:bg-rose-50 hover:text-[#C8102E]"
+                  className="text-zinc-500 hover:bg-rose-50 hover:text-brand-red"
                   onClick={() =>
                     setUniversityDraft({
                       id: university.id,
@@ -280,7 +280,7 @@ export function CatalogoBoard({
                   variant="ghost"
                   aria-label="Eliminar"
                   disabled={pending}
-                  className="text-zinc-500 hover:bg-rose-50 hover:text-[#C8102E]"
+                  className="text-zinc-500 hover:bg-rose-50 hover:text-brand-red"
                   onClick={() =>
                     remove(
                       "universidades",
@@ -320,7 +320,7 @@ export function CatalogoBoard({
                   size="icon-sm"
                   variant="ghost"
                   aria-label="Editar"
-                  className="text-zinc-500 hover:bg-rose-50 hover:text-[#C8102E]"
+                  className="text-zinc-500 hover:bg-rose-50 hover:text-brand-red"
                   onClick={() =>
                     setSportDraft({
                       id: sport.id,
@@ -337,7 +337,7 @@ export function CatalogoBoard({
                   variant="ghost"
                   aria-label="Eliminar"
                   disabled={pending}
-                  className="text-zinc-500 hover:bg-rose-50 hover:text-[#C8102E]"
+                  className="text-zinc-500 hover:bg-rose-50 hover:text-brand-red"
                   onClick={() =>
                     remove("deportes", sport.id, sport.name, sport.teams)
                   }

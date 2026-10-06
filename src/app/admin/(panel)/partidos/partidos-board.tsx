@@ -276,7 +276,7 @@ export function PartidosBoard({
             onClick={() => setBulkOpen(true)}
             className="admin-surface -mt-5 flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition-colors hover:bg-rose-50/40"
           >
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-rose-50 text-[#C8102E] ring-1 ring-rose-100">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-rose-50 text-brand-red ring-1 ring-rose-100">
               <LayersIcon className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
@@ -346,7 +346,7 @@ export function PartidosBoard({
                 </span>
                 <Link
                   href="/admin/calendario"
-                  className="-my-2 inline-flex min-h-9 shrink-0 items-center text-sm font-semibold text-[#C8102E] hover:underline"
+                  className="-my-2 inline-flex min-h-9 shrink-0 items-center text-sm font-semibold text-brand-red hover:underline"
                 >
                   Calendario
                 </Link>
@@ -399,7 +399,7 @@ export function PartidosBoard({
                   value={historyQuery}
                   onChange={(event) => setHistoryQuery(event.target.value)}
                   placeholder="Buscar por universidad, deporte o fase"
-                  className="h-12 w-full rounded-2xl bg-white pr-4 pl-11 text-sm text-zinc-900 ring-1 ring-rose-100 outline-none placeholder:text-zinc-400 focus:ring-2 focus:ring-[#C8102E]/30"
+                  className="h-12 w-full rounded-2xl bg-white pr-4 pl-11 text-sm text-zinc-900 ring-1 ring-rose-100 outline-none placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-red/30"
                 />
               </label>
             ) : null}
@@ -427,7 +427,7 @@ export function PartidosBoard({
                   <button
                     type="button"
                     onClick={() => setShowAllHistory((value) => !value)}
-                    className="block w-full py-3.5 text-center text-sm font-semibold text-[#C8102E] hover:bg-rose-50/50"
+                    className="block w-full py-3.5 text-center text-sm font-semibold text-brand-red hover:bg-rose-50/50"
                   >
                     {showAllHistory ? "Ver menos" : `Ver los ${filteredHistory.length}`}
                   </button>
@@ -474,7 +474,7 @@ function SectionTitle({ title, count, hint }: { title: string; count: number; hi
   return (
     <div className="flex items-baseline gap-2 px-1">
       <h2 className="text-lg font-semibold text-zinc-950">{title}</h2>
-      {count ? <span className="text-sm font-semibold text-[#C8102E]">{count}</span> : null}
+      {count ? <span className="text-sm font-semibold text-brand-red">{count}</span> : null}
       {hint ? <span className="ml-auto text-xs text-zinc-400">{hint}</span> : null}
     </div>
   );
@@ -503,7 +503,7 @@ function CompactRow({
     <div className="flex items-center gap-1 pr-2 transition-colors hover:bg-rose-50/40">
       <button type="button" onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-3 py-3.5 pl-4 text-left">
         <span className="w-11 shrink-0 text-center">
-          <span className="block text-[10px] font-semibold uppercase text-[#C8102E]">
+          <span className="block text-[10px] font-semibold uppercase text-brand-red">
             {date.toLocaleDateString("es-VE", { month: "short" })}
           </span>
           <span className="block text-xl leading-none font-semibold text-zinc-950">{date.getDate()}</span>
@@ -563,7 +563,7 @@ function CompactRow({
           size="icon"
           onClick={onDelete}
           aria-label="Eliminar partido"
-          className="size-10 shrink-0 rounded-xl text-zinc-300 hover:bg-white hover:text-[#C8102E]"
+          className="size-10 shrink-0 rounded-xl text-zinc-300 hover:bg-white hover:text-brand-red"
         >
           <Trash2Icon />
         </Button>
@@ -604,7 +604,7 @@ function MatchCard({
     <article
       className={cn(
         "admin-surface overflow-hidden rounded-3xl",
-        needsResult && "ring-2 ring-[#C8102E]/25",
+        needsResult && "ring-2 ring-brand-red/25",
       )}
     >
       <div className="flex items-center justify-between gap-2 px-5 pt-4">
@@ -615,7 +615,7 @@ function MatchCard({
         <span
           className={cn(
             "shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold",
-            needsResult ? "bg-[#C8102E] text-white" : STATUS_STYLE[match.status],
+            needsResult ? "bg-brand-red text-white" : STATUS_STYLE[match.status],
           )}
         >
           {needsResult ? "Sin cargar" : MATCH_STATUS_LABELS[match.status]}
@@ -676,7 +676,7 @@ function MatchCard({
           onClick={onDelete}
           disabled={busy}
           aria-label="Eliminar partido"
-          className="size-11 rounded-2xl text-zinc-400 hover:bg-white hover:text-[#C8102E]"
+          className="size-11 rounded-2xl text-zinc-400 hover:bg-white hover:text-brand-red"
         >
           <Trash2Icon />
         </Button>

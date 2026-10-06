@@ -32,7 +32,7 @@ export default async function NoticiasPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 md:py-10">
-      <p className="text-[11px] font-black tracking-[0.18em] text-[#C8102E] uppercase">Crónica y noticias</p>
+      <p className="text-[11px] font-black tracking-[0.18em] text-brand-red uppercase">Crónica y noticias</p>
       <h1 className="font-jersey mt-1 text-[3.5rem] leading-[0.85] text-[#09090B] uppercase sm:text-7xl">
         Noticias
       </h1>
@@ -49,7 +49,7 @@ export default async function NoticiasPage() {
               <li key={item.id}>
                 <Link
                   href={`/noticias/${item.slug}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition-colors hover:border-[#C8102E]/60"
+                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition-colors hover:border-brand-red/60"
                 >
                   <div className="aspect-[16/10] overflow-hidden bg-zinc-100">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -61,7 +61,7 @@ export default async function NoticiasPage() {
                     />
                   </div>
                   <div className="flex flex-1 flex-col p-4">
-                    <p className="text-[10px] font-black tracking-wide text-[#C8102E] uppercase">
+                    <p className="text-[10px] font-black tracking-wide text-brand-red uppercase">
                       {[item.sportName, item.universityName].filter(Boolean).join(" · ") || "Liga U"}
                     </p>
                     <h2 className="font-jersey mt-1.5 text-3xl leading-[0.92] text-[#09090B] uppercase">
@@ -72,7 +72,7 @@ export default async function NoticiasPage() {
                     ) : null}
                     <div className="mt-auto flex items-center justify-between gap-3 pt-4">
                       <span className="text-xs text-zinc-400">{date}</span>
-                      <span className="inline-flex min-h-11 items-center gap-1 text-xs font-black tracking-wide text-[#C8102E] uppercase">
+                      <span className="inline-flex min-h-11 items-center gap-1 text-xs font-black tracking-wide text-brand-red uppercase">
                         Leer nota
                         <ArrowUpRight className="size-4" strokeWidth={2.5} />
                       </span>

@@ -26,7 +26,7 @@ function DesktopNav({ overlay }: { overlay: boolean }) {
             aria-current={active ? "page" : undefined}
             className={cn(
               "relative rounded-full px-4 py-1.5 text-xs font-semibold tracking-[0.14em] text-zinc-500 uppercase hover:text-zinc-900",
-              active && "bg-[#C8102E] text-white hover:text-white",
+              active && "bg-brand-red text-white hover:text-white",
             )}
           >
             {item.label}
@@ -135,7 +135,7 @@ export function SiteFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Liga U en ${social.name}`}
-                  className="grid size-11 place-items-center rounded-full bg-white text-zinc-700 shadow-[0_6px_16px_-10px_rgba(9,9,11,0.4)] ring-1 ring-zinc-200 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#C8102E] hover:text-white hover:shadow-[0_12px_24px_-12px_rgba(200,16,46,0.8)] hover:ring-[#C8102E]"
+                  className="grid size-11 place-items-center rounded-full bg-white text-zinc-700 shadow-[0_6px_16px_-10px_rgba(9,9,11,0.4)] ring-1 ring-zinc-200 transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-red hover:text-white hover:shadow-[0_12px_24px_-12px_rgba(200,16,46,0.8)] hover:ring-brand-red"
                 >
                   <svg viewBox="0 0 24 24" aria-hidden className="size-[18px] fill-current">
                     <path d={social.path} />

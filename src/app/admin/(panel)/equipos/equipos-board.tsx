@@ -163,7 +163,7 @@ function EmptyCommand({
     <div className="relative overflow-hidden rounded-xl border border-dashed border-zinc-300 bg-white/60 px-6 py-16 text-center shadow-[0_0_30px_rgba(200,16,46,0.15)]">
       <div
         aria-hidden
-        className="pointer-events-none absolute top-1/2 left-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C8102E]/15 blur-3xl"
+        className="pointer-events-none absolute top-1/2 left-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-red/15 blur-3xl"
       />
       <div className="relative mx-auto mb-4 grid size-16 place-items-center text-zinc-500 opacity-20">
         {icon}
@@ -372,7 +372,7 @@ export function EquiposBoard({
               setBulkKey((value) => value + 1);
               setBulkOpen(true);
             }}
-            className="h-11 flex-1 rounded-xl border-rose-200 bg-white px-4 text-[#C8102E] hover:bg-rose-50 hover:text-[#C8102E] sm:flex-none"
+            className="h-11 flex-1 rounded-xl border-rose-200 bg-white px-4 text-brand-red hover:bg-rose-50 hover:text-brand-red sm:flex-none"
           >
             <TableIcon />
             Carga masiva
@@ -413,8 +413,8 @@ export function EquiposBoard({
                     className={cn(
                       "absolute top-1.5 right-1.5 grid min-w-5 place-items-center rounded-full px-1 text-[10px] font-bold tabular-nums",
                       active
-                        ? "bg-white text-[#C8102E]"
-                        : "bg-[#C8102E] text-white",
+                        ? "bg-white text-brand-red"
+                        : "bg-brand-red text-white",
                     )}
                   >
                     {count}
@@ -477,8 +477,8 @@ export function EquiposBoard({
                     className={cn(
                       "absolute top-1.5 right-1.5 grid min-w-5 place-items-center rounded-full px-1 text-[10px] font-bold tabular-nums",
                       active
-                        ? "bg-white text-[#C8102E]"
-                        : "bg-[#C8102E] text-white",
+                        ? "bg-white text-brand-red"
+                        : "bg-brand-red text-white",
                     )}
                   >
                     {count}
@@ -508,7 +508,7 @@ export function EquiposBoard({
                   className={cn(
                     "rounded-full px-4 py-2 text-sm font-semibold transition-all sm:px-5",
                     active
-                      ? "bg-white text-[#C8102E] shadow-sm"
+                      ? "bg-white text-brand-red shadow-sm"
                       : "text-zinc-500 hover:text-zinc-900",
                   )}
                 >
@@ -543,7 +543,7 @@ export function EquiposBoard({
             size="icon-sm"
             variant="ghost"
             aria-label="Editar equipo"
-            className="text-zinc-500 hover:bg-rose-50 hover:text-[#C8102E]"
+            className="text-zinc-500 hover:bg-rose-50 hover:text-brand-red"
             onClick={() => {
               setEditingTeamId(activeTeam.id);
               setTeamGender(activeTeam.gender);
@@ -558,7 +558,7 @@ export function EquiposBoard({
             size="icon-sm"
             variant="ghost"
             aria-label="Eliminar equipo"
-            className="text-zinc-500 hover:bg-rose-50 hover:text-[#C8102E]"
+            className="text-zinc-500 hover:bg-rose-50 hover:text-brand-red"
             disabled={pending}
             onClick={() => {
               if (!confirm("¿Eliminar este equipo y su roster?")) return;
@@ -686,7 +686,7 @@ export function EquiposBoard({
                           size="sm"
                           variant="ghost"
                           disabled={pending}
-                          className="rounded-full text-[#C8102E] hover:bg-rose-50"
+                          className="rounded-full text-brand-red hover:bg-rose-50"
                           onClick={() =>
                             startTransition(async () => {
                               const result = await setAthleteActive(athlete.id, true);

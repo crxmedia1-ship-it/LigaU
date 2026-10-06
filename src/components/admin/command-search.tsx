@@ -21,6 +21,7 @@ import { ADMIN_NAV } from "@/components/admin/nav";
 import { getAdminSearchIndex, type SearchItem } from "@/app/admin/(panel)/search-actions";
 import type { UserRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils";
+import { normalizeText } from "@/lib/text";
 
 type Entry = {
   id: string;
@@ -39,9 +40,6 @@ const KIND = {
   news: { group: "Noticias", icon: NewspaperIcon },
 } as const;
 
-function normalize(value: string) {
-  return value.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
-}
 
 function actions(role: UserRole): Entry[] {
   const list = [
@@ -61,7 +59,7 @@ function actions(role: UserRole): Entry[] {
     title: item.title,
     href: item.href,
     icon: item.icon,
-    haystack: normalize(`${item.title} ${item.words}`),
+    haystack: normalizeText(`${item.title} ${item.words}`),
   }));
 }
 
@@ -102,7 +100,7 @@ export function CommandSearch({ role }: { role: UserRole }) {
       subtitle: item.description,
       href: item.href,
       icon: SearchIcon,
-      haystack: normalize(`${item.label} ${item.description}`),
+      haystack: normalizeText(`${item.label} ${item.description}`),
     }));
     const records: Entry[] = (index ?? []).map((item) => ({
       id: `${item.kind}-${item.id}`,
@@ -111,13 +109,13 @@ export function CommandSearch({ role }: { role: UserRole }) {
       subtitle: item.subtitle,
       href: item.href,
       icon: KIND[item.kind].icon,
-      haystack: normalize(`${item.title} ${item.subtitle} ${item.keywords}`),
+      haystack: normalizeText(`${item.title} ${item.subtitle} ${item.keywords}`),
     }));
     return { actions: actions(role), sections, records };
   }, [index, role]);
 
   const results = useMemo(() => {
-    const terms = normalize(query).split(/\s+/).filter(Boolean);
+    const terms = normalizeText(query).split(/\s+/).filter(Boolean);
     if (!terms.length) return [...base.actions, ...base.records.filter((item) => item.group === "Partidos").slice(0, 5)];
     const match = (entry: Entry) => terms.every((term) => entry.haystack.includes(term));
     return [
@@ -166,7 +164,7 @@ export function CommandSearch({ role }: { role: UserRole }) {
           <DialogTitle className="sr-only">Buscar en el panel</DialogTitle>
           <div className="flex items-center gap-3 border-b border-zinc-100 px-5">
             {loading ? (
-              <Loader2Icon className="size-5 shrink-0 animate-spin text-[#C8102E]" />
+              <Loader2Icon className="size-5 shrink-0 animate-spin text-brand-red" />
             ) : (
               <SearchIcon className="size-5 shrink-0 text-zinc-400" />
             )}
@@ -212,7 +210,7 @@ export function CommandSearch({ role }: { role: UserRole }) {
                       <span
                         className={cn(
                           "grid size-9 shrink-0 place-items-center rounded-lg",
-                          position === active ? "bg-[#C8102E] text-white" : "bg-zinc-100 text-zinc-500",
+                          position === active ? "bg-brand-red text-white" : "bg-zinc-100 text-zinc-500",
                         )}
                       >
                         <Icon className="size-4" />
@@ -224,7 +222,7 @@ export function CommandSearch({ role }: { role: UserRole }) {
                         ) : null}
                       </span>
                       {position === active ? (
-                        <CornerDownLeftIcon className="size-4 shrink-0 text-[#C8102E]" />
+                        <CornerDownLeftIcon className="size-4 shrink-0 text-brand-red" />
                       ) : null}
                     </button>
                   </div>

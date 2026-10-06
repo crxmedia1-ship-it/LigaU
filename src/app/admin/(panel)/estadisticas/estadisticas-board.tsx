@@ -209,7 +209,7 @@ export function EstadisticasBoard({ sports, teams, athletes, matches }: MatchBoa
                     "inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all active:scale-[0.97]",
                     active
                       ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white"
-                      : "bg-white text-zinc-600 ring-1 ring-zinc-200 hover:text-zinc-950 hover:ring-[#C8102E]/40",
+                      : "bg-white text-zinc-600 ring-1 ring-zinc-200 hover:text-zinc-950 hover:ring-brand-red/40",
                   )}
                 >
                   <Icon className="size-4" />
@@ -264,7 +264,7 @@ export function EstadisticasBoard({ sports, teams, athletes, matches }: MatchBoa
                       {row.yellow}
                     </span>
                     <span className="inline-flex items-center gap-1">
-                      <span className="inline-block h-4 w-3 rounded-[3px] bg-[#C8102E]" />
+                      <span className="inline-block h-4 w-3 rounded-[3px] bg-brand-red" />
                       {row.red}
                     </span>
                   </span>
@@ -360,7 +360,7 @@ function LeaderCard({
         className,
       )}
     >
-      <div className="relative overflow-hidden bg-linear-to-br from-[#e0233f] via-[#C8102E] to-[#8a0b20] px-3 pt-3 pb-8">
+      <div className="relative overflow-hidden bg-linear-to-br from-[#e0233f] via-brand-red to-[#8a0b20] px-3 pt-3 pb-8">
         <span
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent_0_10px,rgba(255,255,255,0.06)_10px_20px)]"
@@ -421,7 +421,7 @@ function LeaderCard({
           const row = rest[slot];
           return row ? (
             <div key={row.athlete.id} className="flex items-center gap-2 rounded-xl bg-zinc-50 px-1.5 py-1.5">
-              <span className="grid size-5 shrink-0 place-items-center rounded-full bg-white text-[10px] font-black text-[#C8102E] ring-1 ring-rose-100">
+              <span className="grid size-5 shrink-0 place-items-center rounded-full bg-white text-[10px] font-black text-brand-red ring-1 ring-rose-100">
                 {slot + 2}
               </span>
               <SquarePhoto row={row} size={96} className="size-8 rounded-lg" />

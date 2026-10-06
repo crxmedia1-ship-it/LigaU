@@ -3,15 +3,14 @@ import { Geist } from "next/font/google";
 import { Toaster } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SiteCanvas } from "@/components/public/site-canvas";
+import { SITE_URL } from "@/lib/site-url";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
-
 export const metadata: Metadata = {
-  metadataBase: APP_URL ? new URL(APP_URL) : undefined,
+  metadataBase: new URL(SITE_URL),
   title: "Liga U",
   description: "Portal deportivo universitario de Caracas",
   applicationName: "Liga U",

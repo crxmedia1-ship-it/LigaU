@@ -4,10 +4,12 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { GlassCard, JerseyMark, PageKicker } from "@/components/public/brand";
 import { UniversityCrest } from "@/components/public/university-crest";
+import { getSportFormKind } from "@/lib/admin/sport";
 import { formatAthleteAge, formatAthleteHeight } from "@/lib/public/athlete-sheet";
 import { formatMatchDate, formatScore } from "@/lib/public/format";
 import { cloudinaryImage } from "@/lib/public/media";
 import { getPublicCatalog } from "@/lib/public/queries";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Atleta",
@@ -37,19 +39,45 @@ export default async function AtletaPage({
       (match.homeTeamId === athlete.teamId || match.awayTeamId === athlete.teamId) &&
       match.status === "finished",
   );
-  const mvpAwards = catalog.matches.filter((match) => match.mvpAthleteId === athlete.id);
-  const goals = events
-    .filter((event) => event.eventType === "goal")
-    .reduce((sum, event) => sum + event.value, 0);
-  const points = events
-    .filter((event) => event.eventType === "points")
-    .reduce((sum, event) => sum + event.value, 0);
-  const assists = catalog.events.filter((event) => event.assistAthleteId === athlete.id).length;
+  const mvpAwards = catalog.matches.filter((match) => match.mvpAthleteId === athlete.id).length;
+  const total = (type: string) =>
+    events.filter((event) => event.eventType === type).reduce((sum, event) => sum + event.value, 0);
+  const wins = played.filter((match) => {
+    const home = match.homeTeamId === athlete.teamId;
+    const own = home ? match.homeScore : match.awayScore;
+    const rival = home ? match.awayScore : match.homeScore;
+    return own != null && rival != null && own > rival;
+  }).length;
+
+  const kind = getSportFormKind(sport?.slug ?? "");
+  const stats: { label: string; value: number | string }[] =
+    kind === "football"
+      ? [
+          { label: "Partidos", value: played.length },
+          { label: "Goles", value: total("goal") },
+          { label: "Asistencias", value: catalog.events.filter((event) => event.assistAthleteId === athlete.id).length },
+          { label: "MVP", value: mvpAwards },
+        ]
+      : kind === "basketball"
+        ? [
+            { label: "Partidos", value: played.length },
+            { label: "Puntos", value: total("points") },
+            {
+              label: "Prom. puntos",
+              value: played.length ? (total("points") / played.length).toFixed(1).replace(".", ",") : 0,
+            },
+            { label: "MVP", value: mvpAwards },
+          ]
+        : [
+            { label: "Partidos", value: played.length },
+            { label: "Victorias", value: wins },
+            { label: "MVP", value: mvpAwards },
+          ];
 
   return (
     <main className="relative mx-auto max-w-4xl px-4 py-6 md:py-10">
-      <JerseyMark number={athlete.jerseyNumber?.toString() ?? "U"} />
       <GlassCard className="p-6 sm:flex sm:items-center sm:gap-6">
+        <JerseyMark number={athlete.jerseyNumber?.toString() ?? "U"} />
         {athlete.photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -80,7 +108,7 @@ export default async function AtletaPage({
           {team ? (
             <Link
               href={`/universidades/${team.universityId}`}
-              className="mt-3 inline-flex items-center gap-2 text-sm text-zinc-200 hover:text-white"
+              className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition-colors hover:text-brand-red"
             >
               <UniversityCrest
                 url={team.university.logoUrl}
@@ -93,13 +121,11 @@ export default async function AtletaPage({
         </div>
       </GlassCard>
 
-      <section className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="Partidos" value={played.length} />
-        <Stat label="Goles" value={goals} />
-        <Stat label="Puntos" value={points} />
-        <Stat label="MVP" value={mvpAwards.length} />
+      <section className={cn("mt-8 grid gap-3", stats.length === 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3")}>
+        {stats.map((stat) => (
+          <Stat key={stat.label} {...stat} />
+        ))}
       </section>
-      <p className="mt-3 text-xs text-brand-silver-dim">Asistencias registradas: {assists}</p>
 
       <section className="mt-10">
         <h2 className="text-xl font-semibold">Historial</h2>
@@ -136,7 +162,7 @@ export default async function AtletaPage({
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value }: { label: string; value: number | string }) {
   return (
     <GlassCard className="p-4 text-center">
       <p className="chrome-text text-2xl font-black">{value}</p>

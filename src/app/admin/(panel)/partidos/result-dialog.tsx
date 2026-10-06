@@ -28,6 +28,7 @@ import {
 import { finishMatch, setAthletePhoto } from "@/app/admin/(panel)/partidos/actions";
 import type { AthleteOption, MatchRow, TeamOption } from "@/app/admin/(panel)/partidos/types";
 import { cn } from "@/lib/utils";
+import { normalizeText } from "@/lib/text";
 
 type ResultDialogProps = {
   match: MatchRow | null;
@@ -66,9 +67,6 @@ const TABS: Record<ReturnType<typeof getSportFormKind>, { id: Tab; label: string
   chess: [{ id: "mvp", label: "MVP" }],
 };
 
-function normalize(value: string) {
-  return value.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().trim();
-}
 
 export function ResultDialog({ match, athletes, teams, open, onOpenChange }: ResultDialogProps) {
   const [pending, startTransition] = useTransition();
@@ -210,7 +208,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
     picker?.mode === "goal" || picker?.mode === "assist"
       ? [picker.teamId]
       : [match.homeTeamId, match.awayTeamId];
-  const needle = normalize(query);
+  const needle = normalizeText(query);
   const pickerTitle = !picker
     ? ""
     : picker.mode === "goal"
@@ -301,7 +299,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                       key={team.id}
                       type="button"
                       onClick={() => openPicker({ mode: "goal", teamId: team.id })}
-                      className="group relative flex items-center gap-3 overflow-hidden rounded-2xl bg-white p-3 text-left shadow-[0_10px_24px_-18px_rgba(24,24,27,0.45)] ring-1 ring-zinc-200/80 transition-all hover:-translate-y-0.5 hover:ring-[#C8102E]/40 active:scale-[0.98]"
+                      className="group relative flex items-center gap-3 overflow-hidden rounded-2xl bg-white p-3 text-left shadow-[0_10px_24px_-18px_rgba(24,24,27,0.45)] ring-1 ring-zinc-200/80 transition-all hover:-translate-y-0.5 hover:ring-brand-red/40 active:scale-[0.98]"
                     >
                       <span aria-hidden className="pointer-events-none absolute -right-6 -bottom-8 size-20 rounded-full bg-[#f4c7c5]/40 blur-2xl" />
                       <TeamCrest logoUrl={team.logoUrl} label={team.universityShort} bare className="relative size-9 shrink-0" />
@@ -341,7 +339,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                               "inline-flex items-center gap-1 rounded-full text-xs transition-colors",
                               assist
                                 ? "text-zinc-500 hover:text-zinc-900"
-                                : "mt-0.5 bg-rose-50 px-2 py-0.5 font-semibold text-[#C8102E] ring-1 ring-rose-100 hover:bg-rose-100",
+                                : "mt-0.5 bg-rose-50 px-2 py-0.5 font-semibold text-brand-red ring-1 ring-rose-100 hover:bg-rose-100",
                             )}
                           >
                             {assist ? (
@@ -387,7 +385,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                   onClick={() => openPicker({ mode: "card", card: "red_card" })}
                   className="flex items-center justify-center gap-2 rounded-2xl bg-white py-3 text-sm font-semibold text-zinc-900 ring-1 ring-rose-200 active:bg-rose-50"
                 >
-                  <span className="h-4 w-3 rounded-[3px] bg-[#C8102E]" />
+                  <span className="h-4 w-3 rounded-[3px] bg-brand-red" />
                   Roja
                 </button>
               </div>
@@ -402,7 +400,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                         <span
                           className={cn(
                             "block h-5 w-3.5 rounded-[3px]",
-                            event.eventType === "yellow_card" ? "bg-amber-400" : "bg-[#C8102E]",
+                            event.eventType === "yellow_card" ? "bg-amber-400" : "bg-brand-red",
                           )}
                         />
                       }
@@ -422,9 +420,9 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
               <button
                 type="button"
                 onClick={() => openPicker({ mode: "points" })}
-                className="flex items-center justify-center gap-2 rounded-2xl bg-white py-3 text-sm font-semibold text-zinc-900 ring-1 ring-rose-100 hover:ring-[#C8102E]/40"
+                className="flex items-center justify-center gap-2 rounded-2xl bg-white py-3 text-sm font-semibold text-zinc-900 ring-1 ring-rose-100 hover:ring-brand-red/40"
               >
-                <PlusIcon className="size-4 text-[#C8102E]" />
+                <PlusIcon className="size-4 text-brand-red" />
                 Agregar anotador
               </button>
               {scorers.length === 0 ? (
@@ -442,7 +440,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                         type="button"
                         aria-label="Quitar"
                         onClick={() => removeEvent(index)}
-                        className="grid size-8 place-items-center rounded-lg text-zinc-300 hover:bg-rose-50 hover:text-[#C8102E]"
+                        className="grid size-8 place-items-center rounded-lg text-zinc-300 hover:bg-rose-50 hover:text-brand-red"
                       >
                         <XIcon className="size-4" />
                       </button>
@@ -479,7 +477,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                           },
                         })
                       }
-                      className="h-11 rounded-xl bg-white text-center text-lg font-semibold tabular-nums ring-1 ring-zinc-200 outline-none focus:ring-2 focus:ring-[#C8102E]/30"
+                      className="h-11 rounded-xl bg-white text-center text-lg font-semibold tabular-nums ring-1 ring-zinc-200 outline-none focus:ring-2 focus:ring-brand-red/30"
                     />
                   ))}
                 </div>
@@ -514,14 +512,14 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                             ),
                           })
                         }
-                        className="h-11 rounded-xl bg-white text-center text-lg font-semibold tabular-nums ring-1 ring-zinc-200 outline-none focus:ring-2 focus:ring-[#C8102E]/30"
+                        className="h-11 rounded-xl bg-white text-center text-lg font-semibold tabular-nums ring-1 ring-zinc-200 outline-none focus:ring-2 focus:ring-brand-red/30"
                       />
                     ))}
                     <button
                       type="button"
                       aria-label="Quitar set"
                       onClick={() => setDetails({ ...details, sets: details.sets.filter((_, itemIndex) => itemIndex !== index) })}
-                      className="grid size-8 place-items-center rounded-lg text-zinc-300 hover:bg-rose-50 hover:text-[#C8102E]"
+                      className="grid size-8 place-items-center rounded-lg text-zinc-300 hover:bg-rose-50 hover:text-brand-red"
                     >
                       <XIcon className="size-4" />
                     </button>
@@ -533,7 +531,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                 onClick={() => setDetails({ ...details, sets: [...details.sets, { home: 0, away: 0 }] })}
                 className="flex items-center justify-center gap-2 rounded-2xl bg-white py-3 text-sm font-semibold text-zinc-900 ring-1 ring-rose-100"
               >
-                <PlusIcon className="size-4 text-[#C8102E]" />
+                <PlusIcon className="size-4 text-brand-red" />
                 Añadir set
               </button>
             </div>
@@ -559,7 +557,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                     type="button"
                     aria-label="Quitar MVP"
                     onClick={() => setMvpAthleteId("")}
-                    className="grid size-9 place-items-center rounded-xl text-zinc-300 hover:bg-rose-50 hover:text-[#C8102E]"
+                    className="grid size-9 place-items-center rounded-xl text-zinc-300 hover:bg-rose-50 hover:text-brand-red"
                   >
                     <XIcon className="size-4" />
                   </button>
@@ -627,7 +625,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                 )}
                 <div className="min-w-0 flex-1 text-center">
                   {picker.mode === "goal" || picker.mode === "assist" ? (
-                    <p className="text-[11px] font-bold tracking-[0.14em] text-[#C8102E] uppercase">
+                    <p className="text-[11px] font-bold tracking-[0.14em] text-brand-red uppercase">
                       {picker.mode === "assist" && picker.eventIndex !== undefined
                         ? "Asistencia"
                         : picker.mode === "goal"
@@ -659,7 +657,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Buscar por nombre o número"
-                    className="h-11 w-full rounded-2xl bg-zinc-50 pr-4 pl-11 text-sm ring-1 ring-zinc-200 outline-none focus:bg-white focus:ring-2 focus:ring-[#C8102E]/30"
+                    className="h-11 w-full rounded-2xl bg-zinc-50 pr-4 pl-11 text-sm ring-1 ring-zinc-200 outline-none focus:bg-white focus:ring-2 focus:ring-brand-red/30"
                   />
                 </label>
               ) : null}
@@ -672,7 +670,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                     athlete.teamId === teamId &&
                     !(picker.mode === "assist" && athlete.id === picker.scorerId) &&
                     (!needle ||
-                      normalize(athlete.fullName).includes(needle) ||
+                      normalizeText(athlete.fullName).includes(needle) ||
                       String(athlete.jerseyNumber ?? "") === needle),
                 );
                 const current =
@@ -697,7 +695,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                         ) : (
                           <>
                             Este equipo no tiene más jugadores.{" "}
-                            <Link href={`/admin/equipos?equipo=${teamId}`} className="font-semibold text-[#C8102E]">
+                            <Link href={`/admin/equipos?equipo=${teamId}`} className="font-semibold text-brand-red">
                               Agregar
                             </Link>
                           </>
@@ -714,7 +712,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                               onClick={() => choose(athlete)}
                               className={cn(
                                 "group relative flex flex-col overflow-hidden rounded-2xl bg-white text-left shadow-[0_8px_24px_-18px_rgba(24,24,27,0.5)] ring-1 transition-all hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-18px_rgba(24,24,27,0.55)] active:scale-[0.98]",
-                                selected ? "ring-2 ring-[#C8102E]" : "ring-zinc-200/80",
+                                selected ? "ring-2 ring-brand-red" : "ring-zinc-200/80",
                               )}
                             >
                               <span className="relative block aspect-square w-full bg-zinc-100">
@@ -725,7 +723,7 @@ export function ResultDialog({ match, athletes, teams, open, onOpenChange }: Res
                                   </span>
                                 ) : null}
                                 {selected ? (
-                                  <span className="absolute top-2 right-2 rounded-full bg-[#C8102E] px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+                                  <span className="absolute top-2 right-2 rounded-full bg-brand-red px-2 py-0.5 text-[10px] font-bold text-white uppercase">
                                     Elegido
                                   </span>
                                 ) : null}
@@ -803,7 +801,7 @@ function ScoreSide({
           type="button"
           aria-label="Sumar"
           onClick={() => onChange(value + 1)}
-          className="grid size-9 place-items-center rounded-full bg-[#C8102E] text-white shadow-[0_8px_16px_-8px_rgba(200,16,46,0.9)]"
+          className="grid size-9 place-items-center rounded-full bg-brand-red text-white shadow-[0_8px_16px_-8px_rgba(200,16,46,0.9)]"
         >
           <PlusIcon className="size-4" />
         </button>
@@ -828,7 +826,7 @@ function Stepper({ value, onChange }: { value: number; onChange: (value: number)
         type="button"
         aria-label="Sumar"
         onClick={() => onChange(value + 1)}
-        className="grid size-8 place-items-center rounded-full bg-[#C8102E] text-white"
+        className="grid size-8 place-items-center rounded-full bg-brand-red text-white"
       >
         <PlusIcon className="size-3.5" />
       </button>
@@ -861,7 +859,7 @@ function EventRow({
         type="button"
         aria-label="Quitar"
         onClick={onRemove}
-        className="grid size-8 place-items-center rounded-lg text-zinc-300 hover:bg-rose-50 hover:text-[#C8102E]"
+        className="grid size-8 place-items-center rounded-lg text-zinc-300 hover:bg-rose-50 hover:text-brand-red"
       >
         <XIcon className="size-4" />
       </button>
@@ -885,7 +883,7 @@ function PlayerAvatar({ athlete, className }: { athlete: AthleteOption; classNam
     .join("")
     .toUpperCase();
   return (
-    <span className={cn("grid shrink-0 place-items-center bg-rose-50 text-base font-bold text-[#C8102E]", className)}>
+    <span className={cn("grid shrink-0 place-items-center bg-rose-50 text-base font-bold text-brand-red", className)}>
       {initials}
     </span>
   );

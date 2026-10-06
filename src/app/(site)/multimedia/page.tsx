@@ -37,7 +37,7 @@ function SectionHeader({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="grid size-9 place-items-center rounded-xl bg-rose-50 text-[#C8102E] ring-1 ring-rose-100">
+      <span className="grid size-9 place-items-center rounded-xl bg-rose-50 text-brand-red ring-1 ring-rose-100">
         <Icon className="size-[18px]" />
       </span>
       <h2 id={`${id}-title`} className="text-2xl font-semibold tracking-tight text-zinc-950">
@@ -77,12 +77,12 @@ function VideoTile({ video }: { video: VideoCard }) {
               className="size-full object-cover object-[50%_20%]"
             />
           ) : null}
-          <span className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#C8102E] shadow-lg transition-transform group-hover:scale-110">
+          <span className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-brand-red shadow-lg transition-transform group-hover:scale-110">
             <PlayIcon className="ml-0.5 size-5 fill-current" />
           </span>
         </div>
         <div className="p-4">
-          <p className="text-xs font-semibold text-[#C8102E]">{video.sportName || "Liga U"}</p>
+          <p className="text-xs font-semibold text-brand-red">{video.sportName || "Liga U"}</p>
           <h3 className="mt-1 line-clamp-2 font-semibold text-zinc-950">{video.title}</h3>
         </div>
       </GlassCard>
@@ -120,7 +120,7 @@ export default async function MultimediaPage() {
             <li key={item.id} className="sm:flex-1">
               <a
                 href={`#${item.id}`}
-                className="flex h-10 items-center justify-center gap-1.5 rounded-full px-3.5 text-sm font-semibold whitespace-nowrap text-zinc-600 transition-colors hover:bg-rose-50 hover:text-[#C8102E]"
+                className="flex h-10 items-center justify-center gap-1.5 rounded-full px-3.5 text-sm font-semibold whitespace-nowrap text-zinc-600 transition-colors hover:bg-rose-50 hover:text-brand-red"
               >
                 {item.title}
                 {item.count ? (
@@ -172,7 +172,7 @@ export default async function MultimediaPage() {
                       )}
                     </div>
                     <div className="flex min-w-0 flex-1 flex-col gap-2 p-4">
-                      <span className="text-xs font-semibold text-[#C8102E]">Episodio {episode.episodeNumber}</span>
+                      <span className="text-xs font-semibold text-brand-red">Episodio {episode.episodeNumber}</span>
                       <h3 className="line-clamp-2 font-semibold text-zinc-950">{episode.title}</h3>
                       {episode.description ? (
                         <p className="line-clamp-2 text-sm text-zinc-500">{episode.description}</p>
@@ -221,7 +221,7 @@ export default async function MultimediaPage() {
               news.length > NEWS_PREVIEW ? (
                 <Link
                   href="/noticias"
-                  className="inline-flex min-h-9 items-center gap-1 text-sm font-semibold text-[#C8102E] hover:underline"
+                  className="inline-flex min-h-9 items-center gap-1 text-sm font-semibold text-brand-red hover:underline"
                 >
                   Ver todas
                   <ArrowUpRight className="size-4" />
@@ -244,8 +244,8 @@ export default async function MultimediaPage() {
                       />
                     ) : null}
                     <div className="min-w-0 p-4">
-                      <p className="text-xs font-semibold text-[#C8102E]">{item.sportName || "Liga U"}</p>
-                      <h3 className="mt-1 line-clamp-2 font-semibold text-zinc-950 group-hover:text-[#C8102E]">
+                      <p className="text-xs font-semibold text-brand-red">{item.sportName || "Liga U"}</p>
+                      <h3 className="mt-1 line-clamp-2 font-semibold text-zinc-950 group-hover:text-brand-red">
                         {item.title}
                       </h3>
                       {item.excerpt ? <p className="mt-1 line-clamp-2 text-sm text-zinc-500">{item.excerpt}</p> : null}

@@ -18,6 +18,6 @@ export const CONTACT_COLORS: Record<ContactKey, string> = {
   facebook: "bg-[#1877F2] text-white",
   whatsapp: "bg-[#25D366] text-white",
   website: "bg-zinc-800 text-white",
-  phone: "bg-[#C8102E] text-white",
+  phone: "bg-brand-red text-white",
   email: "bg-zinc-600 text-white",
 };

@@ -16,7 +16,7 @@ import type { MatchCard, NewsCard, SponsorCard, SportCard, StandingRow, TeamCard
 import { cn } from "@/lib/utils";
 
 const CARD =
-  "bg-white rounded-2xl border border-zinc-200/80 shadow-sm overflow-hidden relative group hover:border-[#C8102E]/60 transition-all duration-300";
+  "bg-white rounded-2xl border border-zinc-200/80 shadow-sm overflow-hidden relative group hover:border-brand-red/60 transition-all duration-300";
 
 const RAIL = "h-[360px] w-[78vw] max-w-[320px] shrink-0 snap-start md:h-[400px] md:w-[320px]";
 
@@ -53,7 +53,7 @@ function Photo({ src }: { src: string }) {
 
 function CardLink({ children }: { children: string }) {
   return (
-    <span className="inline-flex min-h-11 items-center gap-1 text-xs font-black tracking-wide text-[#C8102E] uppercase">
+    <span className="inline-flex min-h-11 items-center gap-1 text-xs font-black tracking-wide text-brand-red uppercase">
       {children}
       <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
     </span>
@@ -372,14 +372,14 @@ function NewsTile({
       href="/noticias"
       aria-label="Ir a noticias"
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-2xl bg-[#f4f1ea] p-4 text-zinc-950 shadow-sm ring-1 ring-zinc-200/80 transition-all duration-300 ring-inset hover:ring-[#C8102E]/60",
+        "group relative flex flex-col overflow-hidden rounded-2xl bg-[#f4f1ea] p-4 text-zinc-950 shadow-sm ring-1 ring-zinc-200/80 transition-all duration-300 ring-inset hover:ring-brand-red/60",
         RAIL,
       )}
     >
       <div className="flex items-center justify-center gap-2 border-b border-zinc-950/80 pb-1.5">
         <Image src="/brand/liga-u-logo.svg" alt="" width={28} height={31} className="h-7 w-auto" />
         <span className="font-serif text-[1.6rem] leading-none font-black tracking-tight">
-          Diario <span className="text-[#C8102E] italic">Liga U</span>
+          Diario <span className="text-brand-red italic">Liga U</span>
         </span>
       </div>
       <div className="flex items-center justify-between border-b-[3px] border-double border-zinc-950/80 py-1 font-serif text-[9px] tracking-[0.18em] text-zinc-600 uppercase">
@@ -388,7 +388,7 @@ function NewsTile({
         <span>Temporada 2026</span>
       </div>
 
-      <p className="mt-2 text-[9px] font-black tracking-[0.2em] text-[#C8102E] uppercase">
+      <p className="mt-2 text-[9px] font-black tracking-[0.2em] text-brand-red uppercase">
         {item?.sportName ?? "Portada"}
       </p>
       <h2 className="mt-0.5 line-clamp-2 font-serif text-[1.15rem] leading-[1.08] font-black">
@@ -404,7 +404,7 @@ function NewsTile({
             className="absolute inset-0 size-full object-cover object-[50%_20%] contrast-125 grayscale transition-transform duration-700 group-hover:scale-105"
           />
         </figure>
-        <p className="max-h-[7.5rem] min-w-0 self-start overflow-hidden border-l border-zinc-950/15 pl-2.5 font-serif text-xs leading-[1.25rem] break-words text-zinc-700 hyphens-auto [mask-image:linear-gradient(to_bottom,black_75%,transparent)] md:max-h-[10rem] first-letter:float-left first-letter:mr-1 first-letter:text-[2.6rem] first-letter:leading-[0.8] first-letter:font-black first-letter:text-[#C8102E]">
+        <p className="max-h-[7.5rem] min-w-0 self-start overflow-hidden border-l border-zinc-950/15 pl-2.5 font-serif text-xs leading-[1.25rem] break-words text-zinc-700 hyphens-auto [mask-image:linear-gradient(to_bottom,black_75%,transparent)] md:max-h-[10rem] first-letter:float-left first-letter:mr-1 first-letter:text-[2.6rem] first-letter:leading-[0.8] first-letter:font-black first-letter:text-brand-red">
           {storyText(item, content)}
         </p>
       </div>
@@ -467,7 +467,7 @@ function MediaTile({ reels }: { reels: Reel[] }) {
       href="/multimedia"
       aria-label="Ir a multimedia: videos y podcasts de Liga U"
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_50%_30%,rgba(200,16,46,0.07),transparent_60%),linear-gradient(160deg,#fafafa_0%,#e4e4e7_100%)] p-4 text-zinc-950 shadow-sm ring-1 ring-zinc-200/80 transition-all duration-300 ring-inset hover:ring-[#C8102E]/60",
+        "group relative flex flex-col overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_50%_30%,rgba(200,16,46,0.07),transparent_60%),linear-gradient(160deg,#fafafa_0%,#e4e4e7_100%)] p-4 text-zinc-950 shadow-sm ring-1 ring-zinc-200/80 transition-all duration-300 ring-inset hover:ring-brand-red/60",
         RAIL,
       )}
     >
@@ -504,7 +504,7 @@ function MediaTile({ reels }: { reels: Reel[] }) {
         ))}
       </div>
 
-      <p className="mt-3 text-[10px] font-black tracking-[0.2em] text-[#C8102E] uppercase">Multimedia</p>
+      <p className="mt-3 text-[10px] font-black tracking-[0.2em] text-brand-red uppercase">Multimedia</p>
       <h2 className="font-jersey mt-0.5 text-3xl leading-[0.9] uppercase">Lo mejor de la jornada</h2>
       <p className="mt-1 text-xs font-semibold text-zinc-500">Entrevistas · Highlights · Podcasts</p>
 
@@ -755,7 +755,7 @@ function PassTile() {
             aria-hidden
             className="absolute inset-y-0 -left-1/2 -z-10 w-1/3 -skew-x-12 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.7),transparent)] transition-transform duration-1000 ease-out group-hover:translate-x-[420%]"
           />
-          <span aria-hidden className="absolute inset-y-0 right-[6.5rem] -z-10 w-[3px] md:right-[6.75rem] bg-[#C8102E]/85" />
+          <span aria-hidden className="absolute inset-y-0 right-[6.5rem] -z-10 w-[3px] md:right-[6.75rem] bg-brand-red/85" />
 
           <div className="flex h-full flex-col justify-between p-5 md:p-6">
             <div className="flex items-start justify-between">
@@ -768,7 +768,7 @@ function PassTile() {
                   className="h-11 w-auto drop-shadow-sm"
                 />
                 <span className="font-jersey text-2xl leading-none tracking-wide uppercase">
-                  U <span className="text-[#C8102E]">Pass</span>
+                  U <span className="text-brand-red">Pass</span>
                 </span>
               </span>
               <Wifi aria-hidden className="size-5 rotate-90 text-zinc-500" strokeWidth={2.25} />
@@ -783,7 +783,7 @@ function PassTile() {
               </span>
               <span className="text-right">
                 <span className="block text-[9px] font-bold tracking-[0.22em] text-zinc-500 uppercase">Temporada</span>
-                <span className="font-jersey block text-xl leading-none text-[#C8102E]">2026</span>
+                <span className="font-jersey block text-xl leading-none text-brand-red">2026</span>
               </span>
             </div>
           </div>
@@ -800,15 +800,15 @@ function PassTile() {
           Accede a descuentos y beneficios exclusivos que te ofrecen las marcas aliadas de la liga.
         </p>
         <div className="mt-5 flex items-center justify-center gap-5 md:justify-start">
-          <Link
-            href="/liga-u-pass/obtener"
-            className="inline-flex min-h-11 items-center rounded-full bg-[#C8102E] px-5 text-[15px] font-medium tracking-[-0.01em] text-white transition-colors hover:bg-[#a50f25]"
+          <button
+            type="button"
+            className="inline-flex min-h-11 items-center rounded-full bg-brand-red px-5 text-[15px] font-medium tracking-[-0.01em] text-white transition-colors hover:bg-brand-red-dark"
           >
-            Obtener U Pass
-          </Link>
+            Adquirir U Pass
+          </button>
           <Link
             href="/liga-u-pass"
-            className="inline-flex min-h-11 items-center gap-0.5 text-[15px] font-medium tracking-[-0.01em] text-[#C8102E] hover:underline"
+            className="inline-flex min-h-11 items-center gap-0.5 text-[15px] font-medium tracking-[-0.01em] text-brand-red hover:underline"
           >
             Ver beneficios
             <ChevronRight className="size-4" strokeWidth={2.25} />
@@ -857,10 +857,10 @@ export default async function HomePage() {
               id="hero-title"
               className="font-jersey max-w-4xl text-[3.75rem] leading-[0.84] text-zinc-950 uppercase sm:text-8xl lg:text-[8.5rem]"
             >
-              El <span className="text-[#C8102E]">epicentro</span> del talento universitario
+              El <span className="text-brand-red">epicentro</span> del talento universitario
             </h1>
             <p className="mt-5 inline-flex items-center gap-2.5 rounded-full bg-white/80 py-1.5 pr-3.5 pl-2.5 text-[11px] font-bold tracking-[0.24em] text-zinc-900 uppercase shadow-[0_8px_24px_-12px_rgba(9,9,11,0.35)] ring-1 ring-zinc-900/10 backdrop-blur-md">
-              <span aria-hidden className="size-2 rounded-full bg-[#C8102E] shadow-[0_0_0_3px_rgba(200,16,46,0.18)]" />
+              <span aria-hidden className="size-2 rounded-full bg-brand-red shadow-[0_0_0_3px_rgba(200,16,46,0.18)]" />
               Temporada 2026 · Liga U
             </p>
             <p className="mt-3 max-w-md text-[15px] leading-relaxed text-zinc-600 md:text-lg">

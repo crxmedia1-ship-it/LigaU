@@ -80,7 +80,7 @@ export function UsuariosBoard({
 
       <section className="admin-surface overflow-hidden rounded-2xl">
         <div className="flex items-center gap-2 border-b border-rose-100 px-5 py-4">
-          <UsersIcon className="size-4 text-[#C8102E]" />
+          <UsersIcon className="size-4 text-brand-red" />
           <h2 className="font-semibold text-zinc-950">Con acceso al panel</h2>
           <span className="rounded-full bg-rose-50 px-2 py-0.5 text-xs font-semibold text-[#9e1b28]">
             {users.length}
@@ -136,7 +136,7 @@ export function UsuariosBoard({
                     type="button"
                     size="sm"
                     variant="outline"
-                    className="border-rose-100 bg-white text-zinc-600 hover:bg-rose-50 hover:text-[#C8102E]"
+                    className="border-rose-100 bg-white text-zinc-600 hover:bg-rose-50 hover:text-brand-red"
                     disabled={pending}
                     onClick={() => {
                       if (!confirm(`¿Generar una contraseña nueva para ${user.fullName}?`)) return;
@@ -160,7 +160,7 @@ export function UsuariosBoard({
                       size="icon-sm"
                       variant="ghost"
                       title="Quitar acceso"
-                      className="text-zinc-400 hover:bg-rose-50 hover:text-[#C8102E]"
+                      className="text-zinc-400 hover:bg-rose-50 hover:text-brand-red"
                       disabled={pending}
                       onClick={() => {
                         if (!confirm(`¿Quitar el acceso al panel a ${user.fullName}?`)) return;
@@ -305,7 +305,7 @@ function CopyRow({
         type="button"
         size="icon-sm"
         variant="ghost"
-        className="text-zinc-400 hover:bg-rose-50 hover:text-[#C8102E]"
+        className="text-zinc-400 hover:bg-rose-50 hover:text-brand-red"
         onClick={() => {
           void navigator.clipboard.writeText(value);
           setCopied(true);

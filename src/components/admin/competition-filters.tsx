@@ -64,7 +64,7 @@ export function CompetitionFilters({
                 <span
                   className={cn(
                     "absolute top-1.5 right-1.5 grid min-w-5 place-items-center rounded-full px-1 text-[10px] font-bold tabular-nums",
-                    active ? "bg-white text-[#C8102E]" : "bg-[#C8102E] text-white",
+                    active ? "bg-white text-brand-red" : "bg-brand-red text-white",
                   )}
                 >
                   {count}
@@ -88,7 +88,7 @@ export function CompetitionFilters({
                 onClick={() => onGenderChange(item.id)}
                 className={cn(
                   "rounded-full px-4 py-2 text-sm font-semibold transition-all sm:px-5",
-                  active ? "bg-white text-[#C8102E] shadow-sm" : "text-zinc-500 hover:text-zinc-900",
+                  active ? "bg-white text-brand-red shadow-sm" : "text-zinc-500 hover:text-zinc-900",
                 )}
               >
                 {item.label}

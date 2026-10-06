@@ -144,7 +144,7 @@ export function InscripcionesBoard({
                         className={cn(
                           "flex h-9 items-center gap-1 rounded-full px-3 text-xs font-semibold transition-all active:scale-95",
                           active
-                            ? "bg-[#C8102E] text-white shadow-[0_8px_18px_-10px_rgba(200,16,46,0.9)]"
+                            ? "bg-brand-red text-white shadow-[0_8px_18px_-10px_rgba(200,16,46,0.9)]"
                             : "bg-zinc-50 text-zinc-500 ring-1 ring-zinc-200 hover:text-zinc-900",
                         )}
                       >

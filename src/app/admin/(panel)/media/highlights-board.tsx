@@ -128,10 +128,10 @@ export function HighlightsBoard({
                     </span>
                   )}
                   <span className="absolute inset-0 bg-linear-to-t from-zinc-950/60 via-transparent to-transparent" />
-                  <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-[#C8102E]">
+                  <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-brand-red">
                     {KIND_LABEL[video.kind] ?? "Video"}
                   </span>
-                  <span className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#C8102E] shadow-lg transition-transform group-hover:scale-110">
+                  <span className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-brand-red shadow-lg transition-transform group-hover:scale-110">
                     <PlayIcon className="ml-0.5 size-5 fill-current" />
                   </span>
                 </button>
@@ -156,7 +156,7 @@ export function HighlightsBoard({
                     aria-label="Eliminar"
                     disabled={pending}
                     onClick={() => remove(video)}
-                    className="grid size-9 place-items-center rounded-xl text-zinc-300 hover:bg-rose-50 hover:text-[#C8102E]"
+                    className="grid size-9 place-items-center rounded-xl text-zinc-300 hover:bg-rose-50 hover:text-brand-red"
                   >
                     <Trash2Icon className="size-4" />
                   </button>
@@ -232,7 +232,7 @@ export function HighlightsBoard({
             {preview ? (
               <div className="relative aspect-video overflow-hidden rounded-2xl bg-zinc-100">
                 <img src={preview} alt="" className="size-full object-cover" />
-                <span className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#C8102E]">
+                <span className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-brand-red">
                   <PlayIcon className="ml-0.5 size-5 fill-current" />
                 </span>
               </div>
@@ -259,7 +259,7 @@ export function HighlightsBoard({
                     "flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-semibold transition-all",
                     !draft.sportId
                       ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white"
-                      : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                      : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-brand-red/40",
                   )}
                 >
                   <img
@@ -280,7 +280,7 @@ export function HighlightsBoard({
                         "flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-semibold transition-all",
                         active
                           ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white"
-                          : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                          : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-brand-red/40",
                       )}
                     >
                       <span>{SPORT_EMOJI[sport.slug] ?? "🏅"}</span>

@@ -114,9 +114,9 @@ export function UpassPanel({
         href="/upass"
         target="_blank"
         rel="noreferrer"
-        className="group relative flex items-center gap-3 overflow-hidden rounded-3xl bg-linear-to-r from-white via-white to-rose-50 px-4 py-3.5 shadow-[0_16px_32px_-26px_rgba(200,16,46,0.6)] ring-1 ring-rose-100 transition-all hover:ring-[#C8102E]/30"
+        className="group relative flex items-center gap-3 overflow-hidden rounded-3xl bg-linear-to-r from-white via-white to-rose-50 px-4 py-3.5 shadow-[0_16px_32px_-26px_rgba(200,16,46,0.6)] ring-1 ring-rose-100 transition-all hover:ring-brand-red/30"
       >
-        <span aria-hidden className="absolute -top-10 -right-6 size-28 rounded-full bg-[#C8102E]/10 blur-2xl" />
+        <span aria-hidden className="absolute -top-10 -right-6 size-28 rounded-full bg-brand-red/10 blur-2xl" />
         <span className="relative grid size-10 shrink-0 place-items-center rounded-2xl bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white shadow-[0_10px_20px_-10px_rgba(200,16,46,0.8)]">
           <TicketIcon className="size-5" />
         </span>
@@ -124,7 +124,7 @@ export function UpassPanel({
           <span className="block text-sm font-semibold text-zinc-950">Página del carnet</span>
           <span className="block truncate text-xs text-zinc-500">/upass · lo que ven los miembros</span>
         </span>
-        <ExternalLinkIcon className="relative size-4 shrink-0 text-[#C8102E] transition-transform group-hover:translate-x-0.5" />
+        <ExternalLinkIcon className="relative size-4 shrink-0 text-brand-red transition-transform group-hover:translate-x-0.5" />
       </a>
 
       {sponsors.length === 0 ? (
@@ -162,7 +162,7 @@ export function UpassPanel({
                       ) : null}
                     </p>
                     <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                      <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold tracking-wide text-[#C8102E] uppercase">
+                      <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold tracking-wide text-brand-red uppercase">
                         {sponsor.category}
                       </span>
                       {sponsor.locationTag ? (
@@ -206,7 +206,7 @@ export function UpassPanel({
                       variant="ghost"
                       aria-label="Eliminar marca"
                       disabled={pending}
-                      className="rounded-full bg-zinc-50 text-zinc-600 hover:bg-[#C8102E] hover:text-white"
+                      className="rounded-full bg-zinc-50 text-zinc-600 hover:bg-brand-red hover:text-white"
                       onClick={() => {
                         const extra = sponsor.benefits.length
                           ? ` y sus ${sponsor.benefits.length} ${sponsor.benefits.length === 1 ? "beneficio" : "beneficios"}`
@@ -270,7 +270,7 @@ export function UpassPanel({
                           variant="ghost"
                           aria-label="Eliminar beneficio"
                           disabled={pending}
-                          className="rounded-full text-zinc-500 hover:bg-[#C8102E] hover:text-white"
+                          className="rounded-full text-zinc-500 hover:bg-brand-red hover:text-white"
                           onClick={() => {
                             if (!confirm(`¿Eliminar "${benefit.discountTitle}"?`)) return;
                             run(() => deleteBenefit(benefit.id), "Beneficio eliminado");
@@ -294,9 +294,9 @@ export function UpassPanel({
                         externalUrl: "",
                       })
                     }
-                    className="group flex items-center justify-center gap-2 rounded-2xl border border-dashed border-zinc-300 py-2.5 text-xs font-semibold text-zinc-600 transition-all hover:border-[#C8102E]/50 hover:bg-white hover:text-[#C8102E]"
+                    className="group flex items-center justify-center gap-2 rounded-2xl border border-dashed border-zinc-300 py-2.5 text-xs font-semibold text-zinc-600 transition-all hover:border-brand-red/50 hover:bg-white hover:text-brand-red"
                   >
-                    <span className="grid size-5 place-items-center rounded-full bg-zinc-900 text-white transition-colors group-hover:bg-[#C8102E]">
+                    <span className="grid size-5 place-items-center rounded-full bg-zinc-900 text-white transition-colors group-hover:bg-brand-red">
                       <PlusIcon className="size-3" />
                     </span>
                     Agregar beneficio
@@ -461,7 +461,7 @@ export function UpassPanel({
                   type="checkbox"
                   checked={sponsorDraft.isActive}
                   onChange={(event) => setSponsorDraft({ ...sponsorDraft, isActive: event.target.checked })}
-                  className="size-5 accent-[#C8102E]"
+                  className="size-5 accent-brand-red"
                 />
               </label>
               <Button

@@ -29,7 +29,7 @@ export function MobileBottomNav() {
                   <span
                     aria-hidden
                     className={cn(
-                      "absolute inset-0 rounded-full bg-[#BA0C2F]",
+                      "absolute inset-0 rounded-full bg-brand-red",
                       active ? "opacity-100" : "opacity-0",
                     )}
                   />
@@ -38,7 +38,7 @@ export function MobileBottomNav() {
                 <span
                   className={cn(
                     "max-w-full px-0.5 text-center text-[10px] leading-tight font-medium",
-                    active && "text-[#BA0C2F]",
+                    active && "text-brand-red",
                   )}
                 >
                   {tab.label}

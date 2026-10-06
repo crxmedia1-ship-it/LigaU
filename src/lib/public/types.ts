@@ -178,8 +178,8 @@ export function parseUniversityColors(colors: Json): UniversityColors {
     const primary =
       typeof colors.primary === "string" ? colors.primary : "#D4AF37";
     const secondary =
-      typeof colors.secondary === "string" ? colors.secondary : "#BA0C2F";
+      typeof colors.secondary === "string" ? colors.secondary : "#C8102E";
     return { primary, secondary };
   }
-  return { primary: "#D4AF37", secondary: "#BA0C2F" };
+  return { primary: "#D4AF37", secondary: "#C8102E" };
 }

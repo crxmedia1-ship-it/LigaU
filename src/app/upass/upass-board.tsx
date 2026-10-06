@@ -272,12 +272,12 @@ export function UpassBoard({ benefits }: { benefits: BenefitCard[] }) {
   return (
     <div className="upass-page relative min-h-screen overflow-hidden bg-[#ececef] text-zinc-950">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 left-1/2 h-[28rem] w-[46rem] -translate-x-1/2 rounded-full bg-[#C8102E]/10 blur-[120px]" />
+        <div className="absolute -top-40 left-1/2 h-[28rem] w-[46rem] -translate-x-1/2 rounded-full bg-brand-red/10 blur-[120px]" />
         <div className="absolute top-[38rem] -right-40 size-[26rem] rounded-full bg-[#ff4d67]/10 blur-[120px]" />
         <div className="absolute inset-0 bg-[radial-gradient(rgba(0,0,0,0.07)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent_70%)]" />
       </div>
 
-      <header className="sticky top-0 z-20 border-t-[3px] border-b border-t-[#C8102E] border-b-black/[0.06] bg-white/70 backdrop-blur-xl">
+      <header className="sticky top-0 z-20 border-t-[3px] border-b border-t-brand-red border-b-black/[0.06] bg-white/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-3xl items-center gap-3 px-4">
           <LigaULogo className="h-8 shrink-0" />
           <span className="rounded-full bg-linear-to-r from-[#e0233f] to-[#9e1b28] px-2.5 py-1 text-[11px] font-bold tracking-[0.16em] text-white uppercase shadow-[0_0_24px_-4px_rgba(224,35,63,0.8)]">
@@ -288,11 +288,11 @@ export function UpassBoard({ benefits }: { benefits: BenefitCard[] }) {
 
       <main className="relative mx-auto max-w-3xl space-y-7 px-4 pt-8 pb-20">
         <section>
-          <p className="text-[11px] font-bold tracking-[0.32em] text-[#C8102E] uppercase">Liga U Pass</p>
+          <p className="text-[11px] font-bold tracking-[0.32em] text-brand-red uppercase">Liga U Pass</p>
           <h1 className="mt-2 text-[40px] leading-[0.95] font-black tracking-tight sm:text-5xl">
             Beneficios
             <br />
-            <span className="bg-linear-to-r from-[#9e1b28] via-[#C8102E] to-[#ff4d67] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-[#9e1b28] via-brand-red to-[#ff4d67] bg-clip-text text-transparent">
               exclusivos
             </span>
           </h1>
@@ -305,7 +305,7 @@ export function UpassBoard({ benefits }: { benefits: BenefitCard[] }) {
           <section className="space-y-3">
             <h2 className="flex items-center gap-2 text-[11px] font-bold tracking-[0.26em] text-zinc-500 uppercase">
               Marcas aliadas
-              <span className="h-px flex-1 bg-linear-to-r from-[#C8102E]/40 via-zinc-300 to-transparent" />
+              <span className="h-px flex-1 bg-linear-to-r from-brand-red/40 via-zinc-300 to-transparent" />
             </h2>
             <div className="-mx-4 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
               <div className="animate-ligau-marquee flex w-max gap-3 px-4 [--marquee-duration:28s] hover:[animation-play-state:paused]">
@@ -341,7 +341,7 @@ export function UpassBoard({ benefits }: { benefits: BenefitCard[] }) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Buscar marca, descuento o zona"
-            className="h-12 w-full rounded-2xl bg-white pr-4 pl-11 text-[15px] text-zinc-900 ring-1 ring-zinc-200 outline-none placeholder:text-zinc-400 focus:ring-2 focus:ring-[#C8102E]/40"
+            className="h-12 w-full rounded-2xl bg-white pr-4 pl-11 text-[15px] text-zinc-900 ring-1 ring-zinc-200 outline-none placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-red/40"
           />
         </label>
 
@@ -392,7 +392,7 @@ export function UpassBoard({ benefits }: { benefits: BenefitCard[] }) {
             <section key={name} className="space-y-3">
               <h2 className="flex items-center gap-2 text-[11px] font-bold tracking-[0.26em] text-zinc-500 uppercase">
                 {name}
-                <span className="h-px flex-1 bg-linear-to-r from-[#C8102E]/40 via-zinc-300 to-transparent" />
+                <span className="h-px flex-1 bg-linear-to-r from-brand-red/40 via-zinc-300 to-transparent" />
               </h2>
               <div className="grid gap-3">
                 {list.map((benefit) => (

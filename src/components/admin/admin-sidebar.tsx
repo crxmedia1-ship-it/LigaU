@@ -92,7 +92,7 @@ export function AdminSidebar({
         {!collapsed ? (
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-bold tracking-[0.18em] uppercase">Liga U</p>
-            <p className="truncate text-[11px] font-medium uppercase tracking-[0.22em] text-[#C8102E]/80">
+            <p className="truncate text-[11px] font-medium uppercase tracking-[0.22em] text-brand-red/80">
               Panel de control
             </p>
           </div>
@@ -101,7 +101,7 @@ export function AdminSidebar({
           type="button"
           variant="ghost"
           size="icon-sm"
-          className="text-zinc-400 hover:bg-rose-50 hover:text-[#C8102E]"
+          className="text-zinc-400 hover:bg-rose-50 hover:text-brand-red"
           onClick={toggleCollapsed}
           aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
         >
@@ -134,7 +134,7 @@ export function AdminSidebar({
           href="/"
           target="_blank"
           className={cn(
-            "flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-zinc-500 transition-colors hover:bg-rose-50 hover:text-[#C8102E]",
+            "flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-zinc-500 transition-colors hover:bg-rose-50 hover:text-brand-red",
             collapsed && "justify-center px-0",
           )}
           title={collapsed ? "Ver sitio público" : undefined}
@@ -199,7 +199,7 @@ function NavLink({
       <Icon
         className={cn(
           "size-[18px] shrink-0 transition-colors",
-          active ? "text-[#C8102E]" : "text-zinc-400 group-hover:text-[#C8102E]",
+          active ? "text-brand-red" : "text-zinc-400 group-hover:text-brand-red",
         )}
       />
       {!collapsed ? <span className="min-w-0 truncate">{item.label}</span> : null}

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export const adminLaserCtaClass =
-  "h-11 border-0 bg-linear-to-r from-[#e0233f] to-[#9e1b28] px-6 text-white shadow-[0_12px_28px_-12px_rgba(200,16,46,0.7)] hover:from-[#C8102E] hover:to-[#8a0b20]";
+  "h-11 border-0 bg-linear-to-r from-[#e0233f] to-[#9e1b28] px-6 text-white shadow-[0_12px_28px_-12px_rgba(200,16,46,0.7)] hover:from-brand-red hover:to-[#8a0b20]";
 
 export function AdminPageHeader({
   kicker,
@@ -46,7 +46,7 @@ export function AdminEmptyState({
         aria-hidden
         className="pointer-events-none absolute top-1/2 left-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#f4c7c5]/50 blur-3xl"
       />
-      <div className="relative mx-auto mb-4 grid size-16 place-items-center text-[#C8102E] opacity-40">
+      <div className="relative mx-auto mb-4 grid size-16 place-items-center text-brand-red opacity-40">
         {icon}
       </div>
       <h3 className="relative text-lg font-semibold tracking-tight text-zinc-950">{title}</h3>

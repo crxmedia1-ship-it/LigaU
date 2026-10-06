@@ -2,6 +2,7 @@
 
 import { getStaffSession } from "@/lib/admin/session";
 import { GENDER_LABELS } from "@/lib/admin/labels";
+import { one } from "@/lib/public/types";
 import { createClient } from "@/lib/supabase/server";
 
 export type SearchItem = {
@@ -12,10 +13,6 @@ export type SearchItem = {
   href: string;
   keywords: string;
 };
-
-function one<T>(value: T | T[] | null): T | null {
-  return Array.isArray(value) ? (value[0] ?? null) : value;
-}
 
 export async function getAdminSearchIndex(): Promise<SearchItem[]> {
   if (!(await getStaffSession())) return [];

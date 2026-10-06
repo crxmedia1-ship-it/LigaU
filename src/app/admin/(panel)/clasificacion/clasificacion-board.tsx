@@ -28,7 +28,7 @@ const SCORE_LABELS = {
 const FORM_STYLES = {
   W: "bg-emerald-500",
   D: "bg-zinc-300",
-  L: "bg-[#C8102E]",
+  L: "bg-brand-red",
 } as const;
 
 export function ClasificacionBoard({ sports, teams, athletes, matches }: MatchBoardData) {
@@ -105,7 +105,7 @@ export function ClasificacionBoard({ sports, teams, athletes, matches }: MatchBo
             <Link
               href={`/clasificacion`}
               target="_blank"
-              className="-my-2 inline-flex min-h-9 shrink-0 items-center text-xs font-semibold text-[#C8102E] hover:underline"
+              className="-my-2 inline-flex min-h-9 shrink-0 items-center text-xs font-semibold text-brand-red hover:underline"
             >
               Ver en el sitio
             </Link>
@@ -114,7 +114,7 @@ export function ClasificacionBoard({ sports, teams, athletes, matches }: MatchBo
           {rows.length === 0 ? (
             <div className="px-6 py-16 text-center text-sm text-zinc-500">
               No hay equipos inscritos en esta disciplina. Créalos en{" "}
-              <Link href="/admin/equipos" className="font-semibold text-[#C8102E] hover:underline">
+              <Link href="/admin/equipos" className="font-semibold text-brand-red hover:underline">
                 Atletas
               </Link>
               .
@@ -176,7 +176,7 @@ export function ClasificacionBoard({ sports, teams, athletes, matches }: MatchBo
                       <td
                         className={cn(
                           "px-2 py-3 text-center font-medium tabular-nums",
-                          row.diff > 0 ? "text-emerald-600" : row.diff < 0 ? "text-[#C8102E]" : "text-zinc-500",
+                          row.diff > 0 ? "text-emerald-600" : row.diff < 0 ? "text-brand-red" : "text-zinc-500",
                         )}
                       >
                         {row.diff > 0 ? `+${row.diff}` : row.diff}
@@ -243,7 +243,7 @@ export function ClasificacionBoard({ sports, teams, athletes, matches }: MatchBo
                     <Button
                       type="button"
                       size="sm"
-                      className="shrink-0 bg-[#C8102E] text-white hover:bg-[#9e1b28]"
+                      className="shrink-0 bg-brand-red text-white hover:bg-[#9e1b28]"
                       onClick={() => setResultMatch(match)}
                     >
                       <TrophyIcon />
@@ -257,13 +257,13 @@ export function ClasificacionBoard({ sports, teams, athletes, matches }: MatchBo
 
           <section className="rounded-2xl border border-rose-100 bg-linear-to-br from-[#fde4e3]/80 via-white to-white p-5">
             <div className="flex gap-3">
-              <InfoIcon className="mt-0.5 size-4 shrink-0 text-[#C8102E]" />
+              <InfoIcon className="mt-0.5 size-4 shrink-0 text-brand-red" />
               <div className="grid gap-1.5 text-xs leading-relaxed text-zinc-600">
                 <p className="font-semibold text-zinc-900">Cómo se ordena</p>
                 <p>Puntos, luego diferencia, luego {scored === "GF" ? "goles" : "puntos"} a favor.</p>
                 <p>
                   Para corregir la tabla, edita el resultado del partido en{" "}
-                  <Link href="/admin/partidos" className="font-semibold text-[#C8102E] hover:underline">
+                  <Link href="/admin/partidos" className="font-semibold text-brand-red hover:underline">
                     Partidos
                   </Link>
                   ; se actualiza al instante aquí y en el sitio.

@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { ArrowUpRight, Gift, Lock, Plane, Smartphone, Sparkles, UtensilsCrossed } from "lucide-react";
+import { Gift, Lock, Plane, Smartphone, Sparkles, UtensilsCrossed } from "lucide-react";
 import { Marquee } from "@/components/magic/marquee";
-import { PassCard, ShineLink } from "@/components/public/pass-landing";
+import { PassCard, ShineButton } from "@/components/public/pass-landing";
 import { cloudinaryLogo } from "@/lib/public/media";
 import { getPassBrandLogos } from "@/lib/public/sponsor-logos";
 import { cn } from "@/lib/utils";
@@ -56,7 +55,7 @@ const MIN_REEL = 10;
 function SectionTitle({ id, eyebrow, children }: { id: string; eyebrow: string; children: string }) {
   return (
     <div className="text-center">
-      <p className="text-[11px] font-bold tracking-[0.28em] text-[#C8102E] uppercase">{eyebrow}</p>
+      <p className="text-[11px] font-bold tracking-[0.28em] text-brand-red uppercase">{eyebrow}</p>
       <h2 id={id} className="mt-2 text-[28px] leading-[1.1] font-semibold tracking-[-0.022em] text-zinc-950 md:text-5xl">
         {children}
       </h2>
@@ -95,7 +94,7 @@ export default async function LigaUPassPage() {
               id="pass-title"
               className="font-jersey mt-5 text-[3.1rem] leading-[0.88] text-zinc-950 uppercase sm:text-7xl md:text-[6.5rem]"
             >
-              El club de <span className="text-[#C8102E]">beneficios</span> de la comunidad universitaria
+              El club de <span className="text-brand-red">beneficios</span> de la comunidad universitaria
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-[16px] leading-[1.5] tracking-[-0.01em] text-zinc-500 md:text-lg">
               Descuentos exclusivos, preventas y ventajas en los mejores comercios de Venezuela para estudiantes,
@@ -108,9 +107,7 @@ export default async function LigaUPassPage() {
           </div>
 
           <div className="mt-10 flex flex-col items-center gap-3 md:mt-12">
-            <ShineLink href="/liga-u-pass/obtener" className="w-full max-w-xs md:w-auto">
-              Obtener mi U Pass
-            </ShineLink>
+            <ShineButton className="w-full max-w-xs md:w-auto">Adquirir U Pass</ShineButton>
             <p className="text-xs text-zinc-400">Membresía anual · Activación inmediata</p>
           </div>
         </section>
@@ -131,10 +128,10 @@ export default async function LigaUPassPage() {
                 >
                   {index + 1}
                 </span>
-                <span className="grid size-12 place-items-center rounded-2xl bg-white text-[#C8102E] shadow-[0_10px_24px_-12px_rgba(200,16,46,0.45)] ring-1 ring-zinc-200/80">
+                <span className="grid size-12 place-items-center rounded-2xl bg-white text-brand-red shadow-[0_10px_24px_-12px_rgba(200,16,46,0.45)] ring-1 ring-zinc-200/80">
                   <Icon className="size-[22px]" strokeWidth={1.75} />
                 </span>
-                <p className="mt-8 text-xs font-semibold tracking-[0.08em] text-[#C8102E] uppercase">Paso {index + 1}</p>
+                <p className="mt-8 text-xs font-semibold tracking-[0.08em] text-brand-red uppercase">Paso {index + 1}</p>
                 <h3 className="mt-1 text-[22px] leading-tight font-semibold tracking-[-0.022em] text-zinc-950 md:text-2xl">
                   {title}
                 </h3>
@@ -197,10 +194,9 @@ export default async function LigaUPassPage() {
               </article>
             ))}
 
-            <Link
-              href="/liga-u-pass/obtener"
+            <article
               aria-label="Beneficios bloqueados: obtén tu U Pass para desbloquearlos"
-              className="group relative flex min-h-56 flex-col overflow-hidden rounded-[28px] bg-[linear-gradient(165deg,#fafafa_0%,#e4e4e7_48%,#d4d4d8_100%)] p-5 text-zinc-950 shadow-[0_24px_50px_-28px_rgba(9,9,11,0.35)] ring-1 ring-zinc-200 md:min-h-64 md:p-6"
+              className="relative flex min-h-56 flex-col overflow-hidden rounded-[28px] bg-[linear-gradient(165deg,#fafafa_0%,#e4e4e7_48%,#d4d4d8_100%)] p-5 text-zinc-950 shadow-[0_24px_50px_-28px_rgba(9,9,11,0.35)] ring-1 ring-zinc-200 md:min-h-64 md:p-6"
             >
               <div
                 aria-hidden
@@ -219,20 +215,19 @@ export default async function LigaUPassPage() {
 
               <span
                 aria-hidden
-                className="absolute top-1/2 left-1/2 z-10 grid size-16 -translate-1/2 place-items-center rounded-full bg-white shadow-[0_14px_30px_-12px_rgba(9,9,11,0.45)] ring-1 ring-zinc-200 transition-transform duration-300 group-hover:scale-110"
+                className="absolute top-1/2 left-1/2 z-10 grid size-16 -translate-1/2 place-items-center rounded-full bg-white shadow-[0_14px_30px_-12px_rgba(9,9,11,0.45)] ring-1 ring-zinc-200"
               >
-                <Lock className="size-7 text-[#C8102E]" strokeWidth={2.25} />
+                <Lock className="size-7 text-brand-red" strokeWidth={2.25} />
               </span>
 
               <div aria-hidden className="relative mt-auto pt-8 opacity-60 blur-[3px] select-none">
                 <p className="font-jersey text-[4.5rem] leading-none">Más</p>
                 <p className="mt-2 text-sm leading-snug text-zinc-600">Nuevas marcas se suman durante la temporada.</p>
               </div>
-              <p className="relative mt-4 flex items-center justify-between gap-2 border-t border-zinc-900/10 pt-3 text-[11px] font-semibold tracking-wide text-zinc-700">
+              <p className="relative mt-4 border-t border-zinc-900/10 pt-3 text-[11px] font-semibold tracking-wide text-zinc-700">
                 Desbloquéalo con tu U Pass
-                <ArrowUpRight className="size-4 text-[#C8102E] transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
               </p>
-            </Link>
+            </article>
           </div>
         </section>
 

@@ -19,6 +19,7 @@ import type {
   UniversityOption,
 } from "@/app/admin/(panel)/partidos/types";
 import { cn } from "@/lib/utils";
+import { normalizeText } from "@/lib/text";
 
 export type MatchDraft = {
   id?: string;
@@ -121,7 +122,7 @@ function Tile({
         "flex min-h-12 items-center justify-center rounded-2xl px-3 py-2 text-center text-sm font-semibold transition-all active:scale-[0.97]",
         active
           ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white shadow-[0_12px_24px_-12px_rgba(200,16,46,0.9)]"
-          : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:text-zinc-950 hover:ring-[#C8102E]/40",
+          : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:text-zinc-950 hover:ring-brand-red/40",
         className,
       )}
     >
@@ -137,7 +138,7 @@ function MoreToggle({ open, onClick, children }: { open: boolean; onClick: () =>
       onClick={onClick}
       className={cn(
         "mx-auto text-xs font-semibold underline-offset-4 hover:underline",
-        open ? "text-zinc-500" : "text-[#C8102E]",
+        open ? "text-zinc-500" : "text-brand-red",
       )}
     >
       {children}
@@ -297,7 +298,7 @@ export function MatchFormDialog({
               onClick={swapTeams}
               disabled={!home && !away}
               title="Intercambiar local y visitante"
-              className="group grid size-10 place-items-center rounded-full bg-white text-[#C8102E] shadow-[0_10px_24px_-12px_rgba(200,16,46,0.7)] ring-1 ring-rose-100 transition-transform enabled:hover:rotate-180 disabled:opacity-60"
+              className="group grid size-10 place-items-center rounded-full bg-white text-brand-red shadow-[0_10px_24px_-12px_rgba(200,16,46,0.7)] ring-1 ring-rose-100 transition-transform enabled:hover:rotate-180 disabled:opacity-60"
             >
               {home || away ? (
                 <ArrowLeftRightIcon className="size-4" />
@@ -363,10 +364,10 @@ export function MatchFormDialog({
                       className={cn(
                         "relative flex flex-col items-center gap-1.5 rounded-2xl border-2 px-1.5 pt-4 pb-3 text-center transition-all active:scale-[0.96]",
                         mine
-                          ? "border-[#C8102E] bg-rose-50 shadow-[0_14px_28px_-18px_rgba(200,16,46,0.9)]"
+                          ? "border-brand-red bg-rose-50 shadow-[0_14px_28px_-18px_rgba(200,16,46,0.9)]"
                           : role
                             ? "border-zinc-200 bg-zinc-50 opacity-70"
-                            : "border-zinc-100 bg-white hover:border-[#C8102E]/40",
+                            : "border-zinc-100 bg-white hover:border-brand-red/40",
                       )}
                     >
                       <TeamCrest bare logoUrl={university.logoUrl} label={university.shortName} className="size-14" />
@@ -375,7 +376,7 @@ export function MatchFormDialog({
                         <span
                           className={cn(
                             "block truncate text-[10px] font-medium",
-                            role ? "text-[#C8102E]" : isEnrolled || !draft.sportId ? "text-zinc-400" : "text-amber-600",
+                            role ? "text-brand-red" : isEnrolled || !draft.sportId ? "text-zinc-400" : "text-amber-600",
                           )}
                         >
                           {role ?? (!draft.sportId ? "\u00a0" : isEnrolled ? "Inscrito" : "Nuevo equipo")}
@@ -430,7 +431,7 @@ export function MatchFormDialog({
                           "relative flex flex-col items-center justify-center gap-1 rounded-2xl px-1.5 py-3 text-center transition-all active:scale-[0.97] sm:py-4",
                           active
                             ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white shadow-[0_14px_28px_-14px_rgba(200,16,46,0.9)]"
-                            : "bg-white text-zinc-800 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                            : "bg-white text-zinc-800 ring-1 ring-zinc-200 hover:ring-brand-red/40",
                         )}
                       >
                         {active ? <CheckBadge /> : null}
@@ -482,13 +483,13 @@ export function MatchFormDialog({
                           "flex w-[4.25rem] shrink-0 snap-start flex-col items-center rounded-2xl py-2.5 transition-all active:scale-[0.96]",
                           active
                             ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white shadow-[0_12px_24px_-12px_rgba(200,16,46,0.9)]"
-                            : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                            : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-brand-red/40",
                         )}
                       >
                         <span
                           className={cn(
                             "text-[11px] font-semibold capitalize",
-                            active ? "text-white/85" : day.weekend ? "text-[#C8102E]" : "text-zinc-400",
+                            active ? "text-white/85" : day.weekend ? "text-brand-red" : "text-zinc-400",
                           )}
                         >
                           {day.top}
@@ -650,13 +651,6 @@ export function MatchFormDialog({
   );
 }
 
-export function normalize(value: string) {
-  return value
-    .normalize("NFD")
-    .replace(/\p{M}/gu, "")
-    .toLowerCase()
-    .trim();
-}
 
 export function VenueInput({
   value,
@@ -668,9 +662,9 @@ export function VenueInput({
   onChange: (value: string) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const needle = normalize(value);
-  const matches = options.filter((option) => !needle || normalize(option).includes(needle));
-  const isNew = needle.length > 0 && !options.some((option) => normalize(option) === needle);
+  const needle = normalizeText(value);
+  const matches = options.filter((option) => !needle || normalizeText(option).includes(needle));
+  const isNew = needle.length > 0 && !options.some((option) => normalizeText(option) === needle);
 
   return (
     <div className="relative">
@@ -747,7 +741,7 @@ export function VenueInput({
 
 function CheckBadge() {
   return (
-    <span className="absolute top-2 right-2 grid size-5 place-items-center rounded-full bg-white text-[#C8102E]">
+    <span className="absolute top-2 right-2 grid size-5 place-items-center rounded-full bg-white text-brand-red">
       <CheckIcon className="size-3" strokeWidth={3} />
     </span>
   );
@@ -778,7 +772,7 @@ function SlotButton({
       onClick={onClick}
       className={cn(
         "flex min-w-0 items-center justify-center gap-2.5 rounded-2xl px-2 py-2 transition-all",
-        active ? "bg-white shadow-[0_10px_24px_-14px_rgba(200,16,46,0.8)] ring-2 ring-[#C8102E]" : "hover:bg-white/60",
+        active ? "bg-white shadow-[0_10px_24px_-14px_rgba(200,16,46,0.8)] ring-2 ring-brand-red" : "hover:bg-white/60",
       )}
     >
       {team ? (
@@ -786,8 +780,8 @@ function SlotButton({
       ) : (
         <span
           className={cn(
-            "grid size-11 shrink-0 place-items-center rounded-full border-2 border-dashed bg-white/60 text-[#C8102E]",
-            active ? "border-[#C8102E]/60" : "border-rose-200",
+            "grid size-11 shrink-0 place-items-center rounded-full border-2 border-dashed bg-white/60 text-brand-red",
+            active ? "border-brand-red/60" : "border-rose-200",
           )}
         >
           <PlusIcon className="size-4" />

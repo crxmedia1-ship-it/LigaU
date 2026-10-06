@@ -12,7 +12,7 @@
     "layers": [
       {
         "type": "image",
-        "src": "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,w_800/f_auto,q_auto/v1773039304/Photoroom_20260309_025302_kb0jmm.png",
+        "src": "/brand/liga-u-logo.svg",
         "fit": "contain",
         "x": 10,
         "y": 22,
@@ -36,7 +36,7 @@
       },
       {
         "type": "image",
-        "src": "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,w_800/f_auto,q_auto/v1773039304/Photoroom_20260309_025302_kb0jmm.png",
+        "src": "/brand/liga-u-logo.svg",
         "fit": "contain",
         "x": 41,
         "y": 4.6,
@@ -432,7 +432,7 @@
       },
       {
         "type": "image",
-        "src": "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,w_800/f_auto,q_auto/v1773039304/Photoroom_20260309_025302_kb0jmm.png",
+        "src": "/brand/liga-u-logo.svg",
         "fit": "contain",
         "x": 23.25,
         "y": 48.4,
@@ -489,7 +489,7 @@
       },
       {
         "type": "image",
-        "src": "https://res.cloudinary.com/dbzu0fqle/image/upload/v1791279672/carnetx/icons/whatsapp-green.svg",
+        "src": "/icons/whatsapp.svg",
         "fit": "contain",
         "x": 61.75,
         "y": 48.4,
@@ -596,18 +596,7 @@
         "y": 76.4,
         "w": 100,
         "h": 8,
-        "items": [
-          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1778040250/IMG_2495_c8esod.png",
-          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1778040248/Photoroom_20260506_000214_bluzib.png",
-          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1776359950/Photoroom_20260416_131829_giiu5e.png",
-          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775052059/guacamaya_i7ycq0.png",
-          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775052060/luxor_qqmtyv.png",
-          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775052059/champions_lk9ncy.png",
-          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775052059/11_11_haqjxi.png",
-          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775052060/cinex_qo1yva.png",
-          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1774469390/Photoroom_20260325_155428_pjk21i.png",
-          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775673264/Photoroom_20260408_140527_anc4fc.png"
-        ],
+        "items": [],
         "duration": 30,
         "gap": 34,
         "monochrome": true

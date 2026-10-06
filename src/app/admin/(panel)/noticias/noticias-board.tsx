@@ -152,7 +152,7 @@ export function NoticiasBoard({
                 )}
                 <span className="absolute top-3 left-3 flex gap-1.5">
                   {item.isFeatured ? (
-                    <span className="flex items-center gap-1 rounded-full bg-[#C8102E] px-2.5 py-1 text-[11px] font-bold text-white">
+                    <span className="flex items-center gap-1 rounded-full bg-brand-red px-2.5 py-1 text-[11px] font-bold text-white">
                       <StarIcon className="size-3 fill-current" /> Destacada
                     </span>
                   ) : null}
@@ -184,7 +184,7 @@ export function NoticiasBoard({
                   aria-label="Eliminar"
                   disabled={pending}
                   onClick={() => remove(item)}
-                  className="grid size-9 place-items-center rounded-xl text-zinc-300 hover:bg-rose-50 hover:text-[#C8102E]"
+                  className="grid size-9 place-items-center rounded-xl text-zinc-300 hover:bg-rose-50 hover:text-brand-red"
                 >
                   <Trash2Icon className="size-4" />
                 </button>
@@ -287,7 +287,7 @@ export function NoticiasBoard({
                     "flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-semibold transition-all",
                     !draft.sportId
                       ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white"
-                      : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                      : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-brand-red/40",
                   )}
                 >
                   <img
@@ -308,7 +308,7 @@ export function NoticiasBoard({
                         "flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-semibold transition-all",
                         active
                           ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white"
-                          : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                          : "bg-white text-zinc-700 ring-1 ring-zinc-200 hover:ring-brand-red/40",
                       )}
                     >
                       <span>{SPORT_EMOJI[sport.slug ?? ""] ?? "🏅"}</span>
@@ -334,7 +334,7 @@ export function NoticiasBoard({
               <span
                 className={cn(
                   "relative h-7 w-12 shrink-0 rounded-full transition-colors",
-                  draft.isFeatured ? "bg-[#C8102E]" : "bg-zinc-200",
+                  draft.isFeatured ? "bg-brand-red" : "bg-zinc-200",
                 )}
               >
                 <span

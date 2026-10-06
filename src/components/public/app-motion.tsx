@@ -41,7 +41,7 @@ export function Segmented({
             <span className="relative inline-flex items-center gap-1.5">
               {option.label}
               {option.badge ? (
-                <span className="grid h-4 min-w-4 place-items-center rounded-full bg-[#C8102E] px-1 text-[10px] text-white tabular-nums">
+                <span className="grid h-4 min-w-4 place-items-center rounded-full bg-brand-red px-1 text-[10px] text-white tabular-nums">
                   {option.badge}
                 </span>
               ) : null}

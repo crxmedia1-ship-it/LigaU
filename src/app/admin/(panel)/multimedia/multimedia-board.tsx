@@ -132,10 +132,10 @@ export function MultimediaBoard({ episodes }: { episodes: PodcastRow[] }) {
                     </span>
                   )}
                   <span className="absolute inset-0 bg-linear-to-t from-zinc-950/60 via-transparent to-transparent" />
-                  <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-[#C8102E]">
+                  <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-brand-red">
                     Episodio {episode.episodeNumber}
                   </span>
-                  <span className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#C8102E] shadow-lg transition-transform group-hover:scale-110">
+                  <span className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-brand-red shadow-lg transition-transform group-hover:scale-110">
                     <PlayIcon className="ml-0.5 size-5 fill-current" />
                   </span>
                 </button>
@@ -188,7 +188,7 @@ export function MultimediaBoard({ episodes }: { episodes: PodcastRow[] }) {
                     aria-label="Eliminar"
                     disabled={pending}
                     onClick={() => remove(episode)}
-                    className="grid size-9 place-items-center rounded-xl text-zinc-300 hover:bg-rose-50 hover:text-[#C8102E]"
+                    className="grid size-9 place-items-center rounded-xl text-zinc-300 hover:bg-rose-50 hover:text-brand-red"
                   >
                     <Trash2Icon className="size-4" />
                   </button>
@@ -252,7 +252,7 @@ export function MultimediaBoard({ episodes }: { episodes: PodcastRow[] }) {
             {preview ? (
               <div className="relative aspect-video overflow-hidden rounded-2xl bg-zinc-100">
                 <img src={preview} alt="" className="size-full object-cover" />
-                <span className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#C8102E]">
+                <span className="absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-brand-red">
                   <PlayIcon className="ml-0.5 size-5 fill-current" />
                 </span>
               </div>

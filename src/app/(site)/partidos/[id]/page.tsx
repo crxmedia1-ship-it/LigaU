@@ -34,15 +34,15 @@ export default async function PartidoPage({
     match.homeScore !== match.awayScore
       ? match.homeScore > match.awayScore
         ? [
-            homeTeam?.university.colors.primary ?? "#BA0C2F",
+            homeTeam?.university.colors.primary ?? "#C8102E",
             homeTeam?.university.colors.secondary ?? "#D4AF37",
           ]
         : [
-            awayTeam?.university.colors.primary ?? "#BA0C2F",
+            awayTeam?.university.colors.primary ?? "#C8102E",
             awayTeam?.university.colors.secondary ?? "#D4AF37",
           ]
       : [
-          homeTeam?.university.colors.primary ?? "#BA0C2F",
+          homeTeam?.university.colors.primary ?? "#C8102E",
           awayTeam?.university.colors.primary ?? "#D4AF37",
         ];
 

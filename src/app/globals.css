@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* Official Liga U palette lives in @theme (Tailwind v4 — no tailwind.config.js).
-   brand-red #BA0C2F · brand-crimson #9E1B28 · brand-silver #E2E8F0 / zinc-400
+   brand-red #C8102E (hover #A50F25) · brand-crimson #9E1B28 · brand-silver #E2E8F0 / zinc-400
    brand-dark #09090B · brand-gold #D4AF37/#F59E0B */
 
 html {
@@ -63,7 +63,8 @@ html:not(.dark) body {
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --color-brand-red: #ba0c2f;
+  --color-brand-red: #c8102e;
+  --color-brand-red-dark: #a50f25;
   --color-brand-crimson: #9e1b28;
   --color-brand-silver: #e2e8f0;
   --color-brand-silver-dim: #94a3b8;
@@ -110,7 +111,7 @@ html:not(.dark) body {
   --color-muted-foreground: #64748b;
   --color-border: rgb(226 232 240 / 90%);
   --color-ring: #c8102e;
-  --chart-1: #ba0c2f;
+  --chart-1: #c8102e;
   --chart-2: #71717a;
   --chart-3: #d4af37;
   --chart-4: #9e1b28;
@@ -118,12 +119,12 @@ html:not(.dark) body {
   --radius: 0.625rem;
   --sidebar: #ffffff;
   --sidebar-foreground: #18181b;
-  --sidebar-primary: #ba0c2f;
+  --sidebar-primary: #c8102e;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f4f4f5;
   --sidebar-accent-foreground: #18181b;
   --sidebar-border: rgb(228 228 231 / 90%);
-  --sidebar-ring: #ba0c2f;
+  --sidebar-ring: #c8102e;
 }
 
 .dark {
@@ -134,7 +135,7 @@ html:not(.dark) body {
   --card-foreground: #e2e8f0;
   --popover: #101014;
   --popover-foreground: #e2e8f0;
-  --primary: #ba0c2f;
+  --primary: #c8102e;
   --primary-foreground: #ffffff;
   --secondary: #141418;
   --secondary-foreground: #e2e8f0;
@@ -142,17 +143,17 @@ html:not(.dark) body {
   --muted-foreground: #94a3b8;
   --accent: #1a1214;
   --accent-foreground: #e2e8f0;
-  --destructive: #ba0c2f;
+  --destructive: #c8102e;
   --border: rgb(39 39 42 / 80%);
   --input: rgb(39 39 42 / 80%);
-  --ring: #ba0c2f;
+  --ring: #c8102e;
   --color-background: #09090b;
   --color-foreground: #e2e8f0;
   --color-card: rgb(9 9 11 / 70%);
   --color-card-foreground: #e2e8f0;
   --color-popover: #101014;
   --color-popover-foreground: #e2e8f0;
-  --color-primary: #ba0c2f;
+  --color-primary: #c8102e;
   --color-primary-foreground: #ffffff;
   --color-secondary: #141418;
   --color-secondary-foreground: #e2e8f0;
@@ -160,23 +161,23 @@ html:not(.dark) body {
   --color-muted-foreground: #94a3b8;
   --color-accent: #1a1214;
   --color-accent-foreground: #e2e8f0;
-  --color-destructive: #ba0c2f;
+  --color-destructive: #c8102e;
   --color-border: rgb(39 39 42 / 80%);
   --color-input: rgb(39 39 42 / 80%);
-  --color-ring: #ba0c2f;
-  --chart-1: #ba0c2f;
+  --color-ring: #c8102e;
+  --chart-1: #c8102e;
   --chart-2: #94a3b8;
   --chart-3: #d4af37;
   --chart-4: #9e1b28;
   --chart-5: #27272a;
   --sidebar: #08080a;
   --sidebar-foreground: #e2e8f0;
-  --sidebar-primary: #ba0c2f;
+  --sidebar-primary: #c8102e;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #141418;
   --sidebar-accent-foreground: #e2e8f0;
   --sidebar-border: rgb(39 39 42 / 80%);
-  --sidebar-ring: #ba0c2f;
+  --sidebar-ring: #c8102e;
 }
 
 /* Liga U public portal — always light regardless of OS/html dark class */
@@ -501,12 +502,12 @@ html.dark .ligau-public .glass-card {
 }
 
 .glass-card:hover {
-  border-color: rgb(186 12 47 / 50%);
+  border-color: rgb(200 16 46 / 50%);
 }
 
 .dark .glass-card:hover {
   box-shadow:
-    0 0 0 1px rgb(186 12 47 / 20%),
+    0 0 0 1px rgb(200 16 46 / 20%),
     0 12px 40px rgb(158 27 40 / 20%);
 }
 
@@ -646,13 +647,24 @@ html.dark .ligau-public .glass-card {
 }
 
 /* Callout lines: a drop rides the tip while it flows, then rings spread where it lands. */
-@keyframes ligau-bead {
+@keyframes ligau-bead-rise {
   0% {
     opacity: 0;
     scale: 0.4;
   }
-  15%,
-  80% {
+  12%,
+  99.9% {
+    opacity: 1;
+    scale: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ligau-bead-run {
+  0%,
+  75% {
     opacity: 1;
     scale: 1;
   }
@@ -676,12 +688,37 @@ html.dark .ligau-public .glass-card {
   }
 }
 
-@utility animate-ligau-bead {
-  animation: ligau-bead 600ms ease-out both;
+@utility animate-ligau-bead-rise {
+  animation: ligau-bead-rise 600ms linear both;
+}
+
+@utility animate-ligau-bead-run {
+  animation: ligau-bead-run 400ms linear both;
 }
 
 @utility animate-ligau-ripple {
   animation: ligau-ripple 1100ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+/* 404 scoreboard: digits flip down into place. */
+@keyframes ligau-digit {
+  0% {
+    opacity: 0;
+    transform: rotateX(-88deg) translateY(-12%);
+  }
+  65% {
+    opacity: 1;
+    transform: rotateX(12deg);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateX(0deg);
+  }
+}
+
+@utility animate-ligau-digit {
+  animation: ligau-digit 700ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  transform-origin: 50% 0%;
 }
 
 @utility animate-ligau-pass-to-back {
@@ -710,8 +747,10 @@ html.dark .ligau-public .glass-card {
   .animate-ligau-pass-to-back,
   .animate-ligau-pass-to-front,
   .animate-ligau-pass-glint,
-  .animate-ligau-bead,
-  .animate-ligau-ripple {
+  .animate-ligau-bead-rise,
+  .animate-ligau-bead-run,
+  .animate-ligau-ripple,
+  .animate-ligau-digit {
     animation: none;
   }
 

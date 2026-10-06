@@ -25,11 +25,11 @@ import { createMatchesBulk, type BulkMatchInput } from "@/app/admin/(panel)/part
 import {
   ROUNDS,
   VenueInput,
-  normalize,
   toDateInput,
 } from "@/app/admin/(panel)/partidos/match-form-dialog";
 import type { SportOption, TeamGender, TeamOption, UniversityOption } from "@/app/admin/(panel)/partidos/types";
 import { cn } from "@/lib/utils";
+import { normalizeText } from "@/lib/text";
 
 type Mode = "jornada" | "excel";
 type Pair = { key: string; home: string; away: string; time: string; date: string; round: string };
@@ -96,7 +96,7 @@ function parseDate(value: string) {
 }
 
 function parseTime(value: string) {
-  const match = normalize(value)
+  const match = normalizeText(value)
     .replace(/\./g, "")
     .match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|a m|p m)?$/);
   if (!match) return null;
@@ -110,7 +110,7 @@ function parseTime(value: string) {
 }
 
 function parseGender(value: string): TeamGender | null {
-  const key = normalize(value);
+  const key = normalizeText(value);
   if (key.startsWith("mix") || key === "x") return "mixed";
   if (key.startsWith("f")) return "female";
   if (key.startsWith("m")) return "male";
@@ -119,23 +119,23 @@ function parseGender(value: string): TeamGender | null {
 
 function parsePaste(text: string, sports: SportOption[], universities: UniversityOption[]): ParsedLine[] {
   const findSport = (value: string) => {
-    const key = normalize(value);
+    const key = normalizeText(value);
     return (
-      sports.find((sport) => normalize(sport.name) === key || sport.slug === key) ??
-      sports.find((sport) => normalize(sport.name).startsWith(key))
+      sports.find((sport) => normalizeText(sport.name) === key || sport.slug === key) ??
+      sports.find((sport) => normalizeText(sport.name).startsWith(key))
     );
   };
   const findUniversity = (value: string) => {
-    const key = normalize(value);
+    const key = normalizeText(value);
     return universities.find(
-      (university) => normalize(university.shortName) === key || normalize(university.name) === key,
+      (university) => normalizeText(university.shortName) === key || normalizeText(university.name) === key,
     );
   };
 
   return text
     .split(/\r?\n/)
     .map((text, index) => ({ text: text.trim(), line: index + 1 }))
-    .filter(({ text }) => text && !normalize(text).startsWith("fecha"))
+    .filter(({ text }) => text && !normalizeText(text).startsWith("fecha"))
     .map(({ text, line }) => {
       const separator = text.includes("\t") ? "\t" : text.includes(";") ? ";" : ",";
       const [date = "", time = "", sportName = "", category = "", local = "", visitor = "", place = "", round = ""] =
@@ -328,7 +328,7 @@ export function BulkMatchDialog({
                         "flex flex-col items-center gap-0.5 rounded-2xl px-1 py-2.5 text-center transition-all active:scale-[0.97]",
                         sportId === sport.id
                           ? "bg-linear-to-br from-[#e0233f] to-[#9e1b28] text-white shadow-[0_12px_24px_-12px_rgba(200,16,46,0.9)]"
-                          : "bg-white text-zinc-800 ring-1 ring-zinc-200 hover:ring-[#C8102E]/40",
+                          : "bg-white text-zinc-800 ring-1 ring-zinc-200 hover:ring-brand-red/40",
                       )}
                     >
                       <span className="text-xl leading-none">{SPORT_EMOJI[sport.slug] ?? "🏅"}</span>
@@ -394,7 +394,7 @@ export function BulkMatchDialog({
                     onClick={() => setGeneratorOpen((value) => !value)}
                     className={cn(
                       "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
-                      generatorOpen ? "bg-zinc-900 text-white" : "bg-rose-50 text-[#C8102E] hover:bg-rose-100",
+                      generatorOpen ? "bg-zinc-900 text-white" : "bg-rose-50 text-brand-red hover:bg-rose-100",
                     )}
                   >
                     <ShuffleIcon className="size-3.5" />
@@ -433,11 +433,11 @@ export function BulkMatchDialog({
                             }
                             className={cn(
                               "relative flex flex-col items-center gap-1 rounded-2xl border-2 py-2.5 transition-all active:scale-[0.96]",
-                              on ? "border-[#C8102E] bg-rose-50" : "border-transparent bg-white ring-1 ring-zinc-200",
+                              on ? "border-brand-red bg-rose-50" : "border-transparent bg-white ring-1 ring-zinc-200",
                             )}
                           >
                             {on ? (
-                              <span className="absolute top-1 right-1 grid size-4 place-items-center rounded-full bg-[#C8102E] text-white">
+                              <span className="absolute top-1 right-1 grid size-4 place-items-center rounded-full bg-brand-red text-white">
                                 <CheckIcon className="size-2.5" strokeWidth={3} />
                               </span>
                             ) : null}
@@ -498,7 +498,7 @@ export function BulkMatchDialog({
                             enrolled={enrolled}
                             onChange={(home) => updatePair(pair.key, { home })}
                           />
-                          <span className="shrink-0 text-[11px] font-black text-[#C8102E]">VS</span>
+                          <span className="shrink-0 text-[11px] font-black text-brand-red">VS</span>
                           <TeamSelect
                             value={pair.away}
                             placeholder="Visitante"
@@ -526,7 +526,7 @@ export function BulkMatchDialog({
                             type="button"
                             aria-label="Quitar partido"
                             onClick={() => setPairs((current) => current.filter((item) => item.key !== pair.key))}
-                            className="ml-auto grid size-9 shrink-0 place-items-center rounded-lg text-zinc-300 hover:bg-rose-50 hover:text-[#C8102E]"
+                            className="ml-auto grid size-9 shrink-0 place-items-center rounded-lg text-zinc-300 hover:bg-rose-50 hover:text-brand-red"
                           >
                             <Trash2Icon className="size-4" />
                           </button>
@@ -537,7 +537,7 @@ export function BulkMatchDialog({
                   <button
                     type="button"
                     onClick={addPair}
-                    className="flex h-12 items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-rose-200 text-sm font-semibold text-[#C8102E] transition-colors hover:bg-rose-50"
+                    className="flex h-12 items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-rose-200 text-sm font-semibold text-brand-red transition-colors hover:bg-rose-50"
                   >
                     <PlusIcon className="size-4" />
                     Agregar partido
@@ -578,7 +578,7 @@ export function BulkMatchDialog({
                     await navigator.clipboard.writeText(TEMPLATE);
                     toast.add({ type: "success", title: "Plantilla copiada", description: "Pégala en Excel o Sheets." });
                   }}
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#C8102E] ring-1 ring-rose-200 hover:bg-rose-50"
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-brand-red ring-1 ring-rose-200 hover:bg-rose-50"
                 >
                   <ClipboardCopyIcon className="size-3.5" />
                   Copiar plantilla
@@ -678,7 +678,7 @@ function TeamSelect({
         onChange={(event) => onChange(event.target.value)}
         aria-label={placeholder}
         className={cn(
-          "h-11 w-full min-w-0 cursor-pointer appearance-none truncate rounded-xl border bg-white pr-2 text-sm font-semibold outline-none transition-colors focus-visible:border-[#C8102E]/50 focus-visible:ring-3 focus-visible:ring-[#C8102E]/15",
+          "h-11 w-full min-w-0 cursor-pointer appearance-none truncate rounded-xl border bg-white pr-2 text-sm font-semibold outline-none transition-colors focus-visible:border-brand-red/50 focus-visible:ring-3 focus-visible:ring-brand-red/15",
           selected ? "border-zinc-200 pl-9 text-zinc-950" : "border-dashed border-zinc-300 pl-3 text-zinc-400",
         )}
       >

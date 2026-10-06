@@ -230,7 +230,7 @@ export function CalendarView({
       <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <div className="relative">
-            <p className="relative z-10 text-[11px] font-semibold tracking-[0.3em] text-[#C8102E] uppercase">Temporada 2026</p>
+            <p className="relative z-10 text-[11px] font-semibold tracking-[0.3em] text-brand-red uppercase">Temporada 2026</p>
             <h1 className="font-jersey relative z-10 mt-0.5 text-[2.85rem] leading-[0.8] text-zinc-950 uppercase sm:mt-1 sm:text-8xl sm:leading-[0.82]">
               Calendario
             </h1>
@@ -298,7 +298,7 @@ export function CalendarView({
                   <span className="font-jersey relative text-xl leading-none md:text-2xl">{parts.day}</span>
                   <span className="relative mt-1 flex gap-0.5">
                     {list.slice(0, 3).map((m) => (
-                      <span key={m.id} className={cn("size-1 rounded-full", active ? "bg-[#ff8fa3]" : "bg-[#C8102E]")} />
+                      <span key={m.id} className={cn("size-1 rounded-full", active ? "bg-[#ff8fa3]" : "bg-brand-red")} />
                     ))}
                   </span>
                 </button>
