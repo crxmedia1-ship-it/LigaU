@@ -2,11 +2,7 @@ import { cache } from "react";
 import { isStaffRole, isSuperadmin, type StaffRole } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
 
-export type ActionResult<T = undefined> = T extends undefined
-  ? { ok: true } | { ok: false; error: string }
-  : { ok: true; data: T } | { ok: false; error: string };
-
-export type StaffSession = {
+type StaffSession = {
   userId: string;
   email: string;
   fullName: string;

@@ -57,7 +57,7 @@ export default async function NoticiasPage() {
                       src={cloudinaryImage(item.coverImageUrl, 640) || FALLBACK_COVER}
                       alt=""
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="h-full w-full object-cover object-[50%_20%] transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                   <div className="flex flex-1 flex-col p-4">

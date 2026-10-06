@@ -10,7 +10,7 @@ export const SPORT_EMOJI: Record<string, string> = {
   ajedrez: "♟️",
 };
 
-export type SportFormKind = "football" | "basketball" | "sets" | "chess";
+type SportFormKind = "football" | "basketball" | "sets" | "chess";
 
 const FOOTBALL_SLUGS = new Set(["futbol-campo", "futsal", "rugby"]);
 const BASKETBALL_SLUGS = new Set(["baloncesto"]);

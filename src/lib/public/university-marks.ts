@@ -1,4 +1,4 @@
-export type UniversityMarks = {
+type UniversityMarks = {
   crestUrl: string | null;
   mascotUrl: string | null;
 };

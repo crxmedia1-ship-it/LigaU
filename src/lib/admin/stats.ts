@@ -2,7 +2,7 @@ import type { AthleteOption, MatchRow, TeamOption } from "@/app/admin/(panel)/pa
 
 export type GenderFilter = "all" | TeamOption["gender"];
 
-export type AdminStandingRow = {
+type AdminStandingRow = {
   team: TeamOption;
   played: number;
   won: number;

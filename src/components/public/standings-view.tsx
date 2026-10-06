@@ -31,7 +31,7 @@ import { computeStandings } from "@/lib/public/standings";
 import type { AthleteCard, MatchCard, SponsorCard, SportCard, StandingRow, TeamCard, TeamGender, UniversityCard, UniversityColors } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
 
-export type StandingGroup = {
+type StandingGroup = {
   id: string;
   sportId: string;
   gender: TeamGender;
@@ -298,7 +298,7 @@ function TitleTicket({
             <span className="text-[10px] font-semibold tracking-[0.16em] text-zinc-500 uppercase">{detail}</span>
           </div>
           {photo ? (
-            <img src={photo} alt="" className="h-24 w-full object-cover sm:h-28" />
+            <img src={photo} alt="" className="h-24 w-full object-cover object-top sm:h-28" />
           ) : (
             <div className="grid h-24 place-items-center bg-zinc-100 sm:h-28">
               <span className="text-[10px] font-semibold tracking-[0.18em] text-zinc-400 uppercase">Foto pendiente</span>
@@ -351,7 +351,7 @@ function TitleTicket({
                         src={cloudinaryThumb(athlete.photoUrl, 96) ?? athlete.photoUrl}
                         alt=""
                         loading="lazy"
-                        className="size-12 shrink-0 rounded-full object-cover"
+                        className="size-12 shrink-0 rounded-full object-cover object-top"
                       />
                     ) : (
                       <span

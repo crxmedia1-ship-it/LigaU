@@ -28,11 +28,12 @@ export type VideoRow = {
 
 type Draft = Omit<VideoRow, "id" | "sportName" | "description"> & { id?: string; description: string };
 
-const KINDS: { id: VideoKind; label: string }[] = [
-  { id: "highlight", label: "Highlight" },
-  { id: "resumen", label: "Resumen" },
-  { id: "entrevista", label: "Entrevista" },
-  { id: "video", label: "Video" },
+/** `section` mirrors the grouping on the public Multimedia page. */
+const KINDS: { id: VideoKind; label: string; section: string }[] = [
+  { id: "highlight", label: "Highlight", section: "Highlights" },
+  { id: "resumen", label: "Resumen", section: "Resúmenes" },
+  { id: "entrevista", label: "Entrevista", section: "Entrevistas" },
+  { id: "video", label: "Video", section: "Highlights" },
 ];
 
 const KIND_LABEL = Object.fromEntries(KINDS.map((kind) => [kind.id, kind.label])) as Record<VideoKind, string>;
@@ -94,7 +95,7 @@ export function HighlightsBoard({
     <div className="space-y-6">
       <AdminPageHeader
         kicker="Media"
-        title="Highlights y videos"
+        title="Videos"
         description="Pega el enlace de YouTube, Instagram o TikTok. Si es de YouTube, la miniatura sale sola."
         action={
           <Button type="button" onClick={openNew} className={adminLaserCtaClass}>
@@ -108,7 +109,7 @@ export function HighlightsBoard({
         <AdminEmptyState
           icon={<FilmIcon className="size-16" />}
           title="Sin videos"
-          description="Sube el primer highlight para que aparezca en Multimedia."
+          description="Sube el primer video para que aparezca en Multimedia."
           actionLabel="Subir video"
           onAction={openNew}
         />
@@ -206,6 +207,9 @@ export function HighlightsBoard({
                 </button>
               ))}
             </div>
+            <p className="-mt-2 text-xs text-zinc-500">
+              Se publica en Multimedia → {KINDS.find((kind) => kind.id === draft.kind)?.section}
+            </p>
 
             <label className="grid gap-1.5 text-sm font-medium text-zinc-800">
               Enlace del video

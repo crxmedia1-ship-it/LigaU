@@ -104,7 +104,7 @@ export default async function LigaUPassPage() {
           </div>
 
           <div className="mt-10 md:mt-14">
-            <PassCard />
+            <PassCard logos={brands.map((brand) => brand.logo)} />
           </div>
 
           <div className="mt-10 flex flex-col items-center gap-3 md:mt-12">

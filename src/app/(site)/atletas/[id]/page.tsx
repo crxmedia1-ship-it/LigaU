@@ -55,7 +55,7 @@ export default async function AtletaPage({
           <img
             src={cloudinaryImage(athlete.photoUrl, 320) ?? athlete.photoUrl}
             alt=""
-            className="size-28 object-cover ring-2 ring-brand-gold/50"
+            className="size-28 object-cover object-top ring-2 ring-brand-gold/50"
           />
         ) : (
           <div className="grid size-28 place-items-center bg-brand-crimson/40 font-jersey text-4xl">

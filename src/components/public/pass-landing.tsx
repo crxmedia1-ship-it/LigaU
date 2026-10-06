@@ -1,186 +1,128 @@
 "use client";
 
 import { useEffect, useRef, useState, type AnimationEvent, type ReactNode } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { QRCodeSVG } from "qrcode.react";
 import { RotateCw } from "lucide-react";
+import { CarnetFace, type CarnetData, type CarnetDesign } from "@/components/public/carnet/carnet-face";
+import membershipDesign from "@/components/public/carnet/membership-design.json";
 import { cn } from "@/lib/utils";
 
-/** Invented member so the card reads like a real credential on the landing. */
-const DEMO_MEMBER = {
-  name: "Valeria Montilla",
-  role: "Atleta · Voleibol",
-  university: "Universidad Católica Andrés Bello",
-  mascot: "/marks/ucab/mascot.svg",
-  photo: "/pass/member-demo.webp",
-  jersey: 7,
-  id: "LU-26-0417",
+/** Invented member, drawn with the real CarnetX design of the membership carnet. */
+const DEMO_MEMBER: CarnetData = {
+  nombre: "Valeria Montilla",
+  tipo_miembro: "Membresía",
+  tipo_universidad: "UCAB",
+  cedula: "V-28.417.903",
+  tipo_carrera: "Comunicación",
+  miembro_desde: "2026",
 };
+const DEMO_PHOTO = "/pass/member-demo.webp";
+const DEMO_QR = "https://ligau.app/carnet/LU-26-0417";
+const DESIGN = membershipDesign as unknown as CarnetDesign;
 
 type Callout = { side: "left" | "right"; x: number; y: number; label: string };
 
 /**
- * Points are percentages of the card box. The card keeps a fixed aspect ratio, so they stay
- * on target at any width; move them together with the layout of each face.
+ * Points are percentages of the card box, which keeps the 3:5 CarnetX canvas, so they stay
+ * on target at any width; move them together with the layers of the design.
  */
 const CALLOUTS: Record<"front" | "back", Callout[]> = {
   front: [
-    { side: "left", x: 30, y: 27, label: "Foto verificada del titular" },
-    { side: "right", x: 87, y: 8.5, label: "Tu universidad y tu equipo" },
+    { side: "left", x: 30, y: 34, label: "Foto verificada del titular" },
+    { side: "right", x: 80, y: 75.7, label: "Tu universidad y tu carrera" },
   ],
   back: [
-    { side: "left", x: 16, y: 35.4, label: "QR para validar tu carnet en los negocios aliados" },
-    { side: "right", x: 71, y: 87, label: "ID único de miembro, verificado por CarnetX" },
+    { side: "left", x: 30, y: 21, label: "QR para validar tu carnet en los negocios aliados" },
+    { side: "right", x: 82, y: 80.4, label: "Las marcas aliadas de U Pass" },
   ],
 };
 
 const OUTSET = 20;
 const DROP = 28;
 
-const FACE =
-  "absolute inset-0 overflow-hidden rounded-[26px] bg-[linear-gradient(160deg,#1d1d20_0%,#0a0a0b_50%,#18140b_100%)] text-white ring-1 ring-[#D4AF37]/45 ring-inset backface-hidden";
+const FACE = "absolute inset-0 overflow-hidden rounded-[26px] backface-hidden";
 
-function CardFront() {
+/** Liquid timing: slow start, a long glide, and a soft stop. Values in ms. */
+const FLOW = "cubic-bezier(0.45, 0, 0.15, 1)";
+const RISE = { delay: 60, duration: 560 };
+const RUN = { delay: 540, duration: 460 };
+const LAND = RUN.delay + RUN.duration - 40;
+
+function flow(show: boolean, property: string, enter: { delay: number; duration: number }, exitDelay: number) {
+  return show
+    ? `${property} ${enter.duration}ms ${FLOW} ${enter.delay}ms`
+    : `${property} 220ms cubic-bezier(0.4, 0, 1, 1) ${exitDelay}ms`;
+}
+
+/** Glowing drop riding the tip of a line while it flows, gone once it arrives. */
+function Bead({ show, timing, className }: { show: boolean; timing: typeof RISE; className: string }) {
   return (
-    <div className={FACE}>
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_28%,#2a8ac4_0%,#0e5a85_30%,#00293f_58%,#020a12_100%)]"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-60 [background-image:repeating-linear-gradient(120deg,rgba(255,255,255,0.05)_0_2px,transparent_2px_14px)]"
-      />
-      <div
-        aria-hidden
-        className="absolute -top-10 -left-1/4 h-[140%] w-16 rotate-[24deg] bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,0.14),transparent)] blur-md"
-      />
-      <span
-        aria-hidden
-        className="font-jersey absolute top-[4%] right-[-6%] text-[15rem] leading-none text-transparent [-webkit-text-stroke:1.5px_rgba(255,255,255,0.24)] select-none"
-      >
-        {DEMO_MEMBER.jersey}
-      </span>
-
-      <div className="absolute inset-x-0 top-[9%] h-[62%]">
-        <Image
-          src={DEMO_MEMBER.photo}
-          alt=""
-          fill
-          sizes="280px"
-          className="object-cover object-top [filter:drop-shadow(0_0_1px_rgba(255,255,255,0.5))_drop-shadow(0_18px_24px_rgba(0,0,0,0.55))]"
-          priority
-        />
-      </div>
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[linear-gradient(to_top,#020a12_26%,rgba(2,10,18,0.88)_36%,rgba(2,10,18,0)_56%)]"
-      />
-
-      <div className="absolute inset-x-4 top-4 flex items-start justify-between">
-        <Image src="/brand/liga-u-logo.svg" alt="" width={22} height={24} className="h-6 w-auto drop-shadow" />
-        <span className="grid size-9 place-items-center rounded-full bg-white/90 shadow-[0_6px_14px_-6px_rgba(0,0,0,0.5)] ring-1 ring-white/40 backdrop-blur">
-          <Image src={DEMO_MEMBER.mascot} alt="" width={26} height={26} className="size-6.5 object-contain" />
-        </span>
-      </div>
-
-      <div className="absolute inset-x-0 bottom-0 p-5">
-        <p className="flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-white/70 uppercase">
-          <span className="font-jersey text-lg leading-none tracking-normal text-white">#{DEMO_MEMBER.jersey}</span>
-          {DEMO_MEMBER.role}
-        </p>
-        <p className="font-jersey mt-1 text-[2.15rem] leading-[0.88] tracking-wide uppercase">{DEMO_MEMBER.name}</p>
-        <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
-          <span className="font-mono text-[10px] tracking-[0.16em] text-white/80">{DEMO_MEMBER.id}</span>
-          <span className="text-[9px] font-semibold tracking-[0.14em] text-white/60 uppercase">
-            Powered by <span className="text-white">CarnetX</span>
-          </span>
-        </div>
-      </div>
-    </div>
+    <span
+      className={cn(
+        "absolute size-[7px] rounded-full bg-[#C8102E] opacity-0 shadow-[0_0_10px_3px_rgba(200,16,46,0.45)]",
+        show && "animate-ligau-bead",
+        className,
+      )}
+      style={{ animationDelay: `${timing.delay}ms`, animationDuration: `${timing.duration + 120}ms` }}
+    />
   );
 }
 
-function CardBack() {
-  return (
-    <div className={cn(FACE, "rotate-y-180")}>
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-40 [background-image:repeating-linear-gradient(115deg,rgba(212,175,55,0.08)_0_1px,transparent_1px_7px)]"
-      />
-      <div
-        aria-hidden
-        className="absolute top-[10%] left-1/2 size-72 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.22),transparent_65%)]"
-      />
-
-      <div className="absolute inset-x-4 top-4 flex items-center justify-between">
-        <Image src="/brand/liga-u-logo.svg" alt="" width={22} height={24} className="h-6 w-auto" />
-        <span className="text-[9px] font-semibold tracking-[0.2em] text-white/45 uppercase">Temporada 2026</span>
-      </div>
-
-      <div className="absolute top-[14%] left-[16%] aspect-square w-[68%] rounded-2xl bg-white p-[7%] shadow-[0_20px_40px_-16px_rgba(0,0,0,0.8)] ring-4 ring-[#D4AF37]/30">
-        <QRCodeSVG
-          value={`https://ligau.app/carnet/${DEMO_MEMBER.id}`}
-          size={256}
-          level="M"
-          fgColor="#09090b"
-          bgColor="#ffffff"
-          title={`Código del carnet ${DEMO_MEMBER.id}`}
-          className="size-full"
-        />
-      </div>
-
-      <div className="absolute inset-x-0 bottom-[7%] text-center">
-        <p className="font-mono text-[11px] tracking-[0.16em] text-white/85">{DEMO_MEMBER.id}</p>
-        <p className="mt-1 text-[9px] text-white/45">{DEMO_MEMBER.university}</p>
-      </div>
-    </div>
-  );
-}
-
-const DRAW = "ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none";
-
-/** Elbow from the caption up the margin, then in to the point on the card. */
+/** Elbow that flows from the caption up the margin, then in to the point, landing in ripples. */
 function CalloutLine({ side, x, y, show }: Callout & { show: boolean }) {
   const edge = side === "left" ? { left: -OUTSET } : { right: -OUTSET };
   const run = side === "left" ? `calc(${x}% + ${OUTSET}px)` : `calc(${100 - x}% + ${OUTSET}px)`;
-  const outward = side === "left" ? "origin-left" : "origin-right";
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0">
+    <div aria-hidden className="ligau-callout pointer-events-none absolute inset-0 z-20">
       <span
-        className={cn(
-          "absolute w-px origin-bottom bg-[#C8102E] transition-transform",
-          DRAW,
-          show ? "scale-y-100 delay-75 duration-500 md:duration-700" : "scale-y-0 duration-200",
-        )}
-        style={{ ...edge, top: `${y}%`, height: `calc(${100 - y}% + ${DROP}px)` }}
-      />
+        className="absolute w-px bg-[linear-gradient(to_top,rgba(200,16,46,0.35),#C8102E_40%)]"
+        style={{
+          ...edge,
+          bottom: -DROP,
+          height: show ? `calc(${100 - y}% + ${DROP}px)` : 0,
+          transition: flow(show, "height", RISE, 120),
+        }}
+      >
+        <Bead show={show} timing={RISE} className="-top-[3px] left-1/2 -translate-x-1/2" />
+      </span>
       <span
-        className={cn(
-          "absolute h-px bg-[#C8102E] transition-transform",
-          outward,
-          DRAW,
-          show ? "scale-x-100 delay-200 duration-450 md:delay-240 md:duration-500" : "scale-x-0 duration-180",
-        )}
-        style={{ ...edge, top: `${y}%`, width: run }}
-      />
-      <span
-        className={cn(
-          "absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C8102E] transition-[transform,opacity,box-shadow]",
-          DRAW,
-          show
-            ? "scale-100 opacity-100 shadow-[0_0_0_5px_rgba(200,16,46,0.18)] delay-380 duration-300 md:delay-460"
-            : "scale-50 opacity-0 shadow-none duration-150",
-        )}
-        style={{ left: `${x}%`, top: `${y}%` }}
-      />
+        className="absolute h-px bg-[#C8102E]"
+        style={{ ...edge, top: `${y}%`, width: show ? run : 0, transition: flow(show, "width", RUN, 0) }}
+      >
+        <Bead
+          show={show}
+          timing={RUN}
+          className={cn("top-1/2 -translate-y-1/2", side === "left" ? "-right-[3px]" : "-left-[3px]")}
+        />
+      </span>
+      <span className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${x}%`, top: `${y}%` }}>
+        {show
+          ? [0, 260].map((offset) => (
+              <span
+                key={offset}
+                className="animate-ligau-ripple absolute inset-0 rounded-full border border-[#C8102E] opacity-0"
+                style={{ animationDelay: `${LAND + offset}ms` }}
+              />
+            ))
+          : null}
+        <span
+          className={cn(
+            "block size-2 rounded-full bg-[#C8102E]",
+            show ? "scale-100 opacity-100 shadow-[0_0_0_5px_rgba(200,16,46,0.16)]" : "scale-0 opacity-0",
+          )}
+          style={{
+            transition: show
+              ? `transform 420ms cubic-bezier(0.34, 1.7, 0.64, 1) ${LAND}ms, opacity 160ms ease-out ${LAND}ms, box-shadow 600ms ease-out ${LAND + 120}ms`
+              : "transform 150ms ease-in, opacity 150ms ease-in, box-shadow 150ms ease-in",
+          }}
+        />
+      </span>
     </div>
   );
 }
 
-/** Vertical black & gold credential; tapping flips it to the QR on the back. */
-export function PassCard() {
+/** The real CarnetX carnet; tapping flips it to the QR on the back. */
+export function PassCard({ logos }: { logos: string[] }) {
   const [face, setFace] = useState<"front" | "back">("front");
   const [lines, setLines] = useState(false);
   const [spin, setSpin] = useState<"to-back" | "to-front" | null>(null);
@@ -217,7 +159,7 @@ export function PassCard() {
     busy.current = true;
     pending.current = next;
     setLines(false);
-    later(120, () => setSpin(next === "back" ? "to-back" : "to-front"));
+    later(40, () => setSpin(next === "back" ? "to-back" : "to-front"));
   }
 
   function onFlipEnd(event: AnimationEvent<HTMLDivElement>) {
@@ -240,7 +182,7 @@ export function PassCard() {
         <div
           aria-hidden
           className={cn(
-            "pointer-events-none absolute inset-x-[12%] top-[10%] -bottom-1 rounded-[26px] bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.32),rgba(9,9,11,0.16)_58%,transparent_74%)] blur-2xl transition-all duration-700 ease-out",
+            "pointer-events-none absolute inset-x-[12%] top-[10%] -bottom-1 rounded-[26px] bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.38),rgba(31,26,16,0.16)_58%,transparent_74%)] blur-2xl transition-all duration-700 ease-out",
             spin ? "top-[4%] -bottom-6 scale-105 opacity-70" : "opacity-100",
           )}
         />
@@ -254,14 +196,31 @@ export function PassCard() {
           <div
             onAnimationEnd={onFlipEnd}
             className={cn(
-              "relative aspect-[1/1.586] w-full rounded-[26px] transform-3d group-focus-visible:ring-2 group-focus-visible:ring-[#C8102E] group-focus-visible:ring-offset-4",
+              "relative aspect-[3/5] w-full rounded-[26px] transform-3d group-focus-visible:ring-2 group-focus-visible:ring-[#C8102E] group-focus-visible:ring-offset-4",
               spin === "to-back" && "animate-ligau-pass-to-back",
               spin === "to-front" && "animate-ligau-pass-to-front",
               !spin && face === "back" && "rotate-y-180",
             )}
           >
-            <CardFront />
-            <CardBack />
+            {(["front", "back"] as const).map((side) => (
+              <div key={side} className={cn(FACE, side === "back" && "rotate-y-180")}>
+                <CarnetFace
+                  design={DESIGN}
+                  side={side}
+                  data={DEMO_MEMBER}
+                  photoUrl={DEMO_PHOTO}
+                  qrValue={DEMO_QR}
+                  logos={side === "back" ? logos : undefined}
+                />
+                <span
+                  aria-hidden
+                  className={cn(
+                    "pointer-events-none absolute inset-y-0 left-0 w-2/3 bg-[linear-gradient(100deg,transparent_20%,rgba(255,255,255,0.42)_50%,transparent_80%)] opacity-0 mix-blend-overlay",
+                    spin && "animate-ligau-pass-glint",
+                  )}
+                />
+              </div>
+            ))}
           </div>
         </button>
         {(["front", "back"] as const).flatMap((side) =>

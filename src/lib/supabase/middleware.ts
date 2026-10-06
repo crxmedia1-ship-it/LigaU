@@ -8,7 +8,7 @@ type JwtClaims = {
   [key: string]: unknown;
 };
 
-export type SessionContext = {
+type SessionContext = {
   supabase: ReturnType<typeof createServerClient<Database>>;
   response: NextResponse;
   claims: JwtClaims | null;

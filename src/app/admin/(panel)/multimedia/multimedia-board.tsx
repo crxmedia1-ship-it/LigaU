@@ -6,6 +6,7 @@ import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { ImageUploader } from "@/components/admin/image-uploader";
 import { toDatetimeLocal } from "@/lib/admin/sport";
 import { youtubeThumb } from "@/lib/public/format";
 import { deletePodcast, upsertPodcast } from "@/app/admin/(panel)/multimedia/actions";
@@ -92,7 +93,7 @@ export function MultimediaBoard({ episodes }: { episodes: PodcastRow[] }) {
     });
   }
 
-  const preview = youtubeThumb(draft.youtubeUrl) ?? draft.coverUrl;
+  const preview = draft.coverUrl ?? youtubeThumb(draft.youtubeUrl);
 
   return (
     <div className="space-y-6">
@@ -119,7 +120,7 @@ export function MultimediaBoard({ episodes }: { episodes: PodcastRow[] }) {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {episodes.map((episode) => {
-            const thumb = youtubeThumb(episode.youtubeUrl) ?? episode.coverUrl;
+            const thumb = episode.coverUrl ?? youtubeThumb(episode.youtubeUrl);
             return (
               <article key={episode.id} className="admin-surface group overflow-hidden rounded-3xl">
                 <button type="button" onClick={() => openEdit(episode)} className="relative block aspect-video w-full">
@@ -260,6 +261,13 @@ export function MultimediaBoard({ episodes }: { episodes: PodcastRow[] }) {
                 Ese link no parece de un video de YouTube.
               </p>
             ) : null}
+
+            <ImageUploader
+              key={draft.id ?? "new-episode"}
+              folder="podcasts"
+              label={draft.coverUrl ? "Cambiar portada" : "Portada propia (opcional)"}
+              onUploaded={(asset) => setDraft({ ...draft, coverUrl: asset.secureUrl })}
+            />
 
             <div className="grid grid-cols-[1fr_6rem] gap-3">
               <label className="grid gap-1.5 text-sm font-medium text-zinc-800">

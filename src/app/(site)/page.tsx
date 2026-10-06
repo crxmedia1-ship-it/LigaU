@@ -253,49 +253,6 @@ function MatchTile({ match }: { match: MatchCard | undefined }) {
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-/** Turn off once real MVPs are loaded so an empty week shows the "Por anunciar" card instead. */
-const SHOW_DEMO_MVPS = true;
-
-/** Invented players so the carousel can be reviewed before real MVPs are loaded. */
-const DEMO_MVPS: MvpSlide[] = [
-  {
-    id: "demo-baloncesto",
-    href: "/universidades",
-    name: "Andrés Mejía",
-    sportName: "Baloncesto",
-    teamShort: "UCV",
-    teamLogo: "/marks/ucv/mascot.svg",
-    jersey: 23,
-    position: "Escolta",
-    photoUrl: "/mvp-demo/baloncesto.webp",
-    stat: "28 pts · 9 reb · 5 ast",
-  },
-  {
-    id: "demo-futbol",
-    href: "/universidades",
-    name: "Samuel Rondón",
-    sportName: "Fútbol Campo",
-    teamShort: "UCAB",
-    teamLogo: "/marks/ucab/mascot.svg",
-    jersey: 10,
-    position: "Mediapunta",
-    photoUrl: "/mvp-demo/futbol.webp",
-    stat: "2 goles · 1 asistencia",
-  },
-  {
-    id: "demo-voleibol",
-    href: "/universidades",
-    name: "Valentina Ortiz",
-    sportName: "Voleibol Cancha",
-    teamShort: "USB",
-    teamLogo: "/marks/usb/mascot.svg",
-    jersey: 7,
-    position: "Opuesta",
-    photoUrl: "/mvp-demo/voleibol.webp",
-    stat: "19 puntos · 4 bloqueos",
-  },
-];
-
 /** Latest MVP per sport from games finished in the last seven days. */
 function weeklyMvps(catalog: Awaited<ReturnType<typeof getPublicCatalog>>): MvpSlide[] {
   const since = Date.now() - WEEK_MS;
@@ -306,7 +263,7 @@ function weeklyMvps(catalog: Awaited<ReturnType<typeof getPublicCatalog>>): MvpS
     if (!current || +new Date(match.matchDate) > +new Date(current.matchDate)) latestBySport.set(match.sportId, match);
   }
 
-  const slides = [...latestBySport.values()].flatMap((match): MvpSlide[] => {
+  return [...latestBySport.values()].flatMap((match): MvpSlide[] => {
     const athlete = catalog.athletes.find((item) => item.id === match.mvpAthleteId);
     const team = athlete && catalog.teams.find((item) => item.id === athlete.teamId);
     if (!athlete || !team) return [];
@@ -334,9 +291,6 @@ function weeklyMvps(catalog: Awaited<ReturnType<typeof getPublicCatalog>>): MvpS
       },
     ];
   });
-
-  if (slides.length) return slides;
-  return SHOW_DEMO_MVPS ? DEMO_MVPS : [];
 }
 
 function MvpPending() {
@@ -447,7 +401,7 @@ function NewsTile({
           <img
             src={photo}
             alt=""
-            className="absolute inset-0 size-full object-cover contrast-125 grayscale transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 size-full object-cover object-[50%_20%] contrast-125 grayscale transition-transform duration-700 group-hover:scale-105"
           />
         </figure>
         <p className="max-h-[7.5rem] min-w-0 self-start overflow-hidden border-l border-zinc-950/15 pl-2.5 font-serif text-xs leading-[1.25rem] break-words text-zinc-700 hyphens-auto [mask-image:linear-gradient(to_bottom,black_75%,transparent)] md:max-h-[10rem] first-letter:float-left first-letter:mr-1 first-letter:text-[2.6rem] first-letter:leading-[0.8] first-letter:font-black first-letter:text-[#C8102E]">
@@ -468,16 +422,37 @@ function NewsTile({
 
 type Reel = { label: string; meta: string; photo: string; audio?: boolean };
 
-const REELS: Reel[] = [
-  { label: "Entrevista", meta: "15K", photo: "/reels/entrevista.webp" },
-  { label: "Clavada", meta: "28K", photo: "/mvp-demo/baloncesto.webp" },
-  {
-    label: "Podcast",
-    meta: "Nuevo ep.",
-    photo: "/reels/podcast.webp",
-    audio: true,
-  },
+/** Shown in a slot until the admin uploads a video or an episode with a cover. */
+const FALLBACK_REELS: Reel[] = [
+  { label: "Entrevista", meta: "Video", photo: "/reels/entrevista.webp" },
+  { label: "Highlight", meta: "Video", photo: "/reels/highlight.webp" },
+  { label: "Podcast", meta: "Nuevo ep.", photo: "/reels/podcast.webp", audio: true },
 ];
+
+const VIDEO_KIND_LABELS: Record<string, string> = {
+  highlight: "Highlight",
+  resumen: "Resumen",
+  entrevista: "Entrevista",
+  video: "Video",
+};
+
+/** Previous video on the left, latest in the centre, latest podcast on the right. */
+function homeReels(catalog: Awaited<ReturnType<typeof getPublicCatalog>>): Reel[] {
+  const videos = catalog.videos.flatMap((video): Reel[] => {
+    const photo = cloudinaryImage(video.thumbnailUrl, 360);
+    return photo
+      ? [{ label: VIDEO_KIND_LABELS[video.kind] ?? "Video", meta: video.sportName ?? "Video", photo }]
+      : [];
+  });
+  const episode = catalog.podcasts.find((item) => item.coverUrl);
+  const podcast: Reel | undefined = episode && {
+    label: "Podcast",
+    meta: `Ep. ${episode.episodeNumber}`,
+    photo: cloudinaryImage(episode.coverUrl, 360) ?? episode.coverUrl!,
+    audio: true,
+  };
+  return [videos[1] ?? FALLBACK_REELS[0], videos[0] ?? FALLBACK_REELS[1], podcast ?? FALLBACK_REELS[2]];
+}
 
 const REEL_POSE = [
   "left-[6%] top-5 h-[82%] -rotate-[9deg]",
@@ -486,7 +461,7 @@ const REEL_POSE = [
 ];
 
 /** Preview of /multimedia: a fan of highlight reels and the podcast. */
-function MediaTile() {
+function MediaTile({ reels }: { reels: Reel[] }) {
   return (
     <Link
       href="/multimedia"
@@ -497,9 +472,9 @@ function MediaTile() {
       )}
     >
       <div className="relative min-h-0 flex-1">
-        {REELS.map((reel, index) => (
+        {reels.map((reel, index) => (
           <span
-            key={reel.label}
+            key={index}
             className={cn(
               "absolute aspect-[9/16] overflow-hidden rounded-xl bg-zinc-300 ring-2 ring-white transition-transform duration-500",
               REEL_POSE[index],
@@ -548,7 +523,7 @@ type StandingsPreview = {
   rows: StandingRow[];
 };
 
-/** Table for the sport and branch of the featured match; without a match, the busiest table. */
+/** Table for the sport and branch of the featured match once it has results; otherwise the busiest table. */
 function standingsPreview(
   catalog: Awaited<ReturnType<typeof getPublicCatalog>>,
   match: MatchCard | undefined,
@@ -571,7 +546,7 @@ function standingsPreview(
     };
   });
   const featured = match && groups.find((group) => group.key === `${match.sportId}:${match.gender}`);
-  if (featured) return featured;
+  if (featured?.played) return featured;
   groups.sort((a, b) => b.played - a.played || a.sportName.localeCompare(b.sportName));
   return groups[0] ?? null;
 }
@@ -909,7 +884,7 @@ export default async function HomePage() {
               photo={newsPhoto(lead, catalog.sports)}
             />
             <SponsorFlyer sponsor={topSponsor(sponsors)} />
-            <MediaTile />
+            <MediaTile reels={homeReels(catalog)} />
           </div>
           <div className="mt-20 grid px-3 md:mt-8 md:px-4">
             <PassTile />

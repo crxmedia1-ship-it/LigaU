@@ -41,11 +41,6 @@ function youtubeId(url: string | null) {
   return id && id !== "demo" ? id : null;
 }
 
-export function youtubeEmbed(url: string | null) {
-  const id = youtubeId(url);
-  return id ? `https://www.youtube.com/embed/${id}` : null;
-}
-
 export function youtubeThumb(url: string | null) {
   const id = youtubeId(url);
   return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null;

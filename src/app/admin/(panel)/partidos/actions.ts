@@ -96,7 +96,7 @@ export async function createMatchesBulk(rows: BulkMatchInput[]) {
   return { ok: true as const, count: payload.length };
 }
 
-export type FinishMatchInput = {
+type FinishMatchInput = {
   matchId: string;
   homeScore: number;
   awayScore: number;

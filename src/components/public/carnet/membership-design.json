@@ -1,0 +1,679 @@
+{
+  "radius": 26,
+  "front": {
+    "background": {
+      "fill": {
+        "type": "gradient",
+        "from": "#1F1A10",
+        "to": "#060504",
+        "angle": 170
+      }
+    },
+    "layers": [
+      {
+        "type": "image",
+        "src": "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,w_800/f_auto,q_auto/v1773039304/Photoroom_20260309_025302_kb0jmm.png",
+        "fit": "contain",
+        "x": 10,
+        "y": 22,
+        "w": 80,
+        "h": 48,
+        "opacity": 0.05
+      },
+      {
+        "type": "shape",
+        "x": 3.5,
+        "y": 2.1,
+        "w": 93,
+        "h": 81.4,
+        "fill": {
+          "type": "solid",
+          "color": "rgba(0,0,0,0)"
+        },
+        "radius": 20,
+        "borderWidth": 1,
+        "borderColor": "#D4AF3766"
+      },
+      {
+        "type": "image",
+        "src": "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,w_800/f_auto,q_auto/v1773039304/Photoroom_20260309_025302_kb0jmm.png",
+        "fit": "contain",
+        "x": 41,
+        "y": 4.6,
+        "w": 18,
+        "h": 7.6
+      },
+      {
+        "type": "text",
+        "text": "LIGA UNIVERSITARIA",
+        "x": 20,
+        "y": 13,
+        "w": 60,
+        "h": 2.6,
+        "font": "Cinzel",
+        "size": 10,
+        "weight": 700,
+        "color": "#D4AF37",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.3
+      },
+      {
+        "type": "photo",
+        "x": 28,
+        "y": 18.4,
+        "w": 44,
+        "h": 33,
+        "radius": 4,
+        "borderWidth": 1.5,
+        "borderColor": "#D4AF37",
+        "shadow": true
+      },
+      {
+        "type": "text",
+        "text": "{{tipo_miembro}}",
+        "x": 8,
+        "y": 54.6,
+        "w": 84,
+        "h": 5.4,
+        "font": "Cinzel",
+        "size": 26,
+        "weight": 700,
+        "color": "#D4AF37",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "uppercase": true,
+        "letterSpacing": 0.28
+      },
+      {
+        "type": "shape",
+        "x": 28,
+        "y": 62.1,
+        "w": 18,
+        "h": 0.25,
+        "fill": {
+          "type": "solid",
+          "color": "#D4AF37b3"
+        },
+        "radius": 0,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "text",
+        "text": "◆",
+        "x": 46,
+        "y": 60.9,
+        "w": 8,
+        "h": 2.6,
+        "font": "Inter",
+        "size": 9,
+        "weight": 400,
+        "color": "#D4AF37",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1
+      },
+      {
+        "type": "shape",
+        "x": 54,
+        "y": 62.1,
+        "w": 18,
+        "h": 0.25,
+        "fill": {
+          "type": "solid",
+          "color": "#D4AF37b3"
+        },
+        "radius": 0,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "text",
+        "text": "{{nombre}}",
+        "x": 7,
+        "y": 64.6,
+        "w": 86,
+        "h": 4.6,
+        "font": "Montserrat",
+        "size": 18,
+        "weight": 700,
+        "color": "#ffffff",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.1,
+        "uppercase": true
+      },
+      {
+        "type": "text",
+        "text": "UNIVERSIDAD",
+        "x": 7,
+        "y": 71.6,
+        "w": 27,
+        "h": 2.2,
+        "font": "Montserrat",
+        "size": 7,
+        "weight": 700,
+        "color": "#D4AF37b3",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.24,
+        "when": {
+          "field": "tipo_universidad",
+          "op": "not_empty"
+        }
+      },
+      {
+        "type": "text",
+        "text": "{{tipo_universidad}}",
+        "x": 7,
+        "y": 74,
+        "w": 27,
+        "h": 3.4,
+        "font": "Inter",
+        "size": 11.5,
+        "weight": 600,
+        "color": "#ffffff",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "uppercase": true
+      },
+      {
+        "type": "shape",
+        "x": 35,
+        "y": 71.8,
+        "w": 0.25,
+        "h": 5.6,
+        "fill": {
+          "type": "solid",
+          "color": "#D4AF3740"
+        },
+        "radius": 0,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "text",
+        "text": "CÉDULA",
+        "x": 36.5,
+        "y": 71.6,
+        "w": 27,
+        "h": 2.2,
+        "font": "Montserrat",
+        "size": 7,
+        "weight": 700,
+        "color": "#D4AF37b3",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.24
+      },
+      {
+        "type": "text",
+        "text": "{{cedula}}",
+        "x": 36.5,
+        "y": 74,
+        "w": 27,
+        "h": 3.4,
+        "font": "Inter",
+        "size": 11.5,
+        "weight": 600,
+        "color": "#ffffff",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "uppercase": true
+      },
+      {
+        "type": "shape",
+        "x": 65,
+        "y": 71.8,
+        "w": 0.25,
+        "h": 5.6,
+        "fill": {
+          "type": "solid",
+          "color": "#D4AF3740"
+        },
+        "radius": 0,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "text",
+        "text": "CARRERA",
+        "x": 66,
+        "y": 71.6,
+        "w": 27,
+        "h": 2.2,
+        "font": "Montserrat",
+        "size": 7,
+        "weight": 700,
+        "color": "#D4AF37b3",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.24,
+        "when": {
+          "field": "tipo_carrera",
+          "op": "not_empty"
+        }
+      },
+      {
+        "type": "text",
+        "text": "{{tipo_carrera}}",
+        "x": 66,
+        "y": 74,
+        "w": 27,
+        "h": 3.4,
+        "font": "Inter",
+        "size": 11.5,
+        "weight": 600,
+        "color": "#ffffff",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "uppercase": true
+      },
+      {
+        "type": "text",
+        "text": "MIEMBRO DESDE {{miembro_desde}}",
+        "x": 15,
+        "y": 80.2,
+        "w": 70,
+        "h": 2.4,
+        "font": "Montserrat",
+        "size": 7.5,
+        "weight": 600,
+        "color": "#D4AF37b3",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.2
+      },
+      {
+        "type": "shape",
+        "x": 0,
+        "y": 85.6,
+        "w": 100,
+        "h": 0.5,
+        "fill": {
+          "type": "solid",
+          "color": "#D4AF37"
+        },
+        "radius": 0,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "shape",
+        "x": 0,
+        "y": 86.1,
+        "w": 100,
+        "h": 13.9,
+        "fill": {
+          "type": "solid",
+          "color": "#ffffff"
+        },
+        "radius": 0,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "image",
+        "src": "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,w_800/f_auto,q_auto/v1775052059/champions_lk9ncy.png",
+        "fit": "contain",
+        "x": 20,
+        "y": 87.8,
+        "w": 60,
+        "h": 10.4
+      }
+    ]
+  },
+  "back": {
+    "background": {
+      "fill": {
+        "type": "gradient",
+        "from": "#1F1A10",
+        "to": "#060504",
+        "angle": 180
+      }
+    },
+    "layers": [
+      {
+        "type": "shape",
+        "x": 8,
+        "y": 4,
+        "w": 84,
+        "h": 60.5,
+        "fill": {
+          "type": "solid",
+          "color": "#ffffff"
+        },
+        "radius": 26,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "qr",
+        "x": 27,
+        "y": 7.5,
+        "w": 46,
+        "h": 27.6,
+        "fg": "#0c0a09",
+        "bg": "#ffffff",
+        "padding": 0,
+        "radius": 0
+      },
+      {
+        "type": "text",
+        "text": "ESCANEA PARA VERIFICAR",
+        "x": 22,
+        "y": 36.6,
+        "w": 56,
+        "h": 2.4,
+        "font": "Montserrat",
+        "size": 7.5,
+        "weight": 700,
+        "color": "#a8a29e",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.22
+      },
+      {
+        "type": "text",
+        "text": "{{nombre}}",
+        "x": 14,
+        "y": 39.4,
+        "w": 72,
+        "h": 3.6,
+        "font": "Montserrat",
+        "size": 12,
+        "weight": 800,
+        "color": "#16120A",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.04
+      },
+      {
+        "type": "shape",
+        "x": 10.5,
+        "y": 45.6,
+        "w": 79,
+        "h": 17.4,
+        "fill": {
+          "type": "solid",
+          "color": "#f5f5f4"
+        },
+        "radius": 22,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "shape",
+        "x": 12.5,
+        "y": 46.9,
+        "w": 36.5,
+        "h": 14.8,
+        "fill": {
+          "type": "solid",
+          "color": "#ffffff"
+        },
+        "radius": 18,
+        "borderWidth": 1,
+        "borderColor": "#ecebe9",
+        "shadow": true
+      },
+      {
+        "type": "image",
+        "src": "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,w_800/f_auto,q_auto/v1773039304/Photoroom_20260309_025302_kb0jmm.png",
+        "fit": "contain",
+        "x": 23.25,
+        "y": 48.4,
+        "w": 15,
+        "h": 6.6
+      },
+      {
+        "type": "text",
+        "text": "U PASS",
+        "x": 14.5,
+        "y": 55.7,
+        "w": 32.5,
+        "h": 3.2,
+        "font": "Montserrat",
+        "size": 12,
+        "weight": 800,
+        "color": "#16120A",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.06
+      },
+      {
+        "type": "text",
+        "text": "Beneficios",
+        "x": 14.5,
+        "y": 58.9,
+        "w": 32.5,
+        "h": 2,
+        "font": "Montserrat",
+        "size": 6.5,
+        "weight": 700,
+        "color": "#a8a29e",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.16,
+        "uppercase": true
+      },
+      {
+        "type": "shape",
+        "x": 51,
+        "y": 46.9,
+        "w": 36.5,
+        "h": 14.8,
+        "fill": {
+          "type": "solid",
+          "color": "#ffffff"
+        },
+        "radius": 18,
+        "borderWidth": 1,
+        "borderColor": "#ecebe9",
+        "shadow": true
+      },
+      {
+        "type": "image",
+        "src": "https://res.cloudinary.com/dbzu0fqle/image/upload/v1791279672/carnetx/icons/whatsapp-green.svg",
+        "fit": "contain",
+        "x": 61.75,
+        "y": 48.4,
+        "w": 15,
+        "h": 6.6
+      },
+      {
+        "type": "text",
+        "text": "INFORMACIÓN",
+        "x": 53,
+        "y": 55.7,
+        "w": 32.5,
+        "h": 3.2,
+        "font": "Montserrat",
+        "size": 12,
+        "weight": 800,
+        "color": "#16120A",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.06
+      },
+      {
+        "type": "text",
+        "text": "WhatsApp",
+        "x": 53,
+        "y": 58.9,
+        "w": 32.5,
+        "h": 2,
+        "font": "Montserrat",
+        "size": 6.5,
+        "weight": 700,
+        "color": "#a8a29e",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.16,
+        "uppercase": true
+      },
+      {
+        "type": "text",
+        "text": "MEMBRESÍA · LIGA U",
+        "x": 8,
+        "y": 67.4,
+        "w": 84,
+        "h": 2.6,
+        "font": "Montserrat",
+        "size": 8.5,
+        "weight": 700,
+        "color": "rgba(255,255,255,0.8)",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.28,
+        "shadow": true
+      },
+      {
+        "type": "shape",
+        "x": 8,
+        "y": 73.8,
+        "w": 22,
+        "h": 0.2,
+        "fill": {
+          "type": "solid",
+          "color": "rgba(255,255,255,0.25)"
+        },
+        "radius": 0,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "text",
+        "text": "ALIADOS U PASS",
+        "x": 30,
+        "y": 72.7,
+        "w": 40,
+        "h": 2.4,
+        "font": "Montserrat",
+        "size": 7.5,
+        "weight": 700,
+        "color": "rgba(255,255,255,0.6)",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.3
+      },
+      {
+        "type": "shape",
+        "x": 70,
+        "y": 73.8,
+        "w": 22,
+        "h": 0.2,
+        "fill": {
+          "type": "solid",
+          "color": "rgba(255,255,255,0.25)"
+        },
+        "radius": 0,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "logos",
+        "x": 0,
+        "y": 76.4,
+        "w": 100,
+        "h": 8,
+        "items": [
+          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1778040250/IMG_2495_c8esod.png",
+          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1778040248/Photoroom_20260506_000214_bluzib.png",
+          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1776359950/Photoroom_20260416_131829_giiu5e.png",
+          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775052059/guacamaya_i7ycq0.png",
+          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775052060/luxor_qqmtyv.png",
+          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775052059/champions_lk9ncy.png",
+          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775052059/11_11_haqjxi.png",
+          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775052060/cinex_qo1yva.png",
+          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1774469390/Photoroom_20260325_155428_pjk21i.png",
+          "https://res.cloudinary.com/dbzu0fqle/image/upload/e_trim/c_limit,h_160/f_auto,q_auto/v1775673264/Photoroom_20260408_140527_anc4fc.png"
+        ],
+        "duration": 30,
+        "gap": 34,
+        "monochrome": true
+      },
+      {
+        "type": "text",
+        "text": "PRESENTA TU CARNET Y AHORRA EN TUS MARCAS FAVORITAS",
+        "x": 8,
+        "y": 86,
+        "w": 84,
+        "h": 2.4,
+        "font": "Montserrat",
+        "size": 7,
+        "weight": 600,
+        "color": "rgba(255,255,255,0.55)",
+        "align": "center",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.14
+      },
+      {
+        "type": "shape",
+        "x": 8,
+        "y": 90.6,
+        "w": 84,
+        "h": 0.2,
+        "fill": {
+          "type": "solid",
+          "color": "rgba(255,255,255,0.18)"
+        },
+        "radius": 0,
+        "borderWidth": 0,
+        "borderColor": "transparent"
+      },
+      {
+        "type": "text",
+        "text": "MIEMBRO DESDE {{miembro_desde}}",
+        "x": 8,
+        "y": 92.2,
+        "w": 50,
+        "h": 2.6,
+        "font": "Montserrat",
+        "size": 7.5,
+        "weight": 700,
+        "color": "rgba(255,255,255,0.6)",
+        "align": "left",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.18
+      },
+      {
+        "type": "text",
+        "text": "ligaupass.com →",
+        "x": 58,
+        "y": 92.2,
+        "w": 34,
+        "h": 2.6,
+        "font": "Montserrat",
+        "size": 8.5,
+        "weight": 800,
+        "color": "#D4AF37",
+        "align": "right",
+        "fit": "shrink",
+        "lineHeight": 1.1,
+        "letterSpacing": 0.04
+      }
+    ]
+  }
+}

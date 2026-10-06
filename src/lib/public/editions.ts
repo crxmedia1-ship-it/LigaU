@@ -3,7 +3,7 @@ import { computeStandings } from "@/lib/public/standings";
 
 const ZONE = "America/Caracas";
 
-export type EditionStatus = "pasada" | "curso" | "proxima";
+type EditionStatus = "pasada" | "curso" | "proxima";
 
 export const EDITION_STATUS_LABEL: Record<EditionStatus, string> = {
   pasada: "Pasada",
@@ -11,12 +11,12 @@ export const EDITION_STATUS_LABEL: Record<EditionStatus, string> = {
   proxima: "Próxima",
 };
 
-export type YearEdition = {
+type YearEdition = {
   year: number;
   status: EditionStatus;
 };
 
-export type ValidaEdition = {
+type ValidaEdition = {
   year: number;
   round: string;
   status: EditionStatus;

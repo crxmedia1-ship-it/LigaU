@@ -38,7 +38,7 @@ export default async function NoticiaPage({
           src={cloudinaryImage(item.coverImageUrl, 1200) ?? item.coverImageUrl}
           alt=""
           fetchPriority="high"
-          className="mt-6 w-full object-cover"
+          className="mt-6 aspect-[16/10] w-full object-cover object-[50%_20%]"
           style={{
             clipPath:
               "polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)",

@@ -14,7 +14,7 @@ import { deleteNews, upsertNews } from "@/app/admin/(panel)/noticias/actions";
 import { AdminEmptyState, AdminPageHeader, adminLaserCtaClass } from "@/components/admin/admin-chrome";
 import { cn } from "@/lib/utils";
 
-export type CatalogOption = { id: string; name: string; slug?: string };
+type CatalogOption = { id: string; name: string; slug?: string };
 export type NewsRow = {
   id: string;
   title: string;

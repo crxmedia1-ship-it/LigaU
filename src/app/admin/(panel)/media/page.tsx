@@ -12,7 +12,7 @@ type Tab = "noticias" | "podcast" | "highlights";
 const TABS: { id: Tab; label: string; icon: typeof FilmIcon }[] = [
   { id: "noticias", label: "Noticias", icon: NewspaperIcon },
   { id: "podcast", label: "Podcast", icon: MicIcon },
-  { id: "highlights", label: "Highlights", icon: FilmIcon },
+  { id: "highlights", label: "Videos", icon: FilmIcon },
 ];
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;

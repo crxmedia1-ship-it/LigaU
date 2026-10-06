@@ -87,7 +87,7 @@ export function sportTheme(name: string) {
   return THEMES.find((t) => t.match.some((m) => key.includes(m))) ?? THEMES[THEMES.length - 1];
 }
 
-export type PickerSport = {
+type PickerSport = {
   id: string;
   name: string;
   count: number;

@@ -436,10 +436,6 @@ body:has(.ligau-public) {
   background-image: none;
 }
 
-.drop-shadow-glow-red {
-  filter: drop-shadow(0 0 18px rgb(186 12 47 / 40%));
-}
-
 .glass-card {
   position: relative;
   overflow: hidden;
@@ -491,14 +487,6 @@ html .ligau-public .glass-card,
   background-color: transparent;
 }
 
-.ligau-public .carbon-fiber {
-  /* MVP tile keeps dark carbon texture for contrast */
-  background-color: #0a0a0c;
-  background-image:
-    repeating-linear-gradient(45deg, #111113 0 2px, #1c1c20 2px 4px),
-    repeating-linear-gradient(-45deg, #09090b 0 2px, #17171b 2px 4px);
-}
-
 .dark .glass-card {
   border: 1px solid rgb(39 39 42 / 80%);
   background-color: rgb(24 24 27 / 60%);
@@ -538,13 +526,6 @@ html.dark .ligau-public .glass-card {
 
 .dark .chrome-text {
   background-image: linear-gradient(180deg, #ffffff 0%, #cbd5e1 78%);
-}
-
-.carbon-fiber {
-  background-color: #0a0a0c;
-  background-image:
-    repeating-linear-gradient(45deg, #111113 0 2px, #1c1c20 2px 4px),
-    repeating-linear-gradient(-45deg, #09090b 0 2px, #17171b 2px 4px);
 }
 
 @keyframes ligau-marquee {
@@ -599,43 +580,127 @@ html.dark .ligau-public .glass-card {
   animation: ligau-hero 2.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* U Pass credential: lift through the thin edge, then settle on the other face. */
+/*
+ * U Pass credential: a small wind-up, a lift through the thin edge, a slight overshoot and a
+ * settle. Both flips turn the same way; -360deg ends on the same pose as the resting 0deg.
+ */
 @keyframes ligau-pass-to-back {
   0% {
-    transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+    transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) scale(1);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.5, 1);
   }
-  46% {
-    transform: translate3d(0, -8px, 36px) rotateY(-90deg) scale(1.024);
+  14% {
+    transform: translate3d(0, 3px, 0) rotateX(3deg) rotateY(10deg) scale(0.985);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
+  }
+  50% {
+    transform: translate3d(0, -16px, 70px) rotateX(-5deg) rotateY(-90deg) scale(1.06);
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.35, 1);
+  }
+  84% {
+    transform: translate3d(0, -2px, 6px) rotateX(1deg) rotateY(-186deg) scale(1.006);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
   }
   100% {
-    transform: translate3d(0, 0, 0) rotateY(-180deg) scale(1);
+    transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(-180deg) scale(1);
   }
 }
 
 @keyframes ligau-pass-to-front {
   0% {
-    transform: translate3d(0, 0, 0) rotateY(-180deg) scale(1);
+    transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(-180deg) scale(1);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.5, 1);
   }
-  46% {
-    transform: translate3d(0, -8px, 36px) rotateY(-90deg) scale(1.024);
+  14% {
+    transform: translate3d(0, 3px, 0) rotateX(3deg) rotateY(-170deg) scale(0.985);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
+  }
+  50% {
+    transform: translate3d(0, -16px, 70px) rotateX(-5deg) rotateY(-270deg) scale(1.06);
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.35, 1);
+  }
+  84% {
+    transform: translate3d(0, -2px, 6px) rotateX(1deg) rotateY(-366deg) scale(1.006);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
   }
   100% {
-    transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+    transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(-360deg) scale(1);
   }
+}
+
+/* Glint that crosses each face while the card turns. */
+@keyframes ligau-pass-glint {
+  0%,
+  18% {
+    opacity: 0;
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  50% {
+    opacity: 1;
+  }
+  86%,
+  100% {
+    opacity: 0;
+    transform: translateX(160%) skewX(-18deg);
+  }
+}
+
+/* Callout lines: a drop rides the tip while it flows, then rings spread where it lands. */
+@keyframes ligau-bead {
+  0% {
+    opacity: 0;
+    scale: 0.4;
+  }
+  15%,
+  80% {
+    opacity: 1;
+    scale: 1;
+  }
+  100% {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+
+@keyframes ligau-ripple {
+  0% {
+    opacity: 0;
+    scale: 1;
+  }
+  4% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    scale: 4.2;
+  }
+}
+
+@utility animate-ligau-bead {
+  animation: ligau-bead 600ms ease-out both;
+}
+
+@utility animate-ligau-ripple {
+  animation: ligau-ripple 1100ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
 
 @utility animate-ligau-pass-to-back {
-  animation: ligau-pass-to-back 0.92s cubic-bezier(0.45, 0.02, 0.18, 1) both;
+  animation: ligau-pass-to-back 1s linear both;
 }
 
 @utility animate-ligau-pass-to-front {
-  animation: ligau-pass-to-front 0.92s cubic-bezier(0.45, 0.02, 0.18, 1) both;
+  animation: ligau-pass-to-front 1s linear both;
+}
+
+@utility animate-ligau-pass-glint {
+  animation: ligau-pass-glint 1s linear both;
 }
 
 @media (max-width: 767px) {
   .animate-ligau-pass-to-back,
-  .animate-ligau-pass-to-front {
-    animation-duration: 0.76s;
+  .animate-ligau-pass-to-front,
+  .animate-ligau-pass-glint {
+    animation-duration: 0.84s;
   }
 }
 
@@ -643,8 +708,15 @@ html.dark .ligau-public .glass-card {
   .animate-ligau-shine,
   .animate-ligau-hero,
   .animate-ligau-pass-to-back,
-  .animate-ligau-pass-to-front {
+  .animate-ligau-pass-to-front,
+  .animate-ligau-pass-glint,
+  .animate-ligau-bead,
+  .animate-ligau-ripple {
     animation: none;
+  }
+
+  .ligau-callout * {
+    transition: none !important;
   }
 }
 

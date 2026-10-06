@@ -20,7 +20,7 @@ const ALLOWED_IMAGE_TYPES = new Set([
   "image/gif",
 ]);
 
-export type SignedUploadParams = {
+type SignedUploadParams = {
   timestamp: number;
   signature: string;
   apiKey: string;
@@ -39,12 +39,12 @@ export type CloudinaryUploadSuccess = {
   folder: string;
 };
 
-export type CloudinaryUploadFailure = {
+type CloudinaryUploadFailure = {
   ok: false;
   error: string;
 };
 
-export type CloudinaryUploadResult =
+type CloudinaryUploadResult =
   | CloudinaryUploadSuccess
   | CloudinaryUploadFailure;
 
