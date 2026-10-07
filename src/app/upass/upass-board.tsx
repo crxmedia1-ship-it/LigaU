@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRightIcon,
   CopyIcon,
@@ -106,6 +106,75 @@ function brandStyle(color: string | null | undefined) {
 }
 
 
+const DRIFT_SPEED = 34;
+
+/** Floats its content around the parent like a body in zero gravity, bouncing off every wall. */
+function SpaceDrift({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    const box = node?.parentElement;
+    if (!node || !box) return;
+
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let x = -1;
+    let y = -1;
+    let vx = DRIFT_SPEED;
+    let vy = DRIFT_SPEED * 0.62;
+    let last = performance.now();
+    let frame = 0;
+    let maxX = 0;
+    let maxY = 0;
+    let ready = false;
+
+    const measure = () => {
+      maxX = box.clientWidth - node.offsetWidth;
+      maxY = box.clientHeight - node.offsetHeight;
+      ready = node.offsetWidth > 0;
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(box);
+    observer.observe(node);
+
+    const tick = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+
+      if (ready) {
+        if (x < 0) {
+          x = maxX / 2;
+          y = maxY / 2;
+          node.style.opacity = "1";
+        }
+        if (!still) {
+          x += vx * dt;
+          y += vy * dt;
+          if (x <= 0 || x >= maxX) vx = x <= 0 ? Math.abs(vx) : -Math.abs(vx);
+          if (y <= 0 || y >= maxY) vy = y <= 0 ? Math.abs(vy) : -Math.abs(vy);
+          x = Math.min(Math.max(x, 0), Math.max(maxX, 0));
+          y = Math.min(Math.max(y, 0), Math.max(maxY, 0));
+        }
+        const tilt = still ? 0 : Math.sin(now / 1400) * 7;
+        node.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${tilt}deg)`;
+      }
+      if (!still || x < 0) frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, []);
+
+  return (
+    <span ref={ref} className="absolute top-0 left-0 opacity-0 will-change-transform">
+      {children}
+    </span>
+  );
+}
+
 function BrandPanel({
   name,
   logo,
@@ -113,6 +182,7 @@ function BrandPanel({
   pattern,
   className,
   logoClassName,
+  reveal = false,
   children,
 }: {
   name: string;
@@ -121,6 +191,8 @@ function BrandPanel({
   pattern: number;
   className?: string;
   logoClassName?: string;
+  /** Lets the logo drift and bounce around the panel (benefit detail). */
+  reveal?: boolean;
   children?: React.ReactNode;
 }) {
   return (
@@ -148,12 +220,27 @@ function BrandPanel({
         </span>
       )}
       <span aria-hidden className="absolute inset-x-0 top-0 -z-10 h-1/2 bg-linear-to-b from-white/15 to-transparent" />
-      {logo ? (
+      {reveal ? (
+        <SpaceDrift>
+          {logo ? (
+            <img
+              src={logo}
+              alt={name}
+              className="block h-[4.5rem] w-auto max-w-56 object-contain brightness-0 invert drop-shadow-[0_8px_14px_rgba(0,0,0,0.25)]"
+            />
+          ) : (
+            <span className="block text-3xl font-black tracking-tight whitespace-nowrap text-white drop-shadow-[0_6px_12px_rgba(0,0,0,0.25)]">
+              {name}
+            </span>
+          )}
+        </SpaceDrift>
+      ) : logo ? (
         <img
           src={logo}
           alt={name}
           className={cn(
-            "w-full object-contain brightness-0 invert drop-shadow-[0_8px_14px_rgba(0,0,0,0.25)] transition-transform duration-300 group-hover:scale-105",
+            "w-full object-contain brightness-0 invert drop-shadow-[0_8px_14px_rgba(0,0,0,0.25)]",
+            "transition-transform duration-300 group-hover:scale-105",
             logoClassName,
           )}
         />
@@ -432,6 +519,8 @@ export function UpassBoard({ benefits }: { benefits: BenefitCard[] }) {
                 </DialogTitle>
                 <DialogDescription className="sr-only">Cómo usar este beneficio</DialogDescription>
                 <BrandPanel
+                  key={open.id}
+                  reveal
                   name={open.sponsorName}
                   logo={open.sponsorLogo}
                   color={open.sponsorColor}

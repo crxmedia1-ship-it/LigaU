@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { sponsorAt } from "@/components/public/sponsor-slots";
 import { StandingsView } from "@/components/public/standings-view";
-import { getHomeSponsorLogos } from "@/lib/public/sponsor-logos";
+import { getOfficialSponsors } from "@/lib/public/official-sponsors";
 import { getPublicCatalog } from "@/lib/public/queries";
 
 export const metadata: Metadata = {
@@ -13,7 +12,7 @@ export default async function ClasificacionPage({
 }: {
   searchParams: Promise<{ vista?: string | string[]; ano?: string | string[]; valida?: string | string[] }>;
 }) {
-  const [catalog, sponsors, params] = await Promise.all([getPublicCatalog(), getHomeSponsorLogos(), searchParams]);
+  const [catalog, { slots }, params] = await Promise.all([getPublicCatalog(), getOfficialSponsors(), searchParams]);
   const vista = Array.isArray(params.vista) ? params.vista[0] : params.vista;
   const ano = Number(Array.isArray(params.ano) ? params.ano[0] : params.ano);
   const valida = Array.isArray(params.valida) ? params.valida[0] : params.valida;
@@ -26,12 +25,12 @@ export default async function ClasificacionPage({
         teams={catalog.teams}
         athletes={catalog.athletes}
         universities={catalog.universities}
-        initialView={vista === "titulos" || vista === "medallero" ? "titulos" : "tablas"}
+        events={catalog.events}
+        initialView={vista === "titulos" || vista === "medallero" ? "titulos" : vista === "jugadores" ? "jugadores" : "tablas"}
         initialYear={Number.isFinite(ano) ? ano : null}
         initialRound={valida ?? null}
-        presenter={sponsorAt(sponsors, 2)}
-        leaderSponsor={sponsorAt(sponsors, 3)}
-        feedSponsor={sponsorAt(sponsors, 1)}
+        presenter={slots.standings_presenter}
+        feedSponsor={slots.standings_flyer}
       />
     </main>
   );

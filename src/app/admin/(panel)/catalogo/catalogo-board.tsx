@@ -27,6 +27,7 @@ import {
 } from "@/app/admin/(panel)/catalogo/upass-panel";
 import {
   SponsorsPanel,
+  emptyOfficialDraft,
   type OfficialSponsor,
   type OfficialSponsorDraft,
 } from "@/app/admin/(panel)/catalogo/sponsors-panel";
@@ -96,7 +97,7 @@ export function CatalogoBoard({
     else if (tab === "deportes")
       setSportDraft({ name: "", category: "colectivo" });
     else if (tab === "patrocinantes")
-      setOfficialDraft({ name: "", logoUrl: null });
+      setOfficialDraft(emptyOfficialDraft());
     else
       setSponsorDraft({
         name: "",

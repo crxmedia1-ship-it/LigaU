@@ -43,8 +43,5 @@ export async function fetchFolderLogos(alias: LogoFolder): Promise<SponsorCard[]
 
 const CACHE = { revalidate: 3600, tags: [PUBLIC_CATALOG_TAG] };
 
-/** Official sponsors: home marquee plus the slots on Calendario and Clasificación. */
-export const getHomeSponsorLogos = unstable_cache(() => fetchFolderLogos("sponsors"), ["home-sponsor-logos"], CACHE);
-
 /** U Pass partner brands; some overlap with the sponsors but they are managed in their own folder. */
 export const getPassBrandLogos = unstable_cache(() => fetchFolderLogos("passBrands"), ["pass-brand-logos"], CACHE);

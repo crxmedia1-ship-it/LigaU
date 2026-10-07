@@ -13,7 +13,8 @@ export type AdminNavItem = {
     | "newspaper"
     | "shield"
     | "teams"
-    | "catalog";
+    | "catalog"
+    | "popup";
   group: "Competición" | "Contenido" | "Administración";
   roles: UserRole[];
 };
@@ -72,6 +73,14 @@ export const ADMIN_NAV: AdminNavItem[] = [
     label: "Media",
     description: "Noticias, podcast y highlights",
     icon: "newspaper",
+    group: "Contenido",
+    roles: ["superadmin", "directivo"],
+  },
+  {
+    href: "/admin/popup",
+    label: "Pop-up",
+    description: "Imagen que aparece al abrir el sitio",
+    icon: "popup",
     group: "Contenido",
     roles: ["superadmin", "directivo"],
   },

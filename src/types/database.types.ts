@@ -325,6 +325,54 @@ export type Database = {
           },
         ]
       }
+      official_sponsors: {
+        Row: {
+          brand_color: string | null
+          created_at: string
+          ends_on: string | null
+          flyer_url: string | null
+          id: string
+          link_url: string | null
+          logo_public_id: string | null
+          logo_url: string
+          name: string
+          sort_order: number
+          starts_on: string | null
+          tagline: string | null
+          updated_at: string
+        }
+        Insert: {
+          brand_color?: string | null
+          created_at?: string
+          ends_on?: string | null
+          flyer_url?: string | null
+          id?: string
+          link_url?: string | null
+          logo_public_id?: string | null
+          logo_url: string
+          name: string
+          sort_order?: number
+          starts_on?: string | null
+          tagline?: string | null
+          updated_at?: string
+        }
+        Update: {
+          brand_color?: string | null
+          created_at?: string
+          ends_on?: string | null
+          flyer_url?: string | null
+          id?: string
+          link_url?: string | null
+          logo_public_id?: string | null
+          logo_url?: string
+          name?: string
+          sort_order?: number
+          starts_on?: string | null
+          tagline?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pass_benefits: {
         Row: {
           click_count: number
@@ -479,6 +527,68 @@ export type Database = {
           full_name?: string
           id?: string
           role?: Database["public"]["Enums"]["user_role"] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sponsor_placements: {
+        Row: {
+          created_at: string
+          slot: string
+          sponsor_id: string
+        }
+        Insert: {
+          created_at?: string
+          slot: string
+          sponsor_id: string
+        }
+        Update: {
+          created_at?: string
+          slot?: string
+          sponsor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_placements_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: false
+            referencedRelation: "official_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_popup: {
+        Row: {
+          created_at: string
+          ends_on: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          link_url: string | null
+          starts_on: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          link_url?: string | null
+          starts_on?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          link_url?: string | null
+          starts_on?: string | null
+          title?: string | null
           updated_at?: string
         }
         Relationships: []

@@ -131,6 +131,13 @@ export type SponsorCard = {
   category: string;
   locationTag: string | null;
   logoUrl: string | null;
+  /** Official sponsors only: tint for the auto-designed panels. */
+  brandColor?: string | null;
+  linkUrl?: string | null;
+  /** Artwork supplied by the brand; replaces the auto design on large panels. */
+  flyerUrl?: string | null;
+  /** Short line such as "Indumentaria oficial". */
+  tagline?: string | null;
 };
 
 export type BenefitCard = {

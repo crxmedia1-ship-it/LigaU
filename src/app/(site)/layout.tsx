@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { PublicShell } from "@/components/public/public-shell";
+import { SitePopupModal } from "@/components/public/site-popup";
+import { getSitePopup } from "@/lib/public/site-popup";
 
 export const metadata: Metadata = {
   title: {
@@ -18,8 +20,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return <PublicShell>{children}</PublicShell>;
+  const popup = await getSitePopup();
+  return (
+    <PublicShell>
+      {children}
+      {popup ? <SitePopupModal key={`${popup.id}:${popup.version}`} popup={popup} /> : null}
+    </PublicShell>
+  );
 }

@@ -54,11 +54,14 @@ export function Crest({
   label,
   logo,
   size = "sm",
+  bare = false,
   className,
 }: {
   label: string;
   logo: string | null;
   size?: keyof typeof CREST_SIZE;
+  /** On white surfaces the mark reads better on its own, without the white disc. */
+  bare?: boolean;
   className?: string;
 }) {
   if (logo) {
@@ -66,9 +69,9 @@ export function Crest({
       <span
         aria-hidden
         className={cn(
-          "block shrink-0 rounded-full bg-white bg-contain bg-center bg-no-repeat bg-origin-content ring-1 ring-zinc-200",
+          "block shrink-0 bg-contain bg-center bg-no-repeat bg-origin-content",
           CREST_SIZE[size],
-          CREST_INSET[size],
+          bare ? null : ["rounded-full bg-white ring-1 ring-zinc-200", CREST_INSET[size]],
           className,
         )}
         style={{ backgroundImage: `url('${logo}')` }}

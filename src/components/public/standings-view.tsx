@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Trophy, User } from "lucide-react";
+import { User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,7 @@ import { CountUp, Segmented } from "@/components/public/app-motion";
 import { Crest } from "@/components/public/match-ui";
 import { CourtMark } from "@/components/public/sport-courts";
 import { GenderSwitch, SelectionTitle, SportPicker, sportTheme, type GenderValue } from "@/components/public/sport-picker";
-import { PresentedBy, SponsorFlyer, SponsorMark } from "@/components/public/sponsor-slots";
+import { PresentedBy, SponsorFlyer } from "@/components/public/sponsor-slots";
 import { GENDER_LABELS } from "@/lib/admin/labels";
 import {
   EDITION_STATUS_LABEL,
@@ -26,9 +26,10 @@ import {
   scopeMatches,
   type TitleWin,
 } from "@/lib/public/editions";
-import { cloudinaryThumb } from "@/lib/public/media";
+import { cloudinaryCutout, cloudinaryImage, cloudinaryThumb } from "@/lib/public/media";
+import { PLAYER_STAT_CATEGORIES, computePlayerStats, rankBy, type PlayerStat, type PlayerStatKey } from "@/lib/public/player-stats";
 import { computeStandings } from "@/lib/public/standings";
-import type { AthleteCard, MatchCard, SponsorCard, SportCard, StandingRow, TeamCard, TeamGender, UniversityCard, UniversityColors } from "@/lib/public/types";
+import type { AthleteCard, MatchCard, MatchEventCard, SponsorCard, SportCard, StandingRow, TeamCard, TeamGender, UniversityCard, UniversityColors } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
 
 type StandingGroup = {
@@ -41,7 +42,7 @@ type StandingGroup = {
   rows: Array<StandingRow & { colors: UniversityColors }>;
 };
 
-type View = "tablas" | "titulos";
+type View = "tablas" | "jugadores" | "titulos";
 type Slice = "ano" | "valida";
 
 function buildGroups(matches: MatchCard[], teams: TeamCard[], sports: SportCard[]): StandingGroup[] {
@@ -79,90 +80,6 @@ function buildGroups(matches: MatchCard[], teams: TeamCard[], sports: SportCard[
     .sort((a, b) => b.finished - a.finished || a.sportName.localeCompare(b.sportName, "es"));
 }
 
-function celebrate(colors: UniversityColors) {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  void import("canvas-confetti").then(({ default: confetti }) => {
-    confetti({
-      particleCount: 90,
-      spread: 75,
-      startVelocity: 38,
-      origin: { y: 0.45 },
-      colors: [colors.primary, colors.secondary, "#ffffff"],
-      disableForReducedMotion: true,
-    });
-  });
-}
-
-const PODIUM = [
-  { place: 2, height: "h-24", tone: "from-zinc-200 to-zinc-100", label: "text-zinc-500" },
-  { place: 1, height: "h-36", tone: "from-amber-300 to-amber-100", label: "text-amber-700" },
-  { place: 3, height: "h-16", tone: "from-orange-200 to-orange-50", label: "text-orange-700" },
-];
-
-function Podium({
-  rows,
-  leaderSponsor,
-}: {
-  rows: StandingGroup["rows"];
-  leaderSponsor?: SponsorCard;
-}) {
-  const slots = PODIUM.filter((slot) => rows[slot.place - 1]);
-
-  return (
-    <div className="relative isolate overflow-hidden rounded-[1.9rem] bg-white px-4 pt-6 shadow-[0_24px_60px_-36px_rgba(15,23,42,0.5)] ring-1 ring-zinc-200/80 sm:px-8">
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 -z-10 h-40 bg-[radial-gradient(ellipse_at_top,rgba(212,175,55,0.22),transparent_70%)]"
-      />
-      <div className="flex items-end justify-center gap-3 sm:gap-6">
-        {slots.map((slot) => {
-          const row = rows[slot.place - 1];
-          const leader = slot.place === 1;
-          return (
-            <div key={row.teamId} className="flex w-full max-w-36 flex-col items-center">
-              <button
-                type="button"
-                onClick={() => leader && celebrate(row.colors)}
-                aria-label={leader ? `Celebrar al líder ${row.universityShort}` : row.universityShort}
-                className={cn("relative flex flex-col items-center active:scale-95", !leader && "cursor-default")}
-              >
-                {leader ? (
-                  <span className="mb-1 text-amber-500">
-                    <Trophy className="size-6" strokeWidth={2.25} />
-                  </span>
-                ) : null}
-                <span
-                  className={cn("rounded-full p-1", leader && "shadow-[0_0_0_3px_rgba(212,175,55,0.5),0_12px_30px_-8px_rgba(212,175,55,0.8)]")}
-                  style={{ backgroundColor: row.colors.primary }}
-                >
-                  <Crest label={row.universityShort} logo={row.logoUrl} size={leader ? "xl" : "lg"} />
-                </span>
-                <span className="font-jersey mt-2 max-w-full truncate text-2xl leading-none text-zinc-950">
-                  {row.universityShort}
-                </span>
-                <span className="mt-0.5 text-[11px] font-semibold text-zinc-500">
-                  <CountUp value={row.points} className="font-jersey text-base text-zinc-950" /> pts
-                </span>
-              </button>
-              <div
-                className={cn("mt-3 grid w-full place-items-start justify-center rounded-t-2xl bg-gradient-to-b pt-2", slot.height, slot.tone)}
-              >
-                <span className={cn("font-jersey text-4xl leading-none", slot.label)}>{slot.place}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      {leaderSponsor ? (
-        <div className="-mx-4 flex items-center justify-center gap-3 border-t border-zinc-100 bg-zinc-50/80 px-4 py-2.5 sm:-mx-8">
-          <span className="text-[9px] font-semibold tracking-[0.22em] text-zinc-400 uppercase">Líder presentado por</span>
-          <SponsorMark sponsor={leaderSponsor} className="h-6 max-w-20" />
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 function Table({ group }: { group: StandingGroup }) {
   const cols = "grid-cols-[1.75rem_minmax(0,1fr)_2rem_2.25rem_2.5rem] sm:grid-cols-[2rem_minmax(0,1fr)_repeat(5,2.5rem)_3rem]";
   return (
@@ -188,7 +105,7 @@ function Table({ group }: { group: StandingGroup }) {
               {index + 1}
             </span>
             <div className="flex min-w-0 items-center gap-2.5">
-              <Crest label={row.universityShort} logo={row.logoUrl} size="sm" />
+              <Crest label={row.universityShort} logo={row.logoUrl} size="sm" bare />
               <p className="min-w-0 flex-1 truncate text-[15px] font-semibold text-zinc-900">{row.universityShort}</p>
             </div>
             <span className="text-center text-sm text-zinc-600 tabular-nums">{row.played}</span>
@@ -202,6 +119,176 @@ function Table({ group }: { group: StandingGroup }) {
           </li>
         ))}
       </ol>
+    </div>
+  );
+}
+
+function PlayerAvatar({ athlete, color, className }: { athlete: AthleteCard; color: string; className?: string }) {
+  return athlete.photoUrl ? (
+    <img
+      src={cloudinaryThumb(athlete.photoUrl, 160) ?? athlete.photoUrl}
+      alt=""
+      loading="lazy"
+      className={cn("shrink-0 rounded-full object-cover object-top", className)}
+    />
+  ) : (
+    <span
+      aria-hidden
+      className={cn("font-jersey grid shrink-0 place-items-center rounded-full text-white", className)}
+      style={{ backgroundColor: color }}
+    >
+      {athlete.fullName.slice(0, 1)}
+    </span>
+  );
+}
+
+/** The player cut out of the profile photo; until Cloudinary has a cutout, the photo fades into the card instead. */
+function LeaderFigure({ athlete }: { athlete: AthleteCard }) {
+  const cutout = cloudinaryCutout(athlete.photoUrl, 560);
+  const [failed, setFailed] = useState(false);
+  if (cutout && !failed) {
+    return (
+      <img
+        src={cutout}
+        alt=""
+        loading="lazy"
+        onError={() => setFailed(true)}
+        className="absolute right-0 bottom-0 h-[88%] w-auto max-w-[64%] object-contain object-bottom drop-shadow-[0_18px_22px_rgba(15,23,42,0.3)] transition-transform duration-500 group-hover:scale-[1.04]"
+      />
+    );
+  }
+  if (!athlete.photoUrl) return null;
+  return (
+    <img
+      src={cloudinaryImage(athlete.photoUrl, 560) ?? athlete.photoUrl}
+      alt=""
+      loading="lazy"
+      className="absolute inset-y-0 right-0 h-full w-[62%] object-cover object-top [mask-image:linear-gradient(to_left,black_55%,transparent)] transition-transform duration-500 group-hover:scale-[1.04]"
+    />
+  );
+}
+
+function PlayerLeaders({ stats }: { stats: PlayerStat[] }) {
+  const categories = PLAYER_STAT_CATEGORIES.filter((category) => stats.some((stat) => stat[category.key] > 0));
+  const [picked, setPicked] = useState<PlayerStatKey | null>(null);
+  const active = categories.find((category) => category.key === picked) ?? categories[0];
+
+  if (!active) {
+    return (
+      <div className="rounded-[1.6rem] bg-white px-6 py-10 text-center ring-1 ring-zinc-200/80">
+        <p className="font-jersey text-3xl leading-none text-zinc-950 uppercase">Sin estadísticas aún</p>
+        <p className="mx-auto mt-2 max-w-xs text-[13px] leading-snug text-zinc-500">
+          Cuando se carguen los goles, asistencias y MVP de los partidos jugados, aquí salen los líderes.
+        </p>
+      </div>
+    );
+  }
+
+  const ranking = rankBy(stats, active.key).slice(0, 10);
+
+  return (
+    <div className="space-y-4">
+      <ul className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
+        {categories.filter((category) => category.key !== "yellow" && category.key !== "red").slice(0, 3).map((category) => {
+          const leader = rankBy(stats, category.key)[0];
+          const value = leader[category.key];
+          const color = leader.team.university.colors.primary;
+          return (
+            <li key={category.key} className="w-[78%] shrink-0 snap-start sm:w-auto">
+              <Link
+                href={`/atletas/${leader.athlete.id}`}
+                className="group relative isolate flex h-60 flex-col overflow-hidden rounded-[1.6rem] p-4 shadow-[0_24px_60px_-36px_rgba(15,23,42,0.55)] ring-1 ring-zinc-200/80"
+                style={{
+                  background: `linear-gradient(155deg, color-mix(in srgb, ${color} 26%, white) 0%, color-mix(in srgb, ${color} 8%, white) 55%, #fff 100%)`,
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="font-jersey pointer-events-none absolute -top-4 -right-2 -z-10 text-[11rem] leading-none select-none"
+                  style={{ color: `color-mix(in srgb, ${color} 16%, transparent)` }}
+                >
+                  {leader.athlete.jerseyNumber ?? leader.athlete.fullName.slice(0, 1)}
+                </span>
+                <span aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
+                  <LeaderFigure athlete={leader.athlete} />
+                </span>
+                <span
+                  aria-hidden
+                  className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.85),rgba(255,255,255,0.35)_45%,transparent_68%)]"
+                />
+
+                <span className="w-fit rounded-full bg-white/85 px-2.5 py-1 text-[9px] font-bold tracking-[0.2em] text-zinc-600 uppercase shadow-sm ring-1 ring-zinc-900/5 backdrop-blur">
+                  {category.leader}
+                </span>
+                <p className="mt-2 flex flex-col">
+                  <CountUp value={value} className="font-jersey text-7xl leading-[0.85] text-zinc-950" />
+                  <span className="text-[11px] font-bold tracking-[0.16em] text-zinc-500 uppercase">
+                    {category.unit[value === 1 ? 0 : 1]}
+                  </span>
+                </p>
+                <div className="mt-auto max-w-[78%]">
+                  <p className="font-jersey line-clamp-2 text-2xl leading-[0.95] text-zinc-950 uppercase">{leader.athlete.fullName}</p>
+                  <p className="mt-1.5 flex items-center gap-1.5 text-[11px] font-medium text-zinc-600">
+                    <Crest label={leader.team.university.shortName} logo={leader.team.university.logoUrl} size="sm" bare />
+                    <span className="truncate">
+                      {leader.team.university.shortName}
+                      {leader.athlete.jerseyNumber ? ` · #${leader.athlete.jerseyNumber}` : ""}
+                    </span>
+                  </p>
+                </div>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="overflow-hidden rounded-[1.6rem] bg-white shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] ring-1 ring-zinc-200/80">
+        <div className="flex gap-1.5 overflow-x-auto border-b border-zinc-100 px-3 py-3 [scrollbar-width:none]">
+          {categories.map((category) => (
+            <button
+              key={category.key}
+              type="button"
+              aria-pressed={category.key === active.key}
+              onClick={() => setPicked(category.key)}
+              className={cn(
+                "min-h-8 shrink-0 rounded-full px-3.5 text-xs font-semibold",
+                category.key === active.key ? "bg-zinc-950 text-white" : "bg-zinc-100 text-zinc-500",
+              )}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+        <div className="grid grid-cols-[1.75rem_minmax(0,1fr)_2.25rem_2.75rem] items-center gap-2 border-b border-zinc-100 px-4 py-2.5 text-[10px] font-bold tracking-[0.16em] text-zinc-400 uppercase">
+          <span>#</span>
+          <span>Jugador</span>
+          <span className="text-center">PJ</span>
+          <span className="text-right">{active.label.slice(0, 3)}</span>
+        </div>
+        <ol>
+          {ranking.map((stat, index) => (
+            <li key={stat.athlete.id} className="border-b border-zinc-100 last:border-b-0">
+              <Link
+                href={`/atletas/${stat.athlete.id}`}
+                className="grid grid-cols-[1.75rem_minmax(0,1fr)_2.25rem_2.75rem] items-center gap-2 px-4 py-3 hover:bg-zinc-50"
+              >
+                <span className={cn("font-jersey text-xl leading-none", index === 0 ? "text-amber-600" : "text-zinc-400")}>
+                  {index + 1}
+                </span>
+                <span className="flex min-w-0 items-center gap-2.5">
+                  <PlayerAvatar athlete={stat.athlete} color={stat.team.university.colors.primary} className="size-9 text-base" />
+                  <span className="min-w-0">
+                    <span className="block truncate text-[14px] font-semibold text-zinc-900">{stat.athlete.fullName}</span>
+                    <span className="block truncate text-[11px] text-zinc-500">{stat.team.university.shortName}</span>
+                  </span>
+                </span>
+                <span className="text-center text-sm text-zinc-600 tabular-nums">{stat.games}</span>
+                <span className="font-jersey text-right text-2xl leading-none text-zinc-950">{stat[active.key]}</span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 }
@@ -542,12 +629,13 @@ export function StandingsView({
   initialView,
   initialYear,
   initialRound,
+  events,
   presenter,
-  leaderSponsor,
   feedSponsor,
 }: {
   sports: SportCard[];
   matches: MatchCard[];
+  events: Array<MatchEventCard & { matchId: string }>;
   teams: TeamCard[];
   athletes: AthleteCard[];
   universities: UniversityCard[];
@@ -555,7 +643,6 @@ export function StandingsView({
   initialYear: number | null;
   initialRound: string | null;
   presenter?: SponsorCard;
-  leaderSponsor?: SponsorCard;
   /** Official sponsor flyer. Not a U Pass brand unless that brand also bought a sponsorship. */
   feedSponsor?: SponsorCard;
 }) {
@@ -591,10 +678,11 @@ export function StandingsView({
   const group = sportGroups.find((item) => item.gender === gender) ?? sportGroups[0];
   const selectedSport = sports.find((sport) => sport.id === sportId);
   const editionLabel = slice === "valida" && round && year ? `${round} ${year}` : year ? String(year) : "Esta edición";
+  const playerStats = group ? computePlayerStats(scoped, events, athletes, teams, group.sportId, group.gender) : [];
 
   const writeUrl = (nextView: View, nextSlice: Slice, nextYear: number | null, nextRound: string | null) => {
     const params = new URLSearchParams();
-    if (nextView === "titulos") params.set("vista", "titulos");
+    if (nextView !== "tablas") params.set("vista", nextView);
     if (nextYear) params.set("ano", String(nextYear));
     if (nextSlice === "valida" && nextRound) params.set("valida", nextRound);
     const query = params.toString();
@@ -642,9 +730,11 @@ export function StandingsView({
               Clasificación
             </h1>
           </div>
-          {view === "tablas" ? (
+          {view !== "titulos" ? (
             <p className="relative z-10 mt-2 max-w-md text-[13px] leading-snug text-zinc-500 sm:mt-3 sm:text-sm">
-              La tabla de la edición que elijas. Abre un año o una válida, pasada o próxima.
+              {view === "tablas"
+                ? "La tabla de la edición que elijas. Abre un año o una válida, pasada o próxima."
+                : "Goleadores, asistidores y MVP de la edición que elijas."}
             </p>
           ) : null}
         </div>
@@ -660,12 +750,13 @@ export function StandingsView({
         }}
         options={[
           { id: "tablas", label: "Tabla" },
+          { id: "jugadores", label: "Jugadores" },
           { id: "titulos", label: "Títulos" },
         ]}
         className="w-full"
       />
 
-        {view === "tablas" ? (
+        {view !== "titulos" ? (
           <div className="space-y-5">
             <section aria-label="Elegir edición" className="flex flex-wrap items-center gap-1.5">
               <button
@@ -743,14 +834,7 @@ export function StandingsView({
                     meta={`${editionLabel} · ${group.finished} ${group.finished === 1 ? "resultado" : "resultados"}`}
                   />
                 </div>
-                {group.finished > 0 ? (
-                  <div className="grid gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
-                    <Podium rows={group.rows} leaderSponsor={leaderSponsor} />
-                    <Table group={group} />
-                  </div>
-                ) : (
-                  <Table group={group} />
-                )}
+                {view === "tablas" ? <Table group={group} /> : <PlayerLeaders key={group.id} stats={playerStats} />}
               </div>
             ) : (
               <EmptySport name={selectedSport?.name ?? "este deporte"} edition={editionLabel} />

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireStaff } from "@/lib/admin/session";
 import { isSuperadmin } from "@/lib/auth/roles";
-import { fetchFolderLogos } from "@/lib/public/sponsor-logos";
+import { isSponsorSlot, type SponsorSlot } from "@/lib/public/sponsor-placements";
 import { parseContact } from "@/lib/public/pass-contact";
 import { universityLogoUrl } from "@/lib/public/university-marks";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -31,7 +31,8 @@ export default async function AdminCatalogoPage({
     { data: teams },
     { data: sponsors },
     { data: benefits },
-    officialSponsors,
+    { data: officialSponsors },
+    { data: placements },
   ] = await Promise.all([
     admin
       .from("universities")
@@ -51,8 +52,21 @@ export default async function AdminCatalogoPage({
           .select("id, sponsor_id, discount_title, status, redemption_type, promo_code, instructions, external_url")
           .order("created_at")
       : { data: [] },
-    commercial ? fetchFolderLogos("sponsors") : [],
+    commercial
+      ? admin
+          .from("official_sponsors")
+          .select("id, name, logo_url, brand_color, link_url, flyer_url, tagline, starts_on, ends_on")
+          .order("sort_order")
+          .order("name")
+      : { data: [] },
+    commercial ? admin.from("sponsor_placements").select("slot, sponsor_id") : { data: [] },
   ]);
+
+  const slotsBySponsor = new Map<string, SponsorSlot[]>();
+  for (const placement of placements ?? []) {
+    if (!isSponsorSlot(placement.slot)) continue;
+    slotsBySponsor.set(placement.sponsor_id, [...(slotsBySponsor.get(placement.sponsor_id) ?? []), placement.slot]);
+  }
 
   const teamsByUniversity: Record<string, number> = {};
   const teamsBySport: Record<string, number> = {};
@@ -67,10 +81,17 @@ export default async function AdminCatalogoPage({
       key={tab ?? "universidades"}
       tabs={tabs}
       initialTab={tabs.find((item) => item === tab) ?? "universidades"}
-      officialSponsors={officialSponsors.map((sponsor) => ({
+      officialSponsors={(officialSponsors ?? []).map((sponsor) => ({
         id: sponsor.id,
         name: sponsor.name,
-        logoUrl: sponsor.logoUrl,
+        logoUrl: sponsor.logo_url,
+        brandColor: sponsor.brand_color,
+        linkUrl: sponsor.link_url,
+        flyerUrl: sponsor.flyer_url,
+        tagline: sponsor.tagline,
+        startsOn: sponsor.starts_on,
+        endsOn: sponsor.ends_on,
+        slots: slotsBySponsor.get(sponsor.id) ?? [],
       }))}
       universities={(universities ?? []).map((university) => ({
         id: university.id,

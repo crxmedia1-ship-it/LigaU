@@ -6,13 +6,13 @@ import { kickoff } from "@/components/public/match-ui";
 import { MvpCarousel, type MvpSlide } from "@/components/public/mvp-carousel";
 import { SponsorMarquee } from "@/components/public/sponsor-marquee";
 import { CourtMark } from "@/components/public/sport-courts";
-import { SponsorMark } from "@/components/public/sponsor-slots";
+import { HomeSponsorTile } from "@/components/public/sponsor-slots";
 import { GENDER_LABELS } from "@/lib/admin/labels";
-import { getHomeSponsorLogos } from "@/lib/public/sponsor-logos";
 import { cloudinaryImage } from "@/lib/public/media";
+import { getOfficialSponsors } from "@/lib/public/official-sponsors";
 import { getNewsContent, getPublicCatalog } from "@/lib/public/queries";
 import { computeStandings } from "@/lib/public/standings";
-import type { MatchCard, NewsCard, SponsorCard, SportCard, StandingRow, TeamCard } from "@/lib/public/types";
+import type { MatchCard, NewsCard, SportCard, StandingRow, TeamCard } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
 
 const CARD =
@@ -658,77 +658,6 @@ function StandingsTile({ table }: { table: StandingsPreview | null }) {
   );
 }
 
-/** Headline partner on the home rail; the flyer opens the brand's own site. */
-const TOP_SPONSOR = {
-  match: "champion",
-  name: "Champion",
-  url: "https://www.champion.com",
-  flyer: "/flyers/champion.webp",
-} as const;
-
-function topSponsor(sponsors: SponsorCard[]) {
-  return sponsors.find((sponsor) => sponsor.name.toLowerCase().includes(TOP_SPONSOR.match));
-}
-
-function SponsorFlyer({ sponsor }: { sponsor?: SponsorCard }) {
-  return (
-    <a
-      href={TOP_SPONSOR.url}
-      target="_blank"
-      rel="noopener noreferrer sponsored"
-      aria-label={`${TOP_SPONSOR.name}, indumentaria oficial de Liga U`}
-      className={cn(
-        "group relative isolate flex flex-col overflow-hidden rounded-2xl bg-[#0b1636] p-4 text-white shadow-[0_24px_50px_-24px_rgba(11,22,54,0.8)]",
-        RAIL,
-      )}
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={TOP_SPONSOR.flyer}
-        alt=""
-        className="absolute top-0 right-0 -z-10 h-full w-auto max-w-none transition-transform duration-700 group-hover:scale-105"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(11,22,54,0.92)_0%,rgba(11,22,54,0.55)_48%,transparent_78%)]"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgba(11,22,54,0.95)_0%,transparent_45%)]"
-      />
-      <span className="w-fit rounded-md bg-white px-3 py-2 shadow-[0_10px_24px_-10px_rgba(0,0,0,0.6)]">
-        {sponsor ? (
-          <SponsorMark sponsor={sponsor} className="h-6 w-auto max-w-32" />
-        ) : (
-          <span className="text-sm font-black tracking-wide text-[#0b1636] italic">{TOP_SPONSOR.name}</span>
-        )}
-      </span>
-
-      <div className="mt-auto">
-        <p className="text-[9px] font-black tracking-[0.24em] text-white/70 uppercase">Temporada 2026</p>
-        <h2 className="font-jersey mt-1 text-[2.85rem] leading-[0.84] uppercase drop-shadow-[0_4px_12px_rgba(0,0,0,0.45)]">
-          Indumentaria
-          <br />
-          oficial
-        </h2>
-        <span className="font-jersey mt-1.5 inline-block -skew-x-12 bg-[#d71920] px-2.5 py-0.5 text-2xl leading-none uppercase">
-          <span className="inline-block skew-x-12">de la Liga U</span>
-        </span>
-      </div>
-
-      <div className={cn(RAIL_FOOTER, "mt-3")}>
-        <span className="flex min-h-11 items-center truncate text-[9px] font-black tracking-[0.16em] text-white/60 uppercase">
-          Patrocinador oficial
-        </span>
-        <span className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-black tracking-wide whitespace-nowrap uppercase">
-          Ir a la tienda
-          <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
-        </span>
-      </div>
-    </a>
-  );
-}
-
 /** Brushed-platinum member card in the spirit of Apple Card; the whole block opens /liga-u-pass. */
 function PassTile() {
   return (
@@ -822,7 +751,7 @@ function PassTile() {
 export const revalidate = 30;
 
 export default async function HomePage() {
-  const [catalog, sponsors] = await Promise.all([getPublicCatalog(), getHomeSponsorLogos()]);
+  const [catalog, { sponsors, slots }] = await Promise.all([getPublicCatalog(), getOfficialSponsors()]);
   const mvps = weeklyMvps(catalog);
   const match = featuredMatch(catalog.matches);
   const lead = catalog.news.find((item) => item.isFeatured) ?? catalog.news[0];
@@ -883,7 +812,7 @@ export default async function HomePage() {
               count={catalog.news.length}
               photo={newsPhoto(lead, catalog.sports)}
             />
-            <SponsorFlyer sponsor={topSponsor(sponsors)} />
+            {slots.home_flyer ? <HomeSponsorTile sponsor={slots.home_flyer} className={RAIL} /> : null}
             <MediaTile reels={homeReels(catalog)} />
           </div>
           <div className="mt-20 grid px-3 md:mt-8 md:px-4">

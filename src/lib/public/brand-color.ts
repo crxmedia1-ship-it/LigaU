@@ -34,7 +34,7 @@ export function normalizeHex(hex: string) {
 }
 
 /** Black, white and greys can't carry a brand tint. */
-function isNeutral(hex: string) {
+export function isNeutral(hex: string) {
   const { sat, light } = toHsl(hex);
   return sat < 0.25 || light < 0.1 || light > 0.92;
 }

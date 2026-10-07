@@ -11,12 +11,11 @@ import { PresentedBy, SponsorFlyer, SponsorMark } from "@/components/public/spon
 import type { MatchCard, SponsorCard, SportCard } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
 
-type StatusFilter = "all" | "upcoming" | "results";
+type StatusFilter = "upcoming" | "results";
 
 const STATUS_MATCH: Record<StatusFilter, (m: MatchCard) => boolean> = {
-  all: () => true,
-  upcoming: (m) => m.status === "scheduled" || m.status === "live",
-  results: (m) => m.status === "finished",
+  upcoming: (m) => m.status === "scheduled" || m.status === "live" || m.status === "postponed",
+  results: (m) => m.status === "finished" || m.status === "cancelled",
 };
 
 /** Mascot colors, same family as the home match tile, so each side of the clash reads as that club. */
@@ -160,22 +159,23 @@ export function CalendarView({
   /** Official sponsor flyer. Not a U Pass brand unless that brand also bought a sponsorship. */
   feedSponsor?: SponsorCard;
 }) {
-  const [status, setStatus] = useState<StatusFilter>("all");
+  const [status, setStatus] = useState<StatusFilter>(() =>
+    matches.some(STATUS_MATCH.upcoming) ? "upcoming" : "results",
+  );
   const [sportId, setSportId] = useState("all");
   const [gender, setGender] = useState<GenderValue>("all");
   const [activeDay, setActiveDay] = useState<string | null>(null);
   const dayRefs = useRef(new Map<string, HTMLElement>());
 
-  const filtered = useMemo(
-    () =>
-      matches.filter(
-        (m) =>
-          STATUS_MATCH[status](m) &&
-          (sportId === "all" || m.sportId === sportId) &&
-          (gender === "all" || m.gender === gender),
-      ),
-    [gender, matches, sportId, status],
-  );
+  const filtered = useMemo(() => {
+    const list = matches.filter(
+      (m) =>
+        STATUS_MATCH[status](m) &&
+        (sportId === "all" || m.sportId === sportId) &&
+        (gender === "all" || m.gender === gender),
+    );
+    return status === "results" ? list.reverse() : list;
+  }, [gender, matches, sportId, status]);
   const days = useMemo(() => {
     const groups = new Map<string, MatchCard[]>();
     for (const match of filtered) {
@@ -274,7 +274,6 @@ export function CalendarView({
           value={status}
           onChange={(id) => setStatus(id as StatusFilter)}
           options={[
-            { id: "all", label: "Todos" },
             { id: "upcoming", label: "Próximos" },
             { id: "results", label: "Resultados" },
           ]}
@@ -368,9 +367,9 @@ export function CalendarView({
               <button
                 type="button"
                 onClick={() => {
-                  setStatus("all");
                   setSportId("all");
                   setGender("all");
+                  if (!matches.some(STATUS_MATCH[status])) setStatus(status === "upcoming" ? "results" : "upcoming");
                 }}
                 className="mt-5 rounded-full bg-zinc-950 px-5 py-2.5 text-sm font-semibold text-white"
               >
