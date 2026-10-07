@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import type { LucideIcon } from "lucide-react";
-import { Gift, Lock, Plane, Smartphone, Sparkles, UtensilsCrossed } from "lucide-react";
+import { Gift, Lock, Smartphone, Sparkles } from "lucide-react";
 import { Marquee } from "@/components/magic/marquee";
 import { PassCard, ShineButton } from "@/components/public/pass-landing";
+import { RotatingBenefit } from "@/components/public/rotating-benefits";
 import { cloudinaryLogo } from "@/lib/public/media";
 import { getPassBrandLogos } from "@/lib/public/sponsor-logos";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Liga U Pass",
@@ -22,30 +22,12 @@ const STEPS: { icon: LucideIcon; title: string; text: string }[] = [
   {
     icon: Smartphone,
     title: "Credencial CarnetX",
-    text: "Tu carnet digital oficial en el móvil, con validación segura.",
+    text: "Tu carnet digital oficial, siempre contigo dentro de tu teléfono.",
   },
   {
     icon: Gift,
     title: "Disfruta los beneficios",
-    text: "Obtén tu carnet y accede a los beneficios de todas las marcas aliadas.",
-  },
-];
-
-/** Illustrative offers. Real discounts come from each partner once the pass is active. */
-const SAMPLE_BENEFITS: { icon: LucideIcon; category: string; offer: string; detail: string; tone: string }[] = [
-  {
-    icon: Plane,
-    category: "Viajes",
-    offer: "Hasta 20%",
-    detail: "En boletos de aerolíneas aliadas.",
-    tone: "bg-[linear-gradient(165deg,#e0233f_0%,#C8102E_45%,#8a0b20_100%)] shadow-[0_24px_50px_-28px_rgba(200,16,46,0.85)]",
-  },
-  {
-    icon: UtensilsCrossed,
-    category: "Comida",
-    offer: "2x1",
-    detail: "En combos de locales aliados.",
-    tone: "bg-[linear-gradient(165deg,#52525b_0%,#3f3f46_45%,#27272a_100%)] shadow-[0_24px_50px_-28px_rgba(39,39,42,0.8)]",
+    text: "Accede a tu carnet y valídalo en las marcas aliadas para disfrutar tus beneficios.",
   },
 ];
 
@@ -166,33 +148,8 @@ export default async function LigaUPassPage() {
           </p>
 
           <div className="mx-auto mt-5 grid max-w-6xl gap-3 px-4 md:mt-6 md:grid-cols-3 md:gap-5">
-            {SAMPLE_BENEFITS.map(({ icon: Icon, category, offer, detail, tone }) => (
-              <article
-                key={category}
-                className={cn(
-                  "relative flex min-h-56 flex-col overflow-hidden rounded-[28px] p-5 text-white ring-1 ring-white/15 md:min-h-64 md:p-6",
-                  tone,
-                )}
-              >
-                <Icon
-                  aria-hidden
-                  className="pointer-events-none absolute -top-6 -right-5 size-36 text-white/[0.08]"
-                  strokeWidth={1.25}
-                />
-                <div className="flex items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] uppercase ring-1 ring-white/15">
-                    <Icon className="size-3.5" strokeWidth={2.25} />
-                    {category}
-                  </span>
-                  <span className="text-[10px] font-semibold tracking-[0.16em] text-white/75 uppercase">Ejemplo</span>
-                </div>
-                <p className="font-jersey mt-auto pt-8 text-[4.5rem] leading-none text-white">{offer}</p>
-                <p className="mt-2 text-sm leading-snug text-white/80">{detail}</p>
-                <p className="mt-4 border-t border-white/15 pt-3 text-[11px] font-medium tracking-wide text-white/60">
-                  Se desbloquea con tu U Pass
-                </p>
-              </article>
-            ))}
+            <RotatingBenefit start={0} />
+            <RotatingBenefit start={1} delay={3500} />
 
             <article
               aria-label="Beneficios bloqueados: obtén tu U Pass para desbloquearlos"

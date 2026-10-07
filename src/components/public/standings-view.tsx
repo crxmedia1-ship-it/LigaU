@@ -733,7 +733,7 @@ export function StandingsView({
           {view !== "titulos" ? (
             <p className="relative z-10 mt-2 max-w-md text-[13px] leading-snug text-zinc-500 sm:mt-3 sm:text-sm">
               {view === "tablas"
-                ? "La tabla de la edición que elijas. Abre un año o una válida, pasada o próxima."
+                ? "Posiciones, puntos y rendimiento de cada universidad. Elige la temporada o la válida que quieres ver."
                 : "Goleadores, asistidores y MVP de la edición que elijas."}
             </p>
           ) : null}

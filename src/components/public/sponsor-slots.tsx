@@ -1,4 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
+import { AnimatedSponsorLogo } from "@/components/public/animated-sponsor-logo";
+import { animatedLogoKey } from "@/lib/public/animated-logos";
 import { cloudinaryImage, cloudinaryLogo } from "@/lib/public/media";
 import type { SponsorCard } from "@/lib/public/types";
 import { cn } from "@/lib/utils";
@@ -95,6 +97,7 @@ export function SponsorFlyer({
   context: string;
 }) {
   const artwork = cloudinaryImage(sponsor.flyerUrl, 900) ?? sponsor.flyerUrl;
+  const animated = animatedLogoKey(sponsor.name);
   const body = (
     <>
       {artwork ? (
@@ -134,7 +137,12 @@ export function SponsorFlyer({
         )}
       </div>
       <div className="relative flex flex-1 items-center justify-center px-6 py-2">
-        {artwork ? null : (
+        {artwork ? null : animated ? (
+          <AnimatedSponsorLogo
+            logo={animated}
+            className="drop-shadow-[0_10px_16px_rgba(15,23,42,0.16)] [--logo-h:4rem] sm:[--logo-h:5rem]"
+          />
+        ) : (
           <SponsorMark
             sponsor={sponsor}
             height={240}
@@ -191,6 +199,7 @@ export function SponsorFlyer({
 /** Home rail card: the brand's artwork or logo on its own color, with its tagline as the headline. */
 export function HomeSponsorTile({ sponsor, className }: { sponsor: SponsorCard; className?: string }) {
   const artwork = cloudinaryImage(sponsor.flyerUrl, 700) ?? sponsor.flyerUrl;
+  const animated = animatedLogoKey(sponsor.name);
   const base = shade(sponsor.brandColor);
   const lines = headlineLines(sponsor.tagline);
   const body = (
@@ -219,7 +228,11 @@ export function HomeSponsorTile({ sponsor, className }: { sponsor: SponsorCard; 
       <div aria-hidden className="absolute inset-0 -z-10" style={{ background: `linear-gradient(100deg, ${shade(sponsor.brandColor, 0.92)} 0%, ${shade(sponsor.brandColor, 0.55)} 48%, transparent 78%)` }} />
       <div aria-hidden className="absolute inset-0 -z-10" style={{ background: `linear-gradient(to top, ${shade(sponsor.brandColor, 0.95)} 0%, transparent 45%)` }} />
       <span className="w-fit rounded-md bg-white px-3 py-2 shadow-[0_10px_24px_-10px_rgba(0,0,0,0.6)]">
-        <SponsorMark sponsor={sponsor} className="h-6 w-auto max-w-32" />
+        {animated ? (
+          <AnimatedSponsorLogo logo={animated} className="max-w-32 [--logo-h:1.5rem]" />
+        ) : (
+          <SponsorMark sponsor={sponsor} className="h-6 w-auto max-w-32" />
+        )}
       </span>
 
       <div className="mt-auto">
