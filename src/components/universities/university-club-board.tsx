@@ -9,6 +9,10 @@ import {
   buildAthleteSheet,
   type AthleteSheet,
 } from "@/lib/public/athlete-sheet";
+import { KitViewer } from "@/components/universities/kit-viewer";
+import { universityKit } from "@/lib/public/university-kits";
+import { MASCOT_OUTLINE, paletteBackground, universityPalette } from "@/lib/public/university-palette";
+import { cn } from "@/lib/utils";
 import type {
   AthleteCard,
   MatchCard,
@@ -55,47 +59,77 @@ export function UniversityClubBoard({
     sportTeams.some((team) => team.id === athlete.teamId && athlete.isActive),
   );
   const activeSport = orderedSports.find((sport) => sport.id === sportId);
+  const palette = universityPalette(university);
+  const kit = universityKit(university.shortName);
+  const stripe = palette.accent === "#ffffff" ? palette.glow : palette.accent;
 
   return (
     <div className="space-y-8">
       <header
-        className="overflow-hidden rounded-2xl border border-zinc-800"
-        style={{
-          background: `linear-gradient(135deg, ${university.colors.primary} 0%, #09090B 58%)`,
-        }}
+        className="relative isolate overflow-hidden rounded-[1.75rem] text-white shadow-[0_30px_60px_-35px_var(--glow)]"
+        style={
+          {
+            "--glow": palette.glow,
+            background: paletteBackground(palette, "18% 50%"),
+          } as React.CSSProperties
+        }
       >
-        <div className="flex flex-col gap-5 px-5 py-8 sm:flex-row sm:items-center sm:px-8">
-          <div className="flex h-24 shrink-0 items-center gap-4 self-start rounded-2xl bg-white px-4">
-            <SafeLogo
-              url={university.crestUrl}
-              label={university.shortName}
-              className="h-16 w-32"
-              fallback={false}
-            />
-            <SafeLogo
-              url={university.mascotUrl}
-              label={university.shortName}
-              className="h-20 w-20"
-              fallback={!university.crestUrl}
-            />
-          </div>
-          <div className="min-w-0">
-            <p className="font-mono text-xs tracking-[0.28em] text-white/70 uppercase">
-              {university.shortName}
+        <span
+          aria-hidden
+          className="absolute inset-0 -z-10 opacity-50 [background-image:repeating-linear-gradient(115deg,rgba(255,255,255,0.06)_0_2px,transparent_2px_22px)]"
+        />
+        <span
+          aria-hidden
+          className="absolute -top-1/4 left-[62%] -z-10 h-[150%] w-[14%] rotate-[18deg] opacity-25"
+          style={{ background: `linear-gradient(to bottom, transparent, ${palette.accent}, transparent)` }}
+        />
+        <span
+          aria-hidden
+          className="font-jersey absolute -right-[2%] -bottom-[18%] -z-10 text-[8rem] leading-none text-transparent opacity-30 select-none [-webkit-text-stroke:2px_var(--accent)] sm:text-[11rem]"
+          style={{ "--accent": palette.accent } as React.CSSProperties}
+        >
+          {university.shortName}
+        </span>
+
+        <div className="flex items-center gap-4 px-4 py-6 sm:gap-7 sm:px-8 sm:py-8">
+          <SafeLogo
+            url={university.mascotUrl ?? university.crestUrl}
+            label={university.shortName}
+            className={cn(
+              "size-28 shrink-0 drop-shadow-[0_18px_24px_rgba(0,0,0,0.5)] sm:size-40",
+              palette.outline && MASCOT_OUTLINE,
+            )}
+          />
+          <div className="min-w-0 flex-1">
+            <p className="flex items-center gap-2 text-[10px] font-black tracking-[0.24em] text-white/75 uppercase">
+              <span className="h-1 w-6 rounded-full" style={{ background: palette.accent }} />
+              Liga U · 2026
             </p>
-            <h1 className="mt-1 text-3xl font-black tracking-tight text-white uppercase sm:text-4xl">
-              {university.name}
+            <h1 className="font-jersey mt-2 text-6xl leading-[0.85] uppercase drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)] sm:text-8xl">
+              {university.shortName}
             </h1>
-            <div className="mt-3 flex gap-2">
-              <span
-                className="h-2 w-10 rounded-full"
-                style={{ backgroundColor: university.colors.primary }}
-              />
-              <span
-                className="h-2 w-10 rounded-full"
-                style={{ backgroundColor: university.colors.secondary }}
-              />
-            </div>
+            <p className="mt-3 flex w-fit max-w-full -skew-x-12 items-center gap-2.5 rounded-md bg-white py-1.5 pr-3.5 pl-2 text-zinc-900 shadow-lg">
+              <span className="w-1 self-stretch rounded-full" style={{ background: stripe }} />
+              {university.crestUrl ? (
+                <SafeLogo
+                  url={university.crestUrl}
+                  label={university.shortName}
+                  fallback={false}
+                  className="h-7 w-auto max-w-16 shrink-0 skew-x-12"
+                />
+              ) : null}
+              <span className="skew-x-12 truncate text-xs font-bold sm:text-sm">{university.name}</span>
+            </p>
+            {kit ? (
+              <div className="mt-4">
+                <KitViewer
+                  kit={kit}
+                  palette={palette}
+                  shortName={university.shortName}
+                  logoUrl={university.mascotUrl ?? university.crestUrl}
+                />
+              </div>
+            ) : null}
           </div>
         </div>
       </header>
@@ -151,10 +185,17 @@ export function UniversityClubBoard({
                   <span
                     aria-hidden
                     className="h-14 w-1 shrink-0 rounded-full"
-                    style={{ backgroundColor: university.colors.primary }}
+                    style={{ backgroundColor: stripe }}
                   />
-                  <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-zinc-50 ring-1 ring-zinc-200">
-                    <SafeLogo url={university.logoUrl} label={university.shortName} className="size-10" />
+                  <span
+                    className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-2xl p-1.5"
+                    style={{ background: paletteBackground(palette, "50% 45%") }}
+                  >
+                    <SafeLogo
+                      url={university.logoUrl}
+                      label={university.shortName}
+                      className={cn("size-full", palette.outline && MASCOT_OUTLINE)}
+                    />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[15px] font-semibold tracking-tight text-zinc-950">

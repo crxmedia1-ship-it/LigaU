@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { XIcon } from "lucide-react";
 import { cloudinaryThumb } from "@/lib/public/media";
 import type { AthleteSheet } from "@/lib/public/athlete-sheet";
+import { MASCOT_OUTLINE, paletteBackground } from "@/lib/public/university-palette";
+import { cn } from "@/lib/utils";
 
 export function AthleteCardModal({
   athlete,
@@ -67,9 +69,16 @@ export function AthleteCardModal({
               animate={{ y: 0, opacity: 1, scale: 1 }}
               exit={reduce ? { opacity: 0 } : { y: 80, opacity: 0, scale: 0.98 }}
               transition={{ type: "spring", stiffness: 380, damping: 34 }}
-              className="pointer-events-auto relative max-h-[calc(100svh-1.5rem)] w-full max-w-md overflow-hidden rounded-t-[1.75rem] border border-white/80 bg-[linear-gradient(165deg,#fafafa_0%,#e6e6ea_100%)] text-zinc-950 shadow-[0_-18px_50px_rgba(0,0,0,0.32)] md:max-h-[calc(100svh-3rem)] md:max-w-2xl md:rounded-[1.75rem] md:shadow-[0_28px_70px_rgba(0,0,0,0.32)]"
+              className="pointer-events-auto relative max-h-[calc(100svh-1.5rem)] w-full max-w-md overflow-hidden rounded-t-[1.75rem] border border-white/10 text-white shadow-[0_-18px_50px_rgba(0,0,0,0.4)] md:max-h-[calc(100svh-3rem)] md:max-w-2xl md:rounded-[1.75rem] md:shadow-[0_28px_70px_-20px_var(--glow)]"
+              style={
+                {
+                  "--glow": athlete.palette.glow,
+                  "--accent": athlete.palette.accent,
+                  background: `linear-gradient(165deg, color-mix(in srgb, ${athlete.palette.base} 85%, #fff) 0%, ${athlete.palette.base} 55%, color-mix(in srgb, ${athlete.palette.base} 70%, #000) 100%)`,
+                } as React.CSSProperties
+              }
             >
-              <div className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-zinc-400/80 md:hidden" />
+              <div className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-white/30 md:hidden" />
               <AthleteSheetBody athlete={athlete} onClose={onClose} />
             </motion.div>
           </div>
@@ -88,52 +97,62 @@ function AthleteSheetBody({
 }) {
   const photo = cloudinaryThumb(athlete.photoUrl, 640);
   const dorsal = athlete.jerseyNumber?.toString() ?? "U";
+  const { palette } = athlete;
 
   return (
     <div className="relative md:grid md:min-h-[24rem] md:grid-cols-[15rem_1fr] md:gap-2 md:p-3">
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-2.5 right-3 z-20 grid size-8 place-items-center rounded-full border border-black/10 bg-white/75 text-zinc-800 shadow-sm backdrop-blur-md md:top-5 md:right-5"
+        className="absolute top-2.5 right-3 z-20 grid size-8 place-items-center rounded-full bg-black/30 text-white ring-1 ring-white/20 backdrop-blur-md md:top-5 md:right-5"
         aria-label="Cerrar"
       >
         <XIcon className="size-4" />
       </button>
 
-      <div className="relative mx-4 mt-3 h-44 overflow-hidden rounded-[1.25rem] bg-[linear-gradient(165deg,#ffffff_0%,#d4d4d8_55%,#b9b9c0_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_24px_rgba(0,0,0,0.06)] ring-1 ring-black/5 md:mx-0 md:mt-0 md:h-full md:min-h-[22rem]">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-70 [background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0.55)_0_1px,transparent_1px_3px)]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-10 -left-8 size-40 rounded-full bg-[radial-gradient(circle,rgba(200,16,46,0.22),transparent_70%)]"
-        />
-        <span aria-hidden className="absolute inset-y-4 left-0 w-[3px] rounded-r-full bg-brand-red" />
+      <div
+        className="relative isolate mx-4 mt-3 h-44 overflow-hidden rounded-[1.25rem] ring-1 ring-white/10 md:mx-0 md:mt-0 md:h-full md:min-h-[22rem]"
+        style={{ background: paletteBackground(palette, "30% 50%") }}
+      >
         <span
           aria-hidden
-          className="font-jersey pointer-events-none absolute right-3 bottom-0 text-[5.5rem] leading-none text-brand-red/25 select-none md:right-4 md:bottom-3 md:text-[7.5rem]"
+          className="absolute inset-0 -z-10 opacity-50 [background-image:repeating-linear-gradient(115deg,rgba(255,255,255,0.06)_0_2px,transparent_2px_22px)]"
+        />
+        <span
+          aria-hidden
+          className="absolute -top-1/4 left-[55%] -z-10 h-[150%] w-[16%] rotate-[18deg] opacity-25"
+          style={{ background: `linear-gradient(to bottom, transparent, ${palette.accent}, transparent)` }}
+        />
+        <span
+          aria-hidden
+          className="font-jersey pointer-events-none absolute right-3 -bottom-2 -z-10 text-[7rem] leading-none text-transparent opacity-60 select-none [-webkit-text-stroke:2px_var(--accent)] md:right-4 md:bottom-2 md:text-[9rem]"
         >
           {dorsal}
         </span>
         {photo ? (
+          <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover object-top" />
+        ) : athlete.universityMascotUrl ? (
           <img
-            src={photo}
+            src={athlete.universityMascotUrl}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover object-top"
+            className={cn(
+              "absolute top-1/2 left-[8%] h-[80%] w-auto max-w-[60%] -translate-y-1/2 object-contain drop-shadow-[0_18px_24px_rgba(0,0,0,0.5)] md:top-[42%] md:left-1/2 md:h-auto md:w-[78%] md:max-w-none md:-translate-x-1/2",
+              palette.outline && MASCOT_OUTLINE,
+            )}
           />
         ) : null}
       </div>
 
       <div className="flex flex-col justify-center gap-4 px-5 pt-4 pb-[calc(1.15rem+env(safe-area-inset-bottom,0px))] md:px-5 md:py-4 md:pr-6">
         <div>
-          <p className="font-mono text-[11px] tracking-[0.22em] text-brand-red uppercase">
+          <p className="flex items-center gap-2 text-[11px] font-black tracking-[0.22em] text-[var(--accent)] uppercase">
+            <span className="h-1 w-5 rounded-full bg-[var(--accent)]" />
             {athlete.universityShort} · {athlete.sportName}
           </p>
-          <h2 id="athlete-sheet-title" className="mt-1 text-[1.65rem] leading-none font-black tracking-tight text-zinc-950 uppercase md:text-4xl">
+          <h2 id="athlete-sheet-title" className="font-jersey mt-2 text-[2.4rem] leading-[0.9] uppercase md:text-5xl">
             {athlete.fullName}
           </h2>
-          <p className="mt-1.5 text-sm text-zinc-600">
+          <p className="mt-1.5 text-sm text-white/65">
             {athlete.position || "Atleta"}
             {athlete.genderLabel ? ` · ${athlete.genderLabel}` : ""}
           </p>
@@ -156,23 +175,24 @@ function AthleteSheetBody({
   );
 }
 
-const glassTile =
-  "relative overflow-hidden rounded-2xl border border-white/80 bg-white/55 px-2 py-2.5 text-center shadow-[inset_0_1px_0_#fff,0_8px_16px_rgba(0,0,0,0.05)] backdrop-blur-md before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-1/2 before:bg-gradient-to-b before:from-white/70 before:to-transparent";
+const tile =
+  "rounded-2xl bg-white/[0.07] px-2 py-2.5 text-center ring-1 ring-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]";
 
 function Fact({ label, value }: { label: string; value: string }) {
   return (
-    <div className={glassTile}>
-      <p className="relative z-10 text-xl leading-none font-semibold tracking-tight whitespace-nowrap text-zinc-950 tabular-nums">{value}</p>
-      <p className="relative z-10 mt-1 text-[10px] font-semibold tracking-[0.16em] text-brand-red uppercase">{label}</p>
+    <div className={tile}>
+      <p className="text-xl leading-none font-semibold tracking-tight whitespace-nowrap tabular-nums">{value}</p>
+      <p className="mt-1 text-[10px] font-semibold tracking-[0.16em] text-[var(--accent)] uppercase">{label}</p>
     </div>
   );
 }
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className={glassTile}>
-      <p className="font-jersey relative z-10 text-2xl leading-none text-brand-red">{value}</p>
-      <p className="relative z-10 mt-1 text-[10px] font-semibold tracking-[0.14em] text-zinc-600 uppercase">{label}</p>
+    <div className={tile}>
+      <p className="font-jersey text-3xl leading-none text-[var(--accent)]">{value}</p>
+      <p className="mt-1 text-[10px] font-semibold tracking-[0.14em] text-white/60 uppercase">{label}</p>
     </div>
   );
 }
+

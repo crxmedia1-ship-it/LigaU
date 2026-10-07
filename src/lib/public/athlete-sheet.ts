@@ -1,4 +1,5 @@
 import type { AthleteCard, MatchCard, MatchEventCard, TeamCard } from "@/lib/public/types";
+import { universityPalette, type UniversityPalette } from "@/lib/public/university-palette";
 
 export type AthleteSheet = {
   id: string;
@@ -9,6 +10,8 @@ export type AthleteSheet = {
   universityName: string;
   universityShort: string;
   universityPrimary: string;
+  universityMascotUrl: string | null;
+  palette: UniversityPalette;
   sportName: string;
   genderLabel: string;
   ageLabel: string;
@@ -88,6 +91,8 @@ export function buildAthleteSheet(input: {
     universityName: team.university.name,
     universityShort: team.university.shortName,
     universityPrimary: team.university.colors.primary,
+    universityMascotUrl: team.university.mascotUrl ?? team.university.crestUrl,
+    palette: universityPalette(team.university),
     sportName,
     genderLabel: GENDER[team.gender] ?? team.gender,
     ageLabel: formatAthleteAge(athlete.birthDate),
