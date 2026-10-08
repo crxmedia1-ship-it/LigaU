@@ -14,6 +14,7 @@ import {
   NewspaperIcon,
   ShieldCheckIcon,
   ShieldIcon,
+  HandshakeIcon,
   LibraryIcon,
   TrophyIcon,
   UsersIcon,
@@ -42,6 +43,7 @@ export const ICONS = {
   teams: ShieldIcon,
   catalog: LibraryIcon,
   popup: MegaphoneIcon,
+  proposal: HandshakeIcon,
 } as const;
 
 const SIDEBAR_COOKIE = "ligau-admin-sidebar";

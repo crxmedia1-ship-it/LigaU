@@ -531,6 +531,74 @@ export type Database = {
         }
         Relationships: []
       }
+      sponsor_proposals: {
+        Row: {
+          brand_color: string | null
+          company_name: string
+          contact_name: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          include_upass: boolean
+          logo_url: string | null
+          note: string | null
+          package_id: string
+          price_amount: number
+          price_caption: string
+          status: string
+          token: string
+          updated_at: string
+          upass_price_amount: number | null
+          valid_until: string | null
+        }
+        Insert: {
+          brand_color?: string | null
+          company_name: string
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          include_upass?: boolean
+          logo_url?: string | null
+          note?: string | null
+          package_id: string
+          price_amount: number
+          price_caption?: string
+          status?: string
+          token: string
+          updated_at?: string
+          upass_price_amount?: number | null
+          valid_until?: string | null
+        }
+        Update: {
+          brand_color?: string | null
+          company_name?: string
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          include_upass?: boolean
+          logo_url?: string | null
+          note?: string | null
+          package_id?: string
+          price_amount?: number
+          price_caption?: string
+          status?: string
+          token?: string
+          updated_at?: string
+          upass_price_amount?: number | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_proposals_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sponsor_placements: {
         Row: {
           created_at: string
@@ -700,7 +768,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_sponsor_proposal: {
+        Args: { lookup: string }
+        Returns: {
+          brand_color: string | null
+          company_name: string
+          contact_name: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          include_upass: boolean
+          logo_url: string | null
+          note: string | null
+          package_id: string
+          price_amount: number
+          price_caption: string
+          status: string
+          token: string
+          updated_at: string
+          upass_price_amount: number | null
+          valid_until: string | null
+        }[]
+      }
     }
     Enums: {
       match_status:

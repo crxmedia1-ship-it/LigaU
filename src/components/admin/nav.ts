@@ -14,7 +14,8 @@ export type AdminNavItem = {
     | "shield"
     | "teams"
     | "catalog"
-    | "popup";
+    | "popup"
+    | "proposal";
   group: "Competición" | "Contenido" | "Administración";
   roles: UserRole[];
 };
@@ -83,6 +84,14 @@ export const ADMIN_NAV: AdminNavItem[] = [
     icon: "popup",
     group: "Contenido",
     roles: ["superadmin", "directivo"],
+  },
+  {
+    href: "/admin/propuestas",
+    label: "Propuestas",
+    description: "Decks de patrocinio para marcas",
+    icon: "proposal",
+    group: "Administración",
+    roles: ["superadmin"],
   },
   {
     href: "/admin/catalogo",
