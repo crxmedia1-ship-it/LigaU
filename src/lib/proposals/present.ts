@@ -50,13 +50,13 @@ export function exampleProposal(): ProposalDeckData {
     companyName: "Atlas",
     logoUrl: null,
     contactName: "Dirección comercial",
-    note: "Atlas puede ser la marca que nombra la temporada universitaria de Caracas.",
-    packageId: "titulo",
-    priceAmount: 15000,
-    priceCaption: "Temporada 2026",
+    note: "Atlas puede ser la marca que se ve en el pecho de 700 atletas esta Copa Navidad.",
+    packageId: "suma-cum-laudem",
+    priceAmount: 25000,
+    priceCaption: "Copa Navidad 2026",
     includeUpass: true,
     upassPriceAmount: 2500,
-    validUntil: "2026-12-15",
+    validUntil: "2026-10-16",
   });
   if (!deck) throw new Error("La propuesta de ejemplo no se pudo armar.");
   return deck;

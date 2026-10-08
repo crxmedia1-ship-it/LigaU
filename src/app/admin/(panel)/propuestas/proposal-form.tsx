@@ -13,6 +13,7 @@ import { deleteProposal, saveProposal, type ProposalDraft } from "@/app/admin/(p
 import { uploadImageAction } from "@/lib/cloudinary";
 import { formatProposalMoney } from "@/lib/proposals/format";
 import {
+  PROPOSAL_PACKAGE_GROUPS,
   PROPOSAL_PACKAGES,
   PROPOSAL_STATUSES,
   PROPOSAL_STATUS_LABEL,
@@ -27,9 +28,9 @@ export const EMPTY_PROPOSAL: ProposalDraft = {
   logoUrl: "",
   contactName: "",
   note: "",
-  packageId: "oficial",
-  priceAmount: "8000",
-  priceCaption: "Temporada 2026",
+  packageId: "cum-laudem",
+  priceAmount: "15000",
+  priceCaption: "Copa Navidad 2026",
   includeUpass: false,
   upassPriceAmount: "",
   validUntil: "",
@@ -74,10 +75,12 @@ export function ProposalForm({
       const next = proposalPackage(id);
       if (!next) return current;
       const untouched = !current.priceAmount || current.priceAmount === String(previous?.suggestedPrice ?? "");
+      const captionUntouched = !current.priceCaption.trim() || current.priceCaption === previous?.caption;
       return {
         ...current,
         packageId: id,
         priceAmount: untouched ? String(next.suggestedPrice) : current.priceAmount,
+        priceCaption: captionUntouched ? next.caption : current.priceCaption,
       };
     });
   }
@@ -199,33 +202,38 @@ export function ProposalForm({
             </div>
           </div>
 
-          <div>
-            <p className="mb-2 text-sm font-medium text-zinc-800">Paquete</p>
-            <div className="grid grid-cols-2 gap-2">
-              {PROPOSAL_PACKAGES.map((item) => {
-                const active = draft.packageId === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => choosePackage(item.id)}
-                      className={cn(
-                      "rounded-2xl px-3 py-2.5 text-left ring-1 transition-colors",
-                      active ? "bg-zinc-950 text-white ring-zinc-950" : "bg-zinc-50 text-zinc-950 ring-zinc-200 hover:ring-rose-200",
-                    )}
-                  >
-                    <span className="flex items-start justify-between gap-2">
-                      <span className="text-sm leading-tight font-semibold">{item.name}</span>
-                      {active ? <CheckIcon className="size-3.5 shrink-0" /> : null}
-                    </span>
-                    <span className={cn("mt-2 block text-xs", active ? "text-white/55" : "text-zinc-400")}>
-                      {formatProposalMoney(item.suggestedPrice)}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-zinc-800">Paquete</p>
+            {PROPOSAL_PACKAGE_GROUPS.map((group) => (
+              <div key={group}>
+                <p className="mb-1.5 text-[11px] font-semibold tracking-wide text-zinc-400 uppercase">{group}</p>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {PROPOSAL_PACKAGES.filter((item) => item.group === group).map((item) => {
+                    const active = draft.packageId === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => choosePackage(item.id)}
+                        className={cn(
+                          "rounded-2xl px-3 py-2.5 text-left ring-1 transition-colors",
+                          active ? "bg-zinc-950 text-white ring-zinc-950" : "bg-zinc-50 text-zinc-950 ring-zinc-200 hover:ring-rose-200",
+                        )}
+                      >
+                        <span className="flex items-start justify-between gap-2">
+                          <span className="text-sm leading-tight font-semibold">{item.name}</span>
+                          {active ? <CheckIcon className="size-3.5 shrink-0" /> : null}
+                        </span>
+                        <span className={cn("mt-2 block text-xs", active ? "text-white/55" : "text-zinc-400")}>
+                          {formatProposalMoney(item.suggestedPrice)} · {item.deliverables.length} entregables
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-3">

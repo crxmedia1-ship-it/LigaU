@@ -1,50 +1,21 @@
 import { LigaULogo } from "@/components/public/brand";
 import { Marquee } from "@/components/magic/marquee";
 import { PassCard } from "@/components/public/pass-landing";
+import { HALFTONE_INK, HALFTONE_RED, SectionHeading, Tag } from "@/components/proposals/deck-parts";
 import { DeliverableVisualArt } from "@/components/proposals/deliverable-visual";
+import { AudienceSection, SeasonSection } from "@/components/proposals/season-sections";
 import { formatProposalMoney } from "@/lib/proposals/format";
-import { PROPOSAL_SPORTS, PROPOSAL_UNIVERSITIES } from "@/lib/proposals/master";
+import {
+  LEAGUE_FACTS,
+  PROPOSAL_SPORTS,
+  PROPOSAL_TRIAL_SPORTS,
+  PROPOSAL_UNIVERSITIES,
+  SPONSOR_EXTRAS,
+} from "@/lib/proposals/master";
 import type { ProposalDeckData } from "@/lib/proposals/types";
 import { universityLogoUrl } from "@/lib/public/university-marks";
 import { cloudinaryLogo } from "@/lib/public/media";
 import { cn } from "@/lib/utils";
-
-const HALFTONE_RED =
-  "[background-image:radial-gradient(rgba(200,16,46,0.55)_1.2px,transparent_1.6px)] [background-size:9px_9px]";
-const HALFTONE_INK =
-  "[background-image:radial-gradient(rgba(9,9,11,0.16)_1.2px,transparent_1.6px)] [background-size:9px_9px]";
-function Tag({ children, tone = "red" }: { children: React.ReactNode; tone?: "red" | "ink" | "white" }) {
-  return (
-    <span
-      className={cn(
-        "inline-block -skew-x-12 px-3 py-1",
-        tone === "red" && "bg-brand-red text-white",
-        tone === "ink" && "bg-zinc-950 text-white",
-        tone === "white" && "bg-white text-zinc-950",
-      )}
-    >
-      <span className="inline-block skew-x-12 text-[11px] font-black tracking-[0.22em] uppercase">{children}</span>
-    </span>
-  );
-}
-
-function SectionHeading({ eyebrow, title, light = false }: { eyebrow: string; title: string; light?: boolean }) {
-  return (
-    <div>
-      <Tag tone={light ? "white" : "red"}>{eyebrow}</Tag>
-      <h2
-        className={cn(
-          "font-jersey mt-3 text-5xl leading-[0.85] uppercase sm:text-6xl",
-          light
-            ? "text-white [text-shadow:3px_3px_0_#C8102E]"
-            : "text-zinc-950 [text-shadow:3px_3px_0_rgba(200,16,46,0.28)]",
-        )}
-      >
-        {title}
-      </h2>
-    </div>
-  );
-}
 
 export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckData; passLogos: string[] }) {
   const logo = cloudinaryLogo(proposal.logoUrl, 280) ?? proposal.logoUrl;
@@ -56,6 +27,8 @@ export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckDa
   const [featured, ...rest] = proposal.deliverables;
   const nav = [
     { href: "#liga", label: "La liga" },
+    { href: "#temporada", label: "Temporada" },
+    { href: "#audiencia", label: "Audiencia" },
     { href: "#marca", label: "La marca" },
     { href: "#inversion", label: "Inversión" },
     ...(proposal.includeUpass ? [{ href: "#upass", label: "U Pass" }] : []),
@@ -97,7 +70,7 @@ export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckDa
           <p className="min-w-0 flex-1 truncate text-[11px] font-black tracking-[0.2em] text-white/85 uppercase">
             Propuesta <span className="text-white/40">· {proposal.companyName}</span>
           </p>
-          <nav className="hidden gap-1 md:flex" aria-label="Secciones de la propuesta">
+          <nav className="hidden gap-1 lg:flex" aria-label="Secciones de la propuesta">
             {nav.map((item) => (
               <a
                 key={item.href}
@@ -109,7 +82,7 @@ export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckDa
             ))}
           </nav>
         </div>
-        <nav className="flex gap-1 overflow-x-auto px-4 pb-2 md:hidden" aria-label="Secciones de la propuesta">
+        <nav className="flex gap-1 overflow-x-auto px-4 pb-2 lg:hidden" aria-label="Secciones de la propuesta">
           {nav.map((item) => (
             <a
               key={item.href}
@@ -166,7 +139,7 @@ export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckDa
             {proposal.companyName}
           </h1>
           <p className="mt-3 max-w-lg text-lg leading-snug font-semibold text-white/80 sm:text-xl">
-            Una alianza con Liga U para la temporada universitaria de Caracas.
+            Una alianza con Liga U para la temporada universitaria {LEAGUE_FACTS.season} de Caracas.
           </p>
 
           {proposal.note ? (
@@ -189,9 +162,9 @@ export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckDa
 
           <dl className="mt-8 grid max-w-xl grid-cols-3 border-[2.5px] border-zinc-950 bg-white text-zinc-950 shadow-[5px_5px_0_0_#09090b]">
             {[
-              ["8", "Universidades"],
-              ["9", "Deportes"],
-              ["1", "Temporada"],
+              [String(PROPOSAL_UNIVERSITIES.length), "Universidades"],
+              [String(PROPOSAL_SPORTS.length), "Disciplinas"],
+              [String(LEAGUE_FACTS.athletesPerTournament), "Atletas por torneo"],
             ].map(([value, label], index) => (
               <div
                 key={label}
@@ -218,8 +191,9 @@ export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckDa
         <div className="relative mx-auto grid max-w-6xl gap-6 px-5 md:grid-cols-[1fr_1fr] md:items-end">
           <SectionHeading eyebrow="La liga" title="Ocho universidades. Un calendario." />
           <p className="max-w-xl text-base leading-relaxed text-zinc-600 md:text-lg">
-            Liga U es el torneo universitario de Caracas. Ocho universidades, nueve deportes y un sitio donde se
-            consulta el partido, la tabla y la noticia. La atención de la comunidad está en un solo lugar.
+            Liga U es la liga universitaria de Caracas desde {LEAGUE_FACTS.founded}. Ocho universidades, once
+            disciplinas oficiales y dos en prueba, con un sitio donde se consulta el partido, la tabla y la noticia. La
+            atención de la comunidad está en un solo lugar.
           </p>
         </div>
 
@@ -264,9 +238,25 @@ export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckDa
                 </span>
               </span>
             ))}
+            {PROPOSAL_TRIAL_SPORTS.map((sport) => (
+              <span key={sport} className="flex shrink-0 items-center gap-6">
+                <span className="font-jersey text-2xl leading-none tracking-wide text-white/60 uppercase">
+                  {sport}
+                  <span className="ml-2 bg-brand-red px-1.5 align-middle font-sans text-[9px] font-black tracking-[0.14em] text-white">
+                    En prueba
+                  </span>
+                </span>
+                <span aria-hidden className="text-lg text-brand-red">
+                  ★
+                </span>
+              </span>
+            ))}
           </Marquee>
         </div>
       </section>
+
+      <SeasonSection />
+      <AudienceSection />
 
       <section
         id="marca"
@@ -345,6 +335,22 @@ export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckDa
               </li>
             ))}
           </ol>
+
+          <div className="mt-10 border-t-[3px] border-zinc-950 pt-6">
+            <p className="text-[11px] font-black tracking-[0.2em] text-zinc-500 uppercase">
+              {proposal.companyName} también puede estar en
+            </p>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {SPONSOR_EXTRAS.map((item) => (
+                <li
+                  key={item}
+                  className="-skew-x-6 border-[2.5px] border-zinc-950 bg-zinc-100 px-3 py-1.5 shadow-[3px_3px_0_0_#C8102E]"
+                >
+                  <span className="inline-block skew-x-6 text-xs font-black tracking-[0.08em] uppercase">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -471,7 +477,7 @@ export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckDa
               </span>
               <p className="text-xs font-black tracking-[0.16em] uppercase">
                 @ligauve
-                <span className="block text-white/70">Temporada 2026 · Caracas</span>
+                <span className="block text-white/70">Temporada {LEAGUE_FACTS.season} · Caracas</span>
               </p>
             </div>
             {proposal.validUntilLabel ? <Tag tone="ink">Válida hasta el {proposal.validUntilLabel}</Tag> : null}
