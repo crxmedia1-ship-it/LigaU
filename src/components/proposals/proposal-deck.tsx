@@ -318,7 +318,10 @@ export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckDa
             {rest.map((item, index) => (
               <li
                 key={item.title}
-                className="group flex flex-col overflow-hidden border-[2.5px] border-zinc-950 bg-white shadow-[5px_5px_0_0_#09090b] transition duration-200 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#C8102E]"
+                className={cn(
+                  "group flex flex-col overflow-hidden border-[2.5px] border-zinc-950 bg-white shadow-[5px_5px_0_0_#09090b] transition duration-200 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#C8102E]",
+                  rest.length % 2 === 1 && rest.length % 3 !== 0 && index === rest.length - 1 && "sm:col-span-2",
+                )}
               >
                 <div className="h-36 border-b-[2.5px] border-zinc-950">
                   <DeliverableVisualArt visual={item.visual} brand={brand} />

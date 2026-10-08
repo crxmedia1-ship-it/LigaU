@@ -175,9 +175,9 @@ export function AudienceSection() {
       />
       <div className="relative mx-auto max-w-6xl px-5">
         <div className="grid gap-6 md:grid-cols-[1fr_1fr] md:items-end">
-          <SectionHeading eyebrow="La audiencia" title="Dos millones de vistas al mes." light />
+          <SectionHeading eyebrow="La audiencia" title="Dos millones al mes." light />
           <p className="max-w-xl text-base leading-relaxed text-white/70 md:text-lg">
-            La comunidad de @ligauve crece sola y llega a su pico cuando el torneo se define. La mayoría es público
+            Impresiones en @ligauve. La comunidad crece sola y llega a su pico cuando el torneo se define. La mayoría es público
             universitario de 18 a 24 años.
           </p>
         </div>

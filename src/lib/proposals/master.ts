@@ -371,7 +371,7 @@ export const AUDIENCE_KPIS = [
 
 /** Monthly impressions in millions, by tournament phase. */
 export const REACH_BY_PHASE = [
-  { phase: "Pretemporada", value: 0.5 },
+  { phase: "Pre-temp", value: 0.5 },
   { phase: "Grupos", value: 1.2 },
   { phase: "Playoffs", value: 1.8 },
   { phase: "Final", value: 2.2 },
