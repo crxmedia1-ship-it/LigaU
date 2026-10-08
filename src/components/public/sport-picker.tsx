@@ -56,6 +56,23 @@ const THEMES: { match: string[]; from: string; to: string; surface: string; cour
     line: "rgba(255,255,255,0.95)",
   },
   {
+    match: ["pádel", "padel"],
+    from: "#0f4c81",
+    to: "#2f86c9",
+    surface: "linear-gradient(165deg, #1e3a5f 0%, #0f2440 100%)",
+    court: "#1d6fb8",
+    sheen: true,
+    line: "rgba(255,255,255,0.95)",
+  },
+  {
+    match: ["esport", "e-sport", "gaming"],
+    from: "#3b0764",
+    to: "#7c3aed",
+    surface:
+      "radial-gradient(80% 60% at 50% 0%, rgba(167,139,250,0.35), transparent 65%), linear-gradient(165deg, #1e1b4b 0%, #0b0a1f 100%)",
+    line: "rgba(196,181,253,0.95)",
+  },
+  {
     match: ["tenis", "tennis"],
     from: "#1f4e8c",
     to: "#3f7cc8",

@@ -11,6 +11,8 @@ const MARKS: { match: string[]; ratio: number; draw: (box: { w: number; h: numbe
   { match: ["playa", "beach"], ratio: 1.5, draw: (b) => <Beach {...b} /> },
   { match: ["voleib", "voley"], ratio: 2, draw: (b) => <Volleyball {...b} /> },
   { match: ["mesa", "ping"], ratio: 1.75, draw: (b) => <TableTennis {...b} /> },
+  { match: ["pádel", "padel"], ratio: 2, draw: (b) => <Padel {...b} /> },
+  { match: ["esport", "e-sport", "gaming"], ratio: 1.6, draw: (b) => <Gamepad {...b} /> },
   { match: ["tenis", "tennis"], ratio: 1.7, draw: (b) => <Tennis {...b} /> },
   { match: ["rugby"], ratio: 1.5, draw: (b) => <Rugby {...b} /> },
   { match: ["ajedrez", "chess"], ratio: 1, draw: (b) => <Chess {...b} /> },
@@ -180,6 +182,47 @@ function TableTennis({ w, h }: { w: number; h: number }) {
       <rect width={w} height={h} />
       <line x1={w / 2} y1={0} x2={w / 2} y2={h} strokeWidth="3" />
       <line x1={0} y1={h / 2} x2={w} y2={h / 2} />
+    </g>
+  );
+}
+
+function Padel({ w, h }: { w: number; h: number }) {
+  const service = w * 0.3475;
+  const glass = w * 0.2;
+  return (
+    <g {...stroke}>
+      <rect width={w} height={h} />
+      <line x1={w / 2} y1={0} x2={w / 2} y2={h} strokeWidth="3" />
+      <line x1={w / 2 - service} y1={0} x2={w / 2 - service} y2={h} />
+      <line x1={w / 2 + service} y1={0} x2={w / 2 + service} y2={h} />
+      <line x1={w / 2 - service} y1={h / 2} x2={w / 2 + service} y2={h / 2} />
+      <line x1={0} y1={0} x2={glass} y2={0} strokeWidth="5" />
+      <line x1={0} y1={h} x2={glass} y2={h} strokeWidth="5" />
+      <line x1={w - glass} y1={0} x2={w} y2={0} strokeWidth="5" />
+      <line x1={w - glass} y1={h} x2={w} y2={h} strokeWidth="5" />
+    </g>
+  );
+}
+
+function Gamepad({ w, h }: { w: number; h: number }) {
+  const cy = h * 0.44;
+  const pad = h * 0.08;
+  const arm = pad * 2.2;
+  const left = w * 0.3;
+  const right = w * 0.7;
+  const button = h * 0.06;
+  return (
+    <g {...stroke}>
+      <path
+        d={`M ${w * 0.22} ${h * 0.22} H ${w * 0.78} C ${w * 0.92} ${h * 0.22}, ${w * 0.97} ${h * 0.55}, ${w * 0.95} ${h * 0.72} C ${w * 0.93} ${h * 0.9}, ${w * 0.8} ${h * 0.88}, ${w * 0.72} ${h * 0.72} L ${w * 0.66} ${h * 0.62} H ${w * 0.34} L ${w * 0.28} ${h * 0.72} C ${w * 0.2} ${h * 0.88}, ${w * 0.07} ${h * 0.9}, ${w * 0.05} ${h * 0.72} C ${w * 0.03} ${h * 0.55}, ${w * 0.08} ${h * 0.22}, ${w * 0.22} ${h * 0.22} Z`}
+      />
+      <path
+        d={`M ${left - pad / 2} ${cy - arm} h ${pad} v ${arm - pad / 2} h ${arm - pad / 2} v ${pad} h ${-(arm - pad / 2)} v ${arm - pad / 2} h ${-pad} v ${-(arm - pad / 2)} h ${-(arm - pad / 2)} v ${-pad} h ${arm - pad / 2} Z`}
+      />
+      <circle cx={right} cy={cy - arm * 0.7} r={button} />
+      <circle cx={right} cy={cy + arm * 0.7} r={button} />
+      <circle cx={right - arm * 0.7} cy={cy} r={button} />
+      <circle cx={right + arm * 0.7} cy={cy} r={button} />
     </g>
   );
 }

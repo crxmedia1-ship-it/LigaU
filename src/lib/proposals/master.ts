@@ -165,7 +165,9 @@ export const PROPOSAL_SPORTS = [
   "Rugby",
   "Tenis",
   "Tenis de mesa",
+  "Pádel",
   "Ajedrez",
+  "eSports",
 ] as const;
 
 export const UPASS_POINTS = [

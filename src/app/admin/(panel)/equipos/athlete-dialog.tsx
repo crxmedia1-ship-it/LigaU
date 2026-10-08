@@ -45,7 +45,9 @@ const PROFILES: Record<string, SportProfile> = {
   "voley-playa": { number: true, positions: ["Bloqueador", "Defensor"], side: "hand" },
   "tenis-campo": { number: false, positions: [], side: "hand" },
   "tenis-de-mesa": { number: false, positions: [], side: "hand" },
+  padel: { number: false, positions: ["Drive", "Revés"], side: "hand" },
   ajedrez: { number: false, positions: [], side: null },
+  esports: { number: false, positions: [], side: null },
 };
 
 export function sportProfile(slug: string | undefined): SportProfile {

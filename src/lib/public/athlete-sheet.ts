@@ -114,5 +114,7 @@ export const SPORT_TAB_ORDER = [
   "rugby",
   "tenis-campo",
   "tenis-de-mesa",
+  "padel",
   "ajedrez",
+  "esports",
 ] as const;

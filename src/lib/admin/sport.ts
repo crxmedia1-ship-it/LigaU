@@ -7,7 +7,9 @@ export const SPORT_EMOJI: Record<string, string> = {
   rugby: "🏉",
   "tenis-campo": "🎾",
   "tenis-de-mesa": "🏓",
+  padel: "🎾",
   ajedrez: "♟️",
+  esports: "🎮",
 };
 
 type SportFormKind = "football" | "basketball" | "sets" | "chess";
@@ -19,6 +21,8 @@ const SET_SLUGS = new Set([
   "voley-playa",
   "tenis-de-mesa",
   "tenis-campo",
+  "padel",
+  "esports",
 ]);
 
 export function getSportFormKind(slug: string): SportFormKind {
