@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ProposalDeck } from "@/components/proposals/proposal-deck";
+import { loadPassLogos } from "@/lib/proposals/load";
 import { exampleProposal } from "@/lib/proposals/present";
 
 export const metadata: Metadata = {
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function ExampleProposalPage() {
-  return <ProposalDeck proposal={exampleProposal()} />;
+export default async function ExampleProposalPage() {
+  const proposal = exampleProposal();
+  return <ProposalDeck proposal={proposal} passLogos={await loadPassLogos(proposal)} />;
 }

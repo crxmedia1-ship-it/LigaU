@@ -1,3 +1,17 @@
+export const DELIVERABLE_VISUALS = [
+  "naming",
+  "hero",
+  "pill",
+  "stamp",
+  "panels",
+  "ribbon",
+  "social",
+  "exclusive",
+  "seal",
+  "content",
+] as const;
+export type DeliverableVisual = (typeof DELIVERABLE_VISUALS)[number];
+
 export const PROPOSAL_PACKAGES = [
   {
     id: "titulo",
@@ -7,30 +21,37 @@ export const PROPOSAL_PACKAGES = [
     suggestedPrice: 15000,
     deliverables: [
       {
+        visual: "naming",
         title: "La temporada lleva el nombre de {marca}",
         detail: "Liga U presentada por {marca} en la comunicación de la temporada.",
       },
       {
+        visual: "hero",
         title: "Panel principal del inicio",
         detail: "La primera pieza grande que ve quien abre el sitio.",
       },
       {
+        visual: "pill",
         title: "Calendario y clasificación",
         detail: "Pastilla «presentado por» junto al título de las dos secciones.",
       },
       {
+        visual: "stamp",
         title: "Sello de la jornada",
         detail: "La marca sobre el primer día de partidos del calendario.",
       },
       {
+        visual: "panels",
         title: "Paneles de calendario y clasificación",
         detail: "Las tarjetas grandes entre el contenido de cada página.",
       },
       {
+        visual: "ribbon",
         title: "Cinta de patrocinantes",
         detail: "Primer lugar entre las marcas oficiales del sitio.",
       },
       {
+        visual: "social",
         title: "Redes @ligauve",
         detail: "Pieza de temporada como marca título en Instagram, TikTok y Facebook.",
       },
@@ -44,18 +65,22 @@ export const PROPOSAL_PACKAGES = [
     suggestedPrice: 8000,
     deliverables: [
       {
+        visual: "hero",
         title: "Un panel grande",
         detail: "Inicio, calendario o clasificación: la pieza principal de una de esas páginas.",
       },
       {
+        visual: "pill",
         title: "Una pastilla «presentado por»",
         detail: "Junto al título del calendario o de la clasificación.",
       },
       {
+        visual: "ribbon",
         title: "Cinta de patrocinantes oficiales",
         detail: "El logo de {marca} en la banda de marcas de la liga.",
       },
       {
+        visual: "social",
         title: "Mención de temporada",
         detail: "Presencia en las redes @ligauve a lo largo de la temporada.",
       },
@@ -69,18 +94,22 @@ export const PROPOSAL_PACKAGES = [
     suggestedPrice: 4500,
     deliverables: [
       {
+        visual: "exclusive",
         title: "Categoría exclusiva",
         detail: "El rubro de {marca} no se comparte con otra marca en este nivel.",
       },
       {
+        visual: "ribbon",
         title: "Cinta de patrocinantes oficiales",
         detail: "Logo visible en la banda de marcas de la liga.",
       },
       {
+        visual: "panels",
         title: "Un espacio en el sitio",
         detail: "Un panel o una pastilla en inicio, calendario o clasificación.",
       },
       {
+        visual: "seal",
         title: "El rubro, asociado a la liga",
         detail: "{marca} aparece como la marca de su categoría en la comunicación de la temporada.",
       },
@@ -94,14 +123,17 @@ export const PROPOSAL_PACKAGES = [
     suggestedPrice: 2000,
     deliverables: [
       {
+        visual: "ribbon",
         title: "Cinta de patrocinantes oficiales",
         detail: "El logo de {marca} en la banda de marcas del sitio.",
       },
       {
+        visual: "social",
         title: "Redes @ligauve",
         detail: "Menciones durante la temporada en Instagram, TikTok y Facebook.",
       },
       {
+        visual: "content",
         title: "Una pieza de contenido",
         detail: "Aparición en una noticia o un highlight de la liga.",
       },

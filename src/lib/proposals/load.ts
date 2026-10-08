@@ -1,6 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { deckFromFields } from "@/lib/proposals/present";
 import type { ProposalDeckData } from "@/lib/proposals/types";
+import { cloudinaryLogo } from "@/lib/public/media";
+import { getPassBrandLogos } from "@/lib/public/sponsor-logos";
+
+/** Logos on the back of the U Pass carnet, with the proposed brand leading the allies. */
+export async function loadPassLogos(proposal: ProposalDeckData): Promise<string[]> {
+  if (!proposal.includeUpass) return [];
+  const allies = (await getPassBrandLogos()).flatMap((brand) => cloudinaryLogo(brand.logoUrl) ?? []);
+  const own = cloudinaryLogo(proposal.logoUrl);
+  return own ? [own, ...allies.filter((logo) => logo !== own)] : allies;
+}
 
 const TOKEN = /^[A-Za-z0-9_-]{16,64}$/;
 

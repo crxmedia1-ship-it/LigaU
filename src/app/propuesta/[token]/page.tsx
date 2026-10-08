@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProposalDeck } from "@/components/proposals/proposal-deck";
-import { loadProposalDeck } from "@/lib/proposals/load";
+import { loadPassLogos, loadProposalDeck } from "@/lib/proposals/load";
 
 export const dynamic = "force-dynamic";
 
@@ -24,5 +24,5 @@ export default async function ProposalPage({ params }: PageProps) {
   const { token } = await params;
   const proposal = await loadProposalDeck(token);
   if (!proposal) notFound();
-  return <ProposalDeck proposal={proposal} />;
+  return <ProposalDeck proposal={proposal} passLogos={await loadPassLogos(proposal)} />;
 }

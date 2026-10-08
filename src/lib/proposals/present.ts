@@ -28,6 +28,7 @@ export function deckFromFields(input: {
     packageEyebrow: selected.eyebrow,
     packagePitch: fillMarca(selected.pitch, company),
     deliverables: selected.deliverables.map((item) => ({
+      visual: item.visual,
       title: fillMarca(item.title, company),
       detail: fillMarca(item.detail, company),
     })),

@@ -1,5 +1,7 @@
 import { LigaULogo } from "@/components/public/brand";
 import { Marquee } from "@/components/magic/marquee";
+import { PassCard } from "@/components/public/pass-landing";
+import { DeliverableVisualArt } from "@/components/proposals/deliverable-visual";
 import { formatProposalMoney } from "@/lib/proposals/format";
 import { PROPOSAL_SPORTS, PROPOSAL_UNIVERSITIES } from "@/lib/proposals/master";
 import type { ProposalDeckData } from "@/lib/proposals/types";
@@ -7,8 +9,10 @@ import { universityLogoUrl } from "@/lib/public/university-marks";
 import { cloudinaryLogo } from "@/lib/public/media";
 import { cn } from "@/lib/utils";
 
-const HALFTONE_RED = "[background-image:radial-gradient(rgba(200,16,46,0.55)_1.2px,transparent_1.6px)] [background-size:9px_9px]";
-const HALFTONE_INK = "[background-image:radial-gradient(rgba(9,9,11,0.16)_1.2px,transparent_1.6px)] [background-size:9px_9px]";
+const HALFTONE_RED =
+  "[background-image:radial-gradient(rgba(200,16,46,0.55)_1.2px,transparent_1.6px)] [background-size:9px_9px]";
+const HALFTONE_INK =
+  "[background-image:radial-gradient(rgba(9,9,11,0.16)_1.2px,transparent_1.6px)] [background-size:9px_9px]";
 function Tag({ children, tone = "red" }: { children: React.ReactNode; tone?: "red" | "ink" | "white" }) {
   return (
     <span
@@ -31,7 +35,9 @@ function SectionHeading({ eyebrow, title, light = false }: { eyebrow: string; ti
       <h2
         className={cn(
           "font-jersey mt-3 text-5xl leading-[0.85] uppercase sm:text-6xl",
-          light ? "text-white [text-shadow:3px_3px_0_#C8102E]" : "text-zinc-950 [text-shadow:3px_3px_0_rgba(200,16,46,0.28)]",
+          light
+            ? "text-white [text-shadow:3px_3px_0_#C8102E]"
+            : "text-zinc-950 [text-shadow:3px_3px_0_rgba(200,16,46,0.28)]",
         )}
       >
         {title}
@@ -40,12 +46,14 @@ function SectionHeading({ eyebrow, title, light = false }: { eyebrow: string; ti
   );
 }
 
-export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
+export function ProposalDeck({ proposal, passLogos }: { proposal: ProposalDeckData; passLogos: string[] }) {
   const logo = cloudinaryLogo(proposal.logoUrl, 280) ?? proposal.logoUrl;
   const total =
     proposal.includeUpass && proposal.upassPriceAmount != null
       ? proposal.priceAmount + proposal.upassPriceAmount
       : null;
+  const brand = { name: proposal.companyName, logo };
+  const [featured, ...rest] = proposal.deliverables;
   const nav = [
     { href: "#liga", label: "La liga" },
     { href: "#marca", label: "La marca" },
@@ -174,7 +182,9 @@ export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
           ) : null}
 
           <p className="mt-7 text-[11px] font-black tracking-[0.2em] text-white/55 uppercase">
-            {proposal.contactName ? `A la atención de ${proposal.contactName}` : `Preparada para ${proposal.companyName}`}
+            {proposal.contactName
+              ? `A la atención de ${proposal.contactName}`
+              : `Preparada para ${proposal.companyName}`}
           </p>
 
           <dl className="mt-8 grid max-w-xl grid-cols-3 border-[2.5px] border-zinc-950 bg-white text-zinc-950 shadow-[5px_5px_0_0_#09090b]">
@@ -183,9 +193,14 @@ export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
               ["9", "Deportes"],
               ["1", "Temporada"],
             ].map(([value, label], index) => (
-              <div key={label} className={cn("flex flex-col items-center px-2 py-3", index > 0 && "border-l-[2.5px] border-zinc-950")}>
+              <div
+                key={label}
+                className={cn("flex flex-col items-center px-2 py-3", index > 0 && "border-l-[2.5px] border-zinc-950")}
+              >
                 <dd className="font-jersey text-5xl leading-none text-brand-red">{value}</dd>
-                <dt className="mt-1 text-[9px] font-black tracking-[0.12em] text-zinc-500 uppercase sm:text-[10px]">{label}</dt>
+                <dt className="mt-1 text-[9px] font-black tracking-[0.12em] text-zinc-500 uppercase sm:text-[10px]">
+                  {label}
+                </dt>
               </div>
             ))}
           </dl>
@@ -193,7 +208,13 @@ export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
       </section>
 
       <section id="liga" className="proposal-sheet relative scroll-mt-24 py-12 md:py-16">
-        <div aria-hidden className={cn("absolute top-0 right-0 h-56 w-1/2 [mask-image:linear-gradient(225deg,black,transparent_70%)]", HALFTONE_INK)} />
+        <div
+          aria-hidden
+          className={cn(
+            "absolute top-0 right-0 h-56 w-1/2 [mask-image:linear-gradient(225deg,black,transparent_70%)]",
+            HALFTONE_INK,
+          )}
+        />
         <div className="relative mx-auto grid max-w-6xl gap-6 px-5 md:grid-cols-[1fr_1fr] md:items-end">
           <SectionHeading eyebrow="La liga" title="Ocho universidades. Un calendario." />
           <p className="max-w-xl text-base leading-relaxed text-zinc-600 md:text-lg">
@@ -203,8 +224,17 @@ export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
         </div>
 
         <div className="relative mt-10 -rotate-[1.5deg] border-y-[3px] border-zinc-950 bg-brand-red py-4">
-          <div aria-hidden className={cn("absolute inset-0 opacity-60", "[background-image:radial-gradient(rgba(9,9,11,0.35)_1.2px,transparent_1.6px)] [background-size:9px_9px]")} />
-          <Marquee duration="38s" className="relative [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
+          <div
+            aria-hidden
+            className={cn(
+              "absolute inset-0 opacity-60",
+              "[background-image:radial-gradient(rgba(9,9,11,0.35)_1.2px,transparent_1.6px)] [background-size:9px_9px]",
+            )}
+          />
+          <Marquee
+            duration="38s"
+            className="relative [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]"
+          >
             {PROPOSAL_UNIVERSITIES.map((short) => {
               const mark = universityLogoUrl(short);
               return (
@@ -229,22 +259,35 @@ export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
             {PROPOSAL_SPORTS.map((sport) => (
               <span key={sport} className="flex shrink-0 items-center gap-6">
                 <span className="font-jersey text-2xl leading-none tracking-wide text-white uppercase">{sport}</span>
-                <span aria-hidden className="text-lg text-brand-red">★</span>
+                <span aria-hidden className="text-lg text-brand-red">
+                  ★
+                </span>
               </span>
             ))}
           </Marquee>
         </div>
       </section>
 
-      <section id="marca" className="proposal-sheet relative scroll-mt-24 border-t-[3px] border-zinc-950 bg-white py-12 md:py-16">
-        <div className="mx-auto grid max-w-6xl gap-8 px-5 md:grid-cols-[0.85fr_1.15fr] md:items-start">
-          <div className="md:sticky md:top-24">
-            <SectionHeading eyebrow={proposal.packageEyebrow} title={proposal.packageName} />
-            <p className="mt-4 max-w-md text-base leading-relaxed text-zinc-600">{proposal.packagePitch}</p>
+      <section
+        id="marca"
+        className="proposal-sheet relative scroll-mt-24 border-t-[3px] border-zinc-950 bg-white py-12 md:py-16"
+      >
+        <div className="mx-auto max-w-6xl px-5">
+          <div className="grid gap-6 md:grid-cols-[1.15fr_0.85fr] md:items-end">
+            <div>
+              <SectionHeading eyebrow={proposal.packageEyebrow} title={proposal.packageName} />
+              <p className="mt-4 max-w-md text-base leading-relaxed text-zinc-600">{proposal.packagePitch}</p>
+            </div>
 
-            <div className="relative mt-6 overflow-hidden border-[3px] border-zinc-950 bg-zinc-950 text-white shadow-[6px_6px_0_0_#C8102E]">
+            <div className="relative overflow-hidden border-[3px] border-zinc-950 bg-zinc-950 text-white shadow-[6px_6px_0_0_#C8102E]">
               <div aria-hidden className="absolute inset-y-0 -right-10 w-1/2 -skew-x-[14deg] bg-brand-red" />
-              <div aria-hidden className={cn("absolute inset-0 [mask-image:linear-gradient(270deg,black,transparent_60%)]", HALFTONE_INK)} />
+              <div
+                aria-hidden
+                className={cn(
+                  "absolute inset-0 [mask-image:linear-gradient(270deg,black,transparent_60%)]",
+                  HALFTONE_INK,
+                )}
+              />
               <div className="relative flex items-center gap-4 p-4">
                 <span className="grid size-14 shrink-0 place-items-center border-[2.5px] border-zinc-950 bg-white p-1.5">
                   {logo ? (
@@ -268,24 +311,36 @@ export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
             </div>
           </div>
 
-          <ol className="border-[3px] border-zinc-950 bg-white shadow-[6px_6px_0_0_#09090b]">
-            {proposal.deliverables.map((item, index) => (
+          {featured ? (
+            <div className="group mt-8 grid overflow-hidden border-[3px] border-zinc-950 bg-white shadow-[6px_6px_0_0_#09090b] transition duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#C8102E] md:grid-cols-[1.5fr_1fr]">
+              <div className="h-44 border-b-[3px] border-zinc-950 md:h-auto md:min-h-52 md:border-r-[3px] md:border-b-0">
+                <DeliverableVisualArt visual={featured.visual} brand={brand} />
+              </div>
+              <div className="flex flex-col justify-center p-5">
+                <span className="font-jersey text-5xl leading-none text-brand-red">01</span>
+                <h3 className="mt-2 text-lg font-black tracking-tight uppercase">{featured.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-zinc-600">{featured.detail}</p>
+              </div>
+            </div>
+          ) : null}
+
+          <ol className={cn("mt-5 grid gap-5 sm:grid-cols-2", rest.length % 3 === 0 && "lg:grid-cols-3")}>
+            {rest.map((item, index) => (
               <li
                 key={item.title}
-                className="group relative grid grid-cols-[3.25rem_1fr] items-center gap-3 border-b-2 border-zinc-200 px-4 py-3 transition-colors duration-200 last:border-b-0 hover:bg-zinc-950"
+                className="group flex flex-col overflow-hidden border-[2.5px] border-zinc-950 bg-white shadow-[5px_5px_0_0_#09090b] transition duration-200 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#C8102E]"
               >
-                <span
-                  aria-hidden
-                  className="absolute inset-y-0 left-0 w-1.5 origin-bottom scale-y-0 bg-brand-red transition-transform duration-200 group-hover:scale-y-100"
-                />
-                <span className="font-jersey text-4xl leading-none text-brand-red">{String(index + 1).padStart(2, "0")}</span>
-                <div>
-                  <h3 className="text-sm font-black tracking-tight text-zinc-950 uppercase transition-colors group-hover:text-white">
-                    {item.title}
-                  </h3>
-                  <p className="mt-0.5 text-sm leading-snug text-zinc-500 transition-colors group-hover:text-white/65">
-                    {item.detail}
-                  </p>
+                <div className="h-36 border-b-[2.5px] border-zinc-950">
+                  <DeliverableVisualArt visual={item.visual} brand={brand} />
+                </div>
+                <div className="flex gap-3 p-4">
+                  <span className="font-jersey text-3xl leading-none text-brand-red">
+                    {String(index + 2).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-black tracking-tight uppercase">{item.title}</h3>
+                    <p className="mt-0.5 text-sm leading-snug text-zinc-600">{item.detail}</p>
+                  </div>
                 </div>
               </li>
             ))}
@@ -293,17 +348,27 @@ export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
         </div>
       </section>
 
-      <section id="inversion" className="proposal-sheet relative isolate scroll-mt-24 overflow-hidden bg-zinc-950 py-12 text-white md:py-16">
+      <section
+        id="inversion"
+        className="proposal-sheet relative isolate scroll-mt-24 overflow-hidden bg-zinc-950 py-12 text-white md:py-16"
+      >
         <div aria-hidden className="absolute inset-y-0 -left-20 w-1/3 -skew-x-[14deg] bg-zinc-800" />
-        <div aria-hidden className={cn("absolute inset-0 [mask-image:linear-gradient(290deg,black,transparent_55%)]", HALFTONE_RED)} />
+        <div
+          aria-hidden
+          className={cn("absolute inset-0 [mask-image:linear-gradient(290deg,black,transparent_55%)]", HALFTONE_RED)}
+        />
         <div className="relative mx-auto grid max-w-6xl gap-8 px-5 md:grid-cols-[1.1fr_1fr] md:items-center">
           <div>
             <Tag tone="white">Inversión</Tag>
             <br />
             <div className="mt-5 inline-block -rotate-2 border-[3px] border-zinc-950 bg-white px-5 py-4 text-zinc-950 shadow-[7px_7px_0_0_#C8102E]">
               <p className="text-[11px] font-black tracking-[0.2em] text-zinc-500 uppercase">{proposal.packageName}</p>
-              <p className="font-jersey mt-1 text-6xl leading-none sm:text-8xl">{formatProposalMoney(proposal.priceAmount)}</p>
-              <p className="mt-1 text-xs font-bold tracking-[0.14em] text-brand-red uppercase">{proposal.priceCaption}</p>
+              <p className="font-jersey mt-1 text-6xl leading-none sm:text-8xl">
+                {formatProposalMoney(proposal.priceAmount)}
+              </p>
+              <p className="mt-1 text-xs font-bold tracking-[0.14em] text-brand-red uppercase">
+                {proposal.priceCaption}
+              </p>
             </div>
           </div>
 
@@ -313,7 +378,10 @@ export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
                 ["Patrocinio", proposal.priceAmount],
                 ["Liga U Pass", proposal.upassPriceAmount],
               ].map(([label, amount]) => (
-                <div key={label} className="flex items-baseline justify-between border-b-2 border-dashed border-white/20 pb-2">
+                <div
+                  key={label}
+                  className="flex items-baseline justify-between border-b-2 border-dashed border-white/20 pb-2"
+                >
                   <dt className="text-xs font-black tracking-[0.18em] text-white/60 uppercase">{label}</dt>
                   <dd className="font-jersey text-3xl leading-none">{formatProposalMoney(Number(amount))}</dd>
                 </div>
@@ -332,50 +400,33 @@ export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
       </section>
 
       {proposal.includeUpass ? (
-        <section id="upass" className="proposal-sheet relative scroll-mt-24 overflow-hidden border-b-[3px] border-zinc-950 bg-zinc-200 py-12 md:py-16">
-          <div aria-hidden className={cn("absolute inset-0 [mask-image:linear-gradient(160deg,black,transparent_60%)]", HALFTONE_INK)} />
+        <section
+          id="upass"
+          className="proposal-sheet relative scroll-mt-24 overflow-hidden border-b-[3px] border-zinc-950 bg-zinc-200 py-12 md:py-16"
+        >
+          <div
+            aria-hidden
+            className={cn("absolute inset-0 [mask-image:linear-gradient(160deg,black,transparent_60%)]", HALFTONE_INK)}
+          />
           <div className="relative mx-auto grid max-w-6xl gap-10 px-5 md:grid-cols-[1fr_1fr] md:items-center">
             <div>
               <SectionHeading eyebrow="Liga U Pass" title="La marca sigue en el bolsillo" />
               <p className="mt-4 max-w-md text-base leading-relaxed text-zinc-600">
-                Liga U Pass es la membresía de la comunidad universitaria: estudiantes, profesores y atletas de las
-                ocho universidades. {proposal.companyName} puede vivir ahí con un beneficio real, validado con la
-                credencial CarnetX, abierto entre jornada y jornada.
+                Liga U Pass es la membresía de la comunidad universitaria: estudiantes, profesores y atletas de las ocho
+                universidades. {proposal.companyName} puede vivir ahí con un beneficio real, validado con la credencial
+                CarnetX, abierto entre jornada y jornada.
               </p>
 
-              <div className="mt-8 max-w-sm -rotate-3 transition duration-300 hover:rotate-0">
-                <div className="relative aspect-[1.6] overflow-hidden border-[3px] border-zinc-950 bg-zinc-950 text-white shadow-[7px_7px_0_0_#C8102E]">
-                  <div aria-hidden className="absolute inset-y-0 right-[18%] w-10 -skew-x-[14deg] bg-brand-red" />
-                  <div aria-hidden className="absolute inset-y-0 right-[8%] w-3 -skew-x-[14deg] bg-zinc-600" />
-                  <div aria-hidden className={cn("absolute inset-0 opacity-50 [mask-image:linear-gradient(120deg,transparent_40%,black)]", HALFTONE_RED)} />
-                  <div aria-hidden className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/4 -skew-x-12 bg-white/15 animate-ligau-shine" />
-                  <div className="relative flex h-full flex-col justify-between p-4">
-                    <div className="flex items-center gap-2">
-                      <span className="grid size-9 place-items-center bg-white p-1">
-                        <LigaULogo className="h-6" />
-                      </span>
-                      <p className="font-jersey text-2xl leading-none tracking-wide">Liga U Pass</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black tracking-[0.2em] text-white/55 uppercase">Beneficio exclusivo</p>
-                      <p className="font-jersey truncate text-4xl leading-none uppercase [text-shadow:3px_3px_0_#C8102E]">
-                        {proposal.companyName}
-                      </p>
-                    </div>
-                    <div className="flex items-end justify-between gap-3">
-                      <p className="text-[10px] font-black tracking-[0.16em] uppercase">Válido con CarnetX</p>
-                      <span
-                        aria-hidden
-                        className="h-7 w-24 bg-[repeating-linear-gradient(90deg,#fff_0_2px,transparent_2px_4px,#fff_4px_5px,transparent_5px_8px)]"
-                      />
-                    </div>
-                  </div>
-                </div>
+              <div className="mt-8">
+                <PassCard logos={passLogos} />
               </div>
             </div>
 
             <ol className="relative">
-              <span aria-hidden className="absolute top-4 bottom-4 left-[1.3rem] border-l-[3px] border-dashed border-zinc-950/40" />
+              <span
+                aria-hidden
+                className="absolute top-4 bottom-4 left-[1.3rem] border-l-[3px] border-dashed border-zinc-950/40"
+              />
               {proposal.upassPoints.map((item, index) => (
                 <li key={item.title} className="group relative grid grid-cols-[2.75rem_1fr] gap-4 pb-6 last:pb-0">
                   <span className="font-jersey relative grid size-11 place-items-center rounded-full border-[2.5px] border-zinc-950 bg-brand-red text-2xl leading-none text-white shadow-[3px_3px_0_0_#09090b] transition duration-200 group-hover:scale-110 group-hover:-rotate-6">
@@ -392,8 +443,17 @@ export function ProposalDeck({ proposal }: { proposal: ProposalDeckData }) {
         </section>
       ) : null}
 
-      <section id="cierre" className="proposal-sheet relative isolate scroll-mt-24 overflow-hidden bg-brand-red py-12 text-white md:py-16">
-        <div aria-hidden className={cn("absolute inset-0 opacity-70 [mask-image:linear-gradient(200deg,black,transparent_65%)]", "[background-image:radial-gradient(rgba(9,9,11,0.4)_1.4px,transparent_1.8px)] [background-size:10px_10px]")} />
+      <section
+        id="cierre"
+        className="proposal-sheet relative isolate scroll-mt-24 overflow-hidden bg-brand-red py-12 text-white md:py-16"
+      >
+        <div
+          aria-hidden
+          className={cn(
+            "absolute inset-0 opacity-70 [mask-image:linear-gradient(200deg,black,transparent_65%)]",
+            "[background-image:radial-gradient(rgba(9,9,11,0.4)_1.4px,transparent_1.8px)] [background-size:10px_10px]",
+          )}
+        />
         <div aria-hidden className="absolute inset-y-0 -right-16 w-1/4 -skew-x-[14deg] bg-zinc-950" />
         <div className="relative mx-auto max-w-6xl px-5">
           <Tag tone="ink">Siguiente paso</Tag>

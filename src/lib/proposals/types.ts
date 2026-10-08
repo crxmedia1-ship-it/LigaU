@@ -1,3 +1,5 @@
+import type { DeliverableVisual } from "@/lib/proposals/master";
+
 export type ProposalDeckData = {
   companyName: string;
   logoUrl: string | null;
@@ -6,7 +8,7 @@ export type ProposalDeckData = {
   packageName: string;
   packageEyebrow: string;
   packagePitch: string;
-  deliverables: { title: string; detail: string }[];
+  deliverables: { visual: DeliverableVisual; title: string; detail: string }[];
   priceAmount: number;
   priceCaption: string;
   includeUpass: boolean;
